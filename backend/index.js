@@ -136,10 +136,10 @@ io.on("connection", (socket) => {
 // --- 7. START SERVER ---
 const PORT = process.env.PORT || 8000;
 
-// Store server instance globally for shutdown access
+connectDB();   // 👈 database connect first
+
 const activeServer = server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  connectDB();
 });
 
 // 🛑 PREVENT EADDRINUSE: Handle Nodemon Restarts & Termination
