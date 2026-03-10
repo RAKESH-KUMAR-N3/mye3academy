@@ -96,7 +96,7 @@ export const signup = async (req, res) => {
         });
     }
   } catch (error) {
-    console.error(error);
+    console.error("Signup Error:", error);
     return res.status(500).json({ message: `Signup error: ${error.message}` });
   }
 };
@@ -216,6 +216,7 @@ export const login = async (req, res) => {
     const { password: _, ...userData } = user.toObject();
     return res.status(200).json(userData);
   } catch (error) {
+    console.error("Login Error:", error);
     return res.status(500).json({ message: `Login error: ${error.message}` });
   }
 };

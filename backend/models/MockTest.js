@@ -44,6 +44,20 @@ const MockTestSchema = new mongoose.Schema({
     availableFrom: { type: Date, default: Date.now },
     availableTo: { type: Date, default: () => new Date(+new Date() + 365 * 24 * 60 * 60 * 1000) },
 
+    languages: { type: [String], default: ["English"] },
+    totalTests: { type: Number, default: 0 },
+    freeTests: { type: Number, default: 0 },
+    
+    // Explicit counts for the UI card features
+    featureCounts: {
+        liveTests: { type: Number, default: 0 },
+        chapterTests: { type: Number, default: 0 },
+        fullTests: { type: Number, default: 0 },
+    },
+
+    // To allow admin to set a "fake" starting enrollment count
+    baseEnrolledCount: { type: Number, default: 0 },
+
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     categorySlug: String,
 

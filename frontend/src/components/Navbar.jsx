@@ -85,7 +85,7 @@ const Navbar = () => {
   const handleSelectCategory = (catId) => {
     dispatch(setPublicCategoryFilter(catId));
     setIsCategoryDropdownOpen(false);
-    if (location.pathname !== "/mocktests") navigate("/mocktests");
+    if (location.pathname !== "/all-tests") navigate("/all-tests");
   };
 
   // --- LOGIC CONNECTIVITY FIX: Dashboard Visibility ---
@@ -173,7 +173,7 @@ const Navbar = () => {
                 )}
               </div>
               <button
-                onClick={() => navigate("/mocktests")}
+                onClick={() => navigate("/all-tests")}
                 className="p-2 text-slate-700"
               >
                 <Search size={24} />
@@ -203,8 +203,8 @@ const Navbar = () => {
                   Home
                 </Link>
                 <Link
-                  to="/mocktests"
-                  className={location.pathname === "/mocktests" && !location.search.includes("type=") ? "text-indigo-600" : "hover:text-indigo-600 transition-colors"}
+                  to="/all-tests"
+                  className={location.pathname === "/all-tests" && !location.search.includes("type=") ? "text-indigo-600" : "hover:text-indigo-600 transition-colors"}
                 >
                   All Tests
                 </Link>
@@ -315,7 +315,7 @@ const Navbar = () => {
               id: "all",
               label: "ALL",
               icon: Search,
-              path: "/mocktests",
+              path: "/all-tests",
             },
             {
               id: "mock",

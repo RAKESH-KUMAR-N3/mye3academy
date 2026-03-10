@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { getImageUrl, handleImageError } from "../../utils/imageHelper";
+import MockTestCard from "../MockTestCard";
 
 const toTitleCase = (str = "") =>
   str.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
@@ -102,10 +103,9 @@ const CategoriesSection = ({ categories = [], loading }) => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {filteredExams.map((item) => {
-                const testIcon = getImageUrl(item.thumbnail || item.image);
-                /* Title Case the exam name — Testbook style */
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+              {filteredExams.slice(0, 9).map((item) => {
+                const testIcon = getImageUrl(item.thumbnail || item.image || (item.category && (item.category.icon || item.category.image)));
                 const rawLabel = item.title || item.subcategory || item.name || "Test";
                 const testLabel = toTitleCase(rawLabel);
 
@@ -115,49 +115,38 @@ const CategoriesSection = ({ categories = [], loading }) => {
                       ? Number(item.discountPrice)
                       : Number(item.price);
                   const isFree = item.isFree === true || effective <= 0;
-                  navigate(isFree ? `/student/instructions/${item._id}` : `/mocktests/${item._id}`);
+                  navigate(isFree ? `/student/instructions/${item._id}` : `/all-tests/${item._id}`);
                 };
 
-                const price = item.discountPrice > 0 ? item.discountPrice : item.price;
-                const isFree = item.isFree === true || price <= 0;
-
                 return (
-                  /* Card — white, rounded-xl, subtle shadow, ~72px tall */
                   <div
                     key={item._id}
                     onClick={handleClick}
-                    className="group flex items-center gap-4 px-5 py-[18px] bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 cursor-pointer"
+                    className="group flex items-center gap-4 px-5 py-3.5 bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-pointer"
                   >
-                    {/* Circular icon ~40px — exactly like Testbook */}
-                    <div className="w-10 h-10 flex-none rounded-full bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
+                    {/* Circular icon container - optimized size for 3-column layout */}
+                    <div className="w-12 h-12 flex-none rounded-full bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 border border-slate-50">
                       {testIcon ? (
                         <img
                           src={testIcon}
                           alt={testLabel}
-                          className="w-9 h-9 object-contain rounded-full"
+                          className="w-10 h-10 object-contain rounded-full"
                           onError={handleImageError}
                         />
                       ) : (
-                        <span className="text-sm font-bold text-slate-500">
+                        <span className="text-lg font-black text-slate-400">
                           {testLabel.charAt(0)}
                         </span>
                       )}
                     </div>
 
-                    {/* Name — Testbook has no subtitle, just exam name + arrow */}
-                    <span className="flex-1 text-[15px] font-semibold text-slate-800 group-hover:text-cyan-600 transition-colors leading-tight truncate">
+                    {/* Name - Clean, bold, and vertical aligned */}
+                    <span className="flex-1 text-[15px] font-bold text-slate-700 group-hover:text-cyan-600 transition-colors leading-tight truncate">
                       {testLabel}
                     </span>
 
-                    {/* Price/Free badge */}
-                    {!isFree && (
-                      <span className="text-[11px] bg-amber-50 text-amber-600 border border-amber-200 px-2 py-0.5 rounded font-semibold shrink-0">
-                        ₹{price}
-                      </span>
-                    )}
-
-                    {/* Arrow */}
-                    <ChevronRight size={16} className="text-slate-400 group-hover:text-cyan-500 shrink-0 transition-colors" />
+                    {/* Simple Arrow - Exactly like Testbook */}
+                    <ChevronRight size={18} className="text-slate-300 group-hover:text-cyan-500 shrink-0 transition-colors" />
                   </div>
                 );
               })}
@@ -167,7 +156,7 @@ const CategoriesSection = ({ categories = [], loading }) => {
             {filteredExams.length > 0 && (
               <div className="mt-4 text-right">
                 <Link
-                  to="/mocktests"
+                  to="/all-tests"
                   className="text-sm text-cyan-600 font-medium hover:underline inline-flex items-center gap-1 hover:text-cyan-700 transition"
                 >
                   Explore all exams

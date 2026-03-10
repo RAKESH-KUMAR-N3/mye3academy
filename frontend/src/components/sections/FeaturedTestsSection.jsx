@@ -57,11 +57,11 @@ const TestCard = ({ test }) => {
 
   const handleStartTest = () => {
     if (!handleLoginCheck()) return;
-    navigate(`/mocktests/${test._id}`);
+    navigate(`/all-tests/${test._id}`);
   };
 
   const handleViewDetails = () => {
-    navigate(`/mocktests/${test._id}`);
+    navigate(`/all-tests/${test._id}`);
   };
 
   return (
@@ -79,17 +79,18 @@ const TestCard = ({ test }) => {
         </span>
       )}
 
+      {/* ── HEADER ── */}
       <div className="relative w-full h-32 md:h-36 overflow-hidden">
-          <img
-            src={imageSource}
-            alt={test.title}
-            onError={handleImageError}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-          />
+        <img
+          src={imageSource}
+          alt={test.title}
+          onError={handleImageError}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+        />
       </div>
 
       <Link
-        to={`/mocktests/${test._id}`}
+        to={`/all-tests/${test._id}`}
         className="p-6 flex flex-col flex-grow"
       >
         <div className="mb-4">
@@ -207,13 +208,10 @@ const FeaturedTestsSection = ({
           </p>
         )}
 
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {!loading &&
             displayedTests.map((test) => (
-              <div 
-                key={test._id} 
-                className="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] xl:w-[calc(16.666%-1.5rem)] flex"
-              >
+              <div key={test._id} className="flex">
                 <div className="w-full flex-grow">
                   <Component test={test} />
                 </div>
@@ -222,12 +220,12 @@ const FeaturedTestsSection = ({
         </div>
 
         {showViewAll && (
-          <div className="text-center mt-8">
+          <div className="text-center mt-12">
             <button
               onClick={onViewAll}
-              className="px-8 py-3 font-black uppercase tracking-[0.2em] text-white bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-100 hover:bg-indigo-700 transform hover:scale-[1.05] transition-all duration-300 text-[10px]"
+              className="px-10 py-3.5 font-bold uppercase tracking-widest text-indigo-600 bg-white border-2 border-indigo-100 rounded-2xl shadow-sm hover:border-indigo-600 hover:bg-indigo-50 transform hover:scale-[1.02] transition-all duration-300 text-[11px]"
             >
-              {viewAllText}
+              Explore All Test Series
             </button>
           </div>
         )}

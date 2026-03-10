@@ -320,248 +320,104 @@ export default function CategoryMockTests() {
                                                     className={`absolute left-0 top-0 bottom-0 w-1 transition-all ${test.isGrandTest ? 'bg-amber-400' : 'bg-emerald-400'}`}
                                                 />
                                             )}
-                                            {/* THUMBNAIL */}
-                                            <div className={`relative bg-slate-50 flex-shrink-0 ${viewMode === 'list' ? 'w-12 h-12' : 'aspect-[4/3] w-full overflow-hidden'}`}>
-                                                <motion.img
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    transition={{ duration: 0.8 }}
-                                                    src={test.thumbnail ? getImageUrl(test.thumbnail) : (test.category?.image ? getImageUrl(test.category.image) : "/logo.png")}
-                                                    alt={test.title}
-                                                    onError={handleImageError}
-                                                    className={`w-full h-full scale-110 group-hover:scale-100 transition-transform duration-700 ${viewMode === 'list' ? 'object-contain p-2' : 'object-cover'}`}
-                                                />
-                                                {/* Shine Sweep Effect */}
-                                                {viewMode === 'grid' && (
-                                                    <motion.div
-                                                        variants={{
-                                                            hover: { x: ['-100%', '100%'], transition: { duration: 0.8, ease: "easeInOut" } }
-                                                        }}
-                                                        className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-20 pointer-events-none"
-                                                    />
-                                                )}
-                                                {viewMode === 'grid' && (
-                                                    <>
-                                                        <motion.div
-                                                            variants={{
-                                                                hidden: { opacity: 0 },
-                                                                show: {
-                                                                    opacity: 1,
-                                                                    transition: { staggerChildren: 0.1, delayChildren: 0.3 }
-                                                                }
-                                                            }}
-                                                            initial="hidden"
-                                                            animate="show"
-                                                            className="absolute top-1 left-1 flex flex-col gap-1"
-                                                        >
-                                                            <motion.span
-                                                                variants={{ hidden: { opacity: 0, y: -5 }, show: { opacity: 1, y: 0 } }}
-                                                                className={`px-1.5 py-0.5 text-[7.5px] font-black tracking-wide border ${test.isPublished ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-[#3e4954] text-white border-[#3e4954]"
-                                                                    }`}
-                                                            >
-                                                                {test.isPublished ? "Live" : "Draft"}
-                                                            </motion.span>
-                                                            <div className="flex gap-1">
-                                                                <motion.span
-                                                                    variants={{ hidden: { opacity: 0, y: -5 }, show: { opacity: 1, y: 0 } }}
-                                                                    className={`px-1.5 py-0.5 text-[7.5px] font-black tracking-wide border ${test.isGrandTest ? "bg-amber-500 text-white border-amber-600" : "bg-emerald-500 text-white border-emerald-600"
-                                                                        }`}
-                                                                >
-                                                                    {test.isGrandTest ? "Grand" : "Mock"}
-                                                                </motion.span>
-                                                                <motion.span
-                                                                    variants={{ hidden: { opacity: 0, y: -5 }, show: { opacity: 1, y: 0 } }}
-                                                                    className={`px-1.5 py-0.5 text-[7.5px] font-black tracking-wide border ${test.isFree ? "bg-blue-500 text-white border-blue-600" : "bg-indigo-600 text-white border-indigo-700"
-                                                                        }`}
-                                                                >
-                                                                    {test.isFree ? "Free" : "Paid"}
-                                                                </motion.span>
-                                                            </div>
-                                                        </motion.div>
-                                                        <motion.button
-                                                            whileHover={{ scale: 1.15 }}
-                                                            whileTap={{ scale: 0.9 }}
-                                                            onClick={(e) => { e.stopPropagation(); handleDelete(test._id); }}
-                                                            className="absolute top-1 right-1 p-1.5 bg-white/80 hover:bg-rose-500 text-slate-400 hover:text-white border border-slate-100 hover:border-rose-500 transition-all z-20"
-                                                            title="Delete"
-                                                        >
-                                                            <Trash2 size={13} />
-                                                        </motion.button>
-                                                    </>
-                                                )}
-                                            </div>
-
-                                            {/* CONTENT AREA */}
-                                            <div className={`flex flex-col justify-center ${viewMode === 'list' ? 'flex-1 min-w-0' : 'p-2 space-y-1'}`}>
-                                                <div>
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <h3 className={`font-black text-[#3e4954] tracking-tight group-hover:text-[#21b731] transition-colors font-poppins truncate ${viewMode === 'list' ? 'text-sm mb-0' : 'text-[13px] line-clamp-2 min-h-[1.8rem]'}`}>
-                                                            {test.title}
-                                                        </h3>
-                                                        {viewMode === 'list' && (
-                                                            <div className="flex gap-1 flex-shrink-0">
-                                                                <span className={`px-1 py-0.5 text-[6.5px] font-black tracking-wide border ${test.isGrandTest ? "bg-amber-500 text-white border-amber-600" : "bg-emerald-500 text-white border-emerald-600"
-                                                                    }`}>
-                                                                    {test.isGrandTest ? "Grand" : "Mock"}
-                                                                </span>
-                                                            </div>
-                                                        )}
+                                            {/* ── HEADER ── */}
+                                            <div className="pt-4 px-4 pb-2 bg-slate-50/50 relative border-b border-slate-50">
+                                                <div className="flex justify-between items-start relative z-10">
+                                                    {/* Circular Logo */}
+                                                    <div className="w-10 h-10 rounded-full bg-white shadow-sm p-1 flex items-center justify-center border border-slate-100 overflow-hidden">
+                                                        <img
+                                                            src={test.thumbnail ? getImageUrl(test.thumbnail) : 
+                                                                (test.category && (test.category.icon || test.category.image)) 
+                                                                ? getImageUrl(test.category.icon || test.category.image) 
+                                                                : "/logo.png"}
+                                                            alt={test.title}
+                                                            onError={handleImageError}
+                                                            className="w-full h-full object-contain"
+                                                        />
                                                     </div>
-                                                    <motion.div
-                                                        initial={{ opacity: 0, y: 10 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        transition={{ delay: 0.1 }}
-                                                        className="flex items-center gap-1.5"
-                                                    >
-                                                        <div className={`h-0.5 w-3 group-hover:w-5 transition-all ${test.isGrandTest ? "bg-amber-400" : "bg-emerald-400"
-                                                            }`} />
-                                                        <span className="text-[8px] font-black text-slate-400 tracking-widest font-poppins">
-                                                            {test.subcategory || "Base Segment"}
+
+                                                    {/* Badges */}
+                                                    <div className="flex flex-col items-end gap-1">
+                                                        <span className={`px-2 py-0.5 text-[8px] font-bold rounded-full ${test.isPublished ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-slate-100 text-slate-500 border border-slate-200"}`}>
+                                                            {test.isPublished ? "LIVE" : "DRAFT"}
                                                         </span>
-                                                    </motion.div>
-                                                </div>
-                                            </div>
-
-                                            {/* LIST VIEW STATS (Only in List View) */}
-                                            {viewMode === 'list' && (
-                                                <div className="hidden md:flex items-center gap-4 lg:gap-8 pr-6">
-                                                    <div className="flex items-center gap-6 pr-6">
-                                                        {/* Engagement Stats */}
-                                                        <div className="flex gap-4">
-                                                            {[
-                                                                { label: "Pricing", val: test.isFree ? "FREE" : `₹${test.price}`, icon: <Users size={10} />, color: test.isFree ? "text-blue-400" : "text-indigo-600" },
-                                                                { label: "Attempts", val: test.attempts?.length || "0", icon: <Users size={10} />, color: "text-blue-400" }
-                                                            ].map((stat, idx) => (
-                                                                <div key={idx} className="flex flex-col items-center min-w-[45px]">
-                                                                    <div className={`${stat.color} mb-0.5`}>{stat.icon}</div>
-                                                                    <span className={`text-[10px] font-black leading-none ${stat.label === 'Pricing' ? 'px-1 py-0.5 border border-slate-100 bg-slate-50' : 'text-[#3e4954]'}`}>{stat.val}</span>
-                                                                    <span className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter mt-1">{stat.label}</span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-
-                                                        <div className="h-6 w-[1px] bg-slate-100" />
-
-                                                        {/* Exam Specs Grouped */}
-                                                        <div className="flex gap-4 bg-slate-50/50 px-3 py-1 rounded-sm border border-slate-100/50">
-                                                            {[
-                                                                { label: "Time", val: test.durationMinutes > 0 ? `${test.durationMinutes}m` : "—", icon: <Clock size={10} />, color: "text-slate-300" },
-                                                                { label: "Marks", val: test.totalMarks || "0", icon: <Save size={10} />, color: "text-slate-300" },
-                                                                { label: "MCQs", val: test.totalQuestions || 0, icon: <Book size={10} />, color: "text-slate-300" }
-                                                            ].map((stat, idx) => (
-                                                                <div key={idx} className="flex flex-col items-center min-w-[40px]">
-                                                                    <div className={`${stat.color} mb-0.5`}>{stat.icon}</div>
-                                                                    <span className="text-[10px] font-black text-[#3e4954] leading-none">{stat.val}</span>
-                                                                    <span className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter mt-1">{stat.label}</span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* GRID VIEW STATS (Only in Grid View) */}
-                                            {viewMode === 'grid' && (
-                                                <div className="px-3 pb-3 space-y-1">
-                                                    <div className="grid grid-cols-3 gap-2 border-y border-slate-50 py-2">
-                                                        {[
-                                                            { label: "Duration", val: test.durationMinutes > 0 ? `${test.durationMinutes}m` : "—", icon: <Clock size={12} /> },
-                                                            { label: "Marks", val: test.totalMarks || "0", icon: <Save size={12} /> },
-                                                            { label: "Questions", val: test.totalQuestions || 0, icon: <Book size={12} /> }
-                                                        ].map((stat, idx) => (
-                                                            <div key={idx} className="text-center space-y-1">
-                                                                <motion.div
-                                                                    variants={{
-                                                                        hover: { scale: 1.2, rotate: 5, color: test.isGrandTest ? '#f59e0b' : '#10b981' }
-                                                                    }}
-                                                                    className="text-slate-300 flex justify-center"
-                                                                >
-                                                                    {stat.icon}
-                                                                </motion.div>
-                                                                <div className="text-[10px] font-black text-[#3e4954] leading-none">{stat.val}</div>
-                                                                <div className="text-[7px] font-bold text-slate-400 tracking-tighter">{stat.label}</div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* ACTIONS & STATUS (Consolidated) */}
-                                            <div className={`${viewMode === 'list' ? 'flex items-center gap-3 pr-4 border-l border-slate-100 pl-4 py-2' : 'px-3 pb-3 space-y-1.5'}`}>
-
-                                                {viewMode === 'list' && (
-                                                    <>
-                                                        {/* Status Toggle Integrated */}
-                                                        <div className="flex flex-col items-center min-w-[40px]">
-                                                            <button
-                                                                onClick={(e) => { e.stopPropagation(); handleTogglePublish(test._id, test.isPublished); }}
-                                                                className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${test.isPublished
-                                                                        ? (test.isGrandTest ? 'bg-amber-500' : 'bg-[#21b731]')
-                                                                        : 'bg-slate-200 border-slate-300'
-                                                                    }`}
-                                                            >
-                                                                <motion.span
-                                                                    layout
-                                                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                                                    className={`inline-block h-3 w-3 transform rounded-full bg-white shadow-sm ${test.isPublished ? 'ml-5' : 'ml-1'
-                                                                        }`}
-                                                                />
-                                                            </button>
-                                                            <span className={`text-[7px] font-black tracking-widest mt-1 ${test.isPublished ? 'text-[#21b731]' : 'text-slate-400'}`}>
-                                                                {test.isPublished ? "Live" : "Draft"}
+                                                        <div className="flex gap-1">
+                                                            <span className={`px-2 py-0.5 text-[7px] font-black rounded-full text-white shadow-sm ${test.isGrandTest ? "bg-amber-500" : "bg-[#21b731]"}`}>
+                                                                {test.isGrandTest ? "GRAND" : "MOCK"}
+                                                            </span>
+                                                            <span className={`px-2 py-0.5 text-[7px] font-black rounded-full text-white shadow-sm ${test.isFree ? "bg-blue-500" : "bg-indigo-600"}`}>
+                                                                {test.isFree ? "FREE" : "PAID"}
                                                             </span>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                        {/* Actions Divider */}
-                                                        <div className="h-8 w-[1px] bg-slate-100 mx-1" />
-                                                    </>
-                                                )}
+                                            {/* ── CONTENT ── */}
+                                            <div className="p-4 flex flex-col flex-grow">
+                                                <h3 className="font-black text-[#3e4954] text-[13px] line-clamp-2 min-h-[2.2rem] group-hover:text-[#21b731] transition-colors leading-tight mb-3">
+                                                    {test.title}
+                                                </h3>
 
-                                                <div className={`${viewMode === 'list' ? 'flex gap-2' : 'grid grid-cols-2 gap-1.5 text-center'}`}>
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.03 }}
-                                                        whileTap={{ scale: 0.97 }}
-                                                        onClick={() => navigate(`/admin/mocktests/${category}/edit/${test._id}`)}
-                                                        className={`flex items-center justify-center gap-1.5 border-2 border-slate-100 text-[#7e7e7e] font-black tracking-widest hover:border-[#3e4954] hover:text-[#3e4954] transition-all bg-slate-50/50 ${viewMode === 'list' ? 'h-10 px-4 text-[9px]' : 'py-2 text-[8px]'}`}
-                                                    >
-                                                        <Edit size={12} /> {viewMode === 'list' ? "Settings" : "Edit"}
-                                                    </motion.button>
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.03, boxShadow: test.isGrandTest ? "0 10px 25px rgba(245, 158, 11, 0.4)" : "0 10px 25px rgba(79, 70, 229, 0.4)" }}
-                                                        whileTap={{ scale: 0.97 }}
-                                                        onClick={() => navigate(`/admin/mocktests/${test._id}/questions`)}
-                                                        className={`flex items-center justify-center gap-1.5 font-black tracking-widest shadow-lg transition-all ${test.isGrandTest
-                                                                ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-amber-100'
-                                                                : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-100'
-                                                            } ${viewMode === 'list' ? 'h-10 px-4 text-[9px]' : 'py-2 text-[8px]'}`}
-                                                    >
-                                                        {test.isGrandTest ? <Trophy size={12} /> : <Layers size={12} />} {viewMode === 'list' ? "Manage questions" : "Questions"}
-                                                    </motion.button>
+                                                {/* Specs */}
+                                                <div className="grid grid-cols-3 gap-1 border-t border-slate-50 pt-3 mb-4">
+                                                    <div className="text-center">
+                                                        <div className="text-[10px] font-black text-[#3e4954]">{test.durationMinutes || "—"}m</div>
+                                                        <div className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter">Time</div>
+                                                    </div>
+                                                    <div className="text-center border-x border-slate-100 px-1">
+                                                        <div className="text-[10px] font-black text-[#3e4954]">{test.totalMarks || "0"}</div>
+                                                        <div className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter">Marks</div>
+                                                    </div>
+                                                    <div className="text-center">
+                                                        <div className="text-[10px] font-black text-[#3e4954]">{test.totalQuestions || "0"}</div>
+                                                        <div className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter">MCQs</div>
+                                                    </div>
                                                 </div>
 
-                                                {viewMode === 'list' ? (
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.1 }}
-                                                        whileTap={{ scale: 0.9 }}
-                                                        onClick={(e) => { e.stopPropagation(); handleDelete(test._id); }}
-                                                        className="h-10 px-3 flex items-center justify-center gap-1.5 text-[8px] font-black tracking-widest transition-all border-2 bg-rose-50 text-rose-500 border-rose-100 hover:bg-rose-100"
-                                                        title="Delete"
-                                                    >
-                                                        <Trash2 size={12} />
-                                                    </motion.button>
-                                                ) : (
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.02 }}
-                                                        whileTap={{ scale: 0.98 }}
-                                                        onClick={(e) => { e.stopPropagation(); handleTogglePublish(test._id, test.isPublished); }}
-                                                        className={`w-full py-2.5 flex items-center justify-center gap-2 text-[8px] font-black tracking-widest transition-all border-2 ${test.isPublished
-                                                                ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100'
-                                                                : 'bg-slate-50 text-[#7e7e7e] border-slate-100 hover:bg-slate-100'
+                                                {/* Actions */}
+                                                <div className="mt-auto space-y-2">
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.02 }}
+                                                            whileTap={{ scale: 0.98 }}
+                                                            onClick={(e) => { e.stopPropagation(); navigate(`/admin/mocktests/${category}/edit/${test._id}`); }}
+                                                            className="flex items-center justify-center gap-1.5 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-lg text-[9px] font-bold hover:bg-slate-100 transition-all"
+                                                        >
+                                                            <Edit size={12} /> Edit
+                                                        </motion.button>
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.02 }}
+                                                            whileTap={{ scale: 0.98 }}
+                                                            onClick={(e) => { e.stopPropagation(); navigate(`/admin/mocktests/${test._id}/questions`); }}
+                                                            className="flex items-center justify-center gap-1.5 py-2 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-lg text-[9px] font-bold hover:bg-indigo-100 transition-all"
+                                                        >
+                                                            <Layers size={12} /> Ques
+                                                        </motion.button>
+                                                    </div>
+
+                                                    <div className="flex gap-2">
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.02 }}
+                                                            whileTap={{ scale: 0.98 }}
+                                                            onClick={(e) => { e.stopPropagation(); handleTogglePublish(test._id, test.isPublished); }}
+                                                            className={`flex-1 py-2 rounded-lg text-[9px] font-bold border transition-all flex items-center justify-center gap-1.5 ${test.isPublished 
+                                                                ? "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100" 
+                                                                : "bg-slate-900 text-white border-slate-900 hover:bg-slate-800"
                                                             }`}
-                                                    >
-                                                        {test.isPublished ? <><Eye size={12} /> Live</> : <><EyeOff size={12} /> Publish test</>}
-                                                    </motion.button>
-                                                )}
+                                                        >
+                                                            {test.isPublished ? <><EyeOff size={12} /> Hide</> : <><Eye size={12} /> Publish</>}
+                                                        </motion.button>
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.02, backgroundColor: '#fee2e2', color: '#dc2626', borderColor: '#fecaca' }}
+                                                            whileTap={{ scale: 0.98 }}
+                                                            onClick={(e) => { e.stopPropagation(); handleDelete(test._id); }}
+                                                            className="px-3 py-2 bg-slate-50 text-slate-400 border border-slate-200 rounded-lg transition-all"
+                                                        >
+                                                            <Trash2 size={12} />
+                                                        </motion.button>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                         </motion.div>

@@ -5,7 +5,7 @@ import { fetchPublicTestById } from "../redux/mockTestSlice";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
 import api from "../api/axios";
-import { Clock, BookOpen, FileText, MinusCircle, Tag, ArrowLeft, Play, ShieldCheck, Target } from "lucide-react";
+import { Clock, BookOpen, FileText, MinusCircle, Tag, ArrowLeft, Play, ShieldCheck, Target, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 import { getImageUrl, handleImageError } from "../utils/imageHelper";
 import { addPurchasedTest, fetchMyMockTests } from "../redux/userSlice";
@@ -194,7 +194,7 @@ export default function MockTestDetail() {
             <div className="max-w-xl mx-auto pt-40 text-center">
                 <h2 className="text-lg font-black text-red-600 uppercase tracking-widest">Unable to load test</h2>
                 <p className="text-slate-500 mt-2 text-sm">{error}</p>
-                <Link to="/mocktests" className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-[#21b731] text-white text-[11px] font-black uppercase tracking-widest">
+                <Link to="/all-tests" className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-[#21b731] text-white text-[11px] font-black uppercase tracking-widest">
                     <ArrowLeft size={14} /> Back to Tests
                 </Link>
             </div>
@@ -229,7 +229,7 @@ export default function MockTestDetail() {
             <div className="max-w-5xl mx-auto px-4 md:px-8">
 
         <div className="flex items-center gap-2 mb-8 pt-4">
-            <Link to="/mocktests" className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:text-[#21b731] transition-colors">
+            <Link to="/all-tests" className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:text-[#21b731] transition-colors">
                 <ArrowLeft size={12} /> All Tests
             </Link>
             <span className="text-slate-300 text-xs">/</span>
@@ -321,6 +321,26 @@ export default function MockTestDetail() {
                         <p className="text-[15px] text-slate-600 leading-relaxed font-medium">
                             {test.description}
                         </p>
+
+                        {/* Subjects Inclusion */}
+                        {test.subjects && test.subjects.length > 0 && (
+                          <div className="mt-8 pt-8 border-t border-slate-50">
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="w-1.5 h-4 bg-emerald-500"></div>
+                              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Curriculum Coverage</h3>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {test.subjects.map((sub, idx) => (
+                                <div key={idx} className="flex flex-col bg-slate-50 px-4 py-3 border border-slate-100 min-w-[120px]">
+                                   <span className="text-[11px] font-black text-[#122b5e] uppercase tracking-tight">{sub.name}</span>
+                                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                                     {sub.easy + sub.medium + sub.hard > 0 ? `${sub.easy + sub.medium + sub.hard} Modules` : "Full Prep"}
+                                   </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                     </div>
                 )}
             </motion.div>
@@ -368,15 +388,34 @@ export default function MockTestDetail() {
                                 icon: <Clock size={12} className="text-blue-500" /> 
                             },
                             { label: "Maximum Marks", val: test.totalMarks || 0, icon: <FileText size={12} className="text-blue-500" /> },
+                            { label: "Languages", val: test.languages?.join(", ") || "English", icon: <Globe size={12} className="text-blue-500" /> },
                         ].map((s, i) => (
                             <div key={i} className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    {s.icon}
+                                    <div className="w-5 h-5 flex items-center justify-center bg-slate-50 text-blue-500">
+                                      {s.icon}
+                                    </div>
                                     <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">{s.label}</span>
                                 </div>
                                 <span className="text-[12px] font-black text-[#122b5e]">{s.val}</span>
                             </div>
                         ))}
+                    </div>
+
+                    {/* Meta Section */}
+                    <div className="p-6 bg-slate-50/50 border-b border-slate-50 grid grid-cols-3 gap-2">
+                        <div className="text-center">
+                            <div className="text-[14px] font-black text-[#122b5e]">{test.featureCounts?.liveTests || 0}</div>
+                            <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Live</div>
+                        </div>
+                        <div className="text-center border-x border-slate-200">
+                            <div className="text-[14px] font-black text-[#122b5e]">{test.featureCounts?.chapterTests || 0}</div>
+                            <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Chapters</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-[14px] font-black text-[#122b5e]">{test.featureCounts?.fullTests || 0}</div>
+                            <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Full</div>
+                        </div>
                     </div>
 
                     {/* CTA Section */}

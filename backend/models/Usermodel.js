@@ -38,6 +38,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["student", "instructor", "admin", "institution"],
       default: "student",
+      trim: true,
     },
     isVerified: {
       type: Boolean,

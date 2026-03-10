@@ -227,11 +227,11 @@ const Home = () => {
     (state) => state.students,
   );
 
-  const mockTests = publicMocktests.filter((t) => !t.isGrandTest).slice(0, 6);
+  const mockTests = publicMocktests.filter((t) => !t.isGrandTest).slice(0, 4);
 
   const grandTests = publicMocktests
     .filter((t) => t.isGrandTest === true)
-    .slice(0, 6);
+    .slice(0, 4);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -240,12 +240,12 @@ const Home = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate(`/mocktests?q=${encodeURIComponent(search)}`);
+    navigate(`/all-tests?q=${encodeURIComponent(search)}`);
   };
 
   const handleCategoryClick = (category) => {
     const slug = category.slug || category._id || category;
-    navigate(`/mocktests?category=${encodeURIComponent(slug)}`);
+    navigate(`/all-tests?category=${encodeURIComponent(slug)}`);
   };
 
   return (
@@ -286,7 +286,7 @@ const Home = () => {
             showViewAll
             viewAllText="View All Mocktests"
             CardComponent={MockTestCard}
-            onViewAll={() => navigate("/mocktests?type=mock")}
+            onViewAll={() => navigate("/mock-tests")}
           />
         </div>
 
@@ -300,7 +300,7 @@ const Home = () => {
             showViewAll
             viewAllText="View All Grand Tests"
             CardComponent={PremiumTestCard}
-            onViewAll={() => navigate("/mocktests?type=grand")}
+            onViewAll={() => navigate("/grand-tests")}
           />
         </div>
 
@@ -314,7 +314,7 @@ const Home = () => {
         <FAQSection />
 
         {/* CTA BANNER (Vibrant High Energy) */}
-        <CTASection onSignup={() => navigate("/mocktests")} />
+        <CTASection onSignup={() => navigate("/all-tests")} />
       </main>
     </div>
   );

@@ -55,7 +55,11 @@ const getInitialUser = () => {
     try {
         const storedUser = localStorage.getItem("userData");
         if (storedUser && storedUser !== "undefined") {
-            return JSON.parse(storedUser);
+            const user = JSON.parse(storedUser);
+            if (user && user.role) {
+                user.role = user.role.trim();
+            }
+            return user;
         }
         return null;
     } catch (error) {
@@ -76,6 +80,9 @@ const userSlice = createSlice({
     },
     reducers: {
         setUserData: (state, action) => {
+            if (action.payload && action.payload.role) {
+                action.payload.role = action.payload.role.trim();
+            }
             state.userData = action.payload;
             if (action.payload) {
                 localStorage.setItem("userData", JSON.stringify(action.payload));

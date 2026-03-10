@@ -91,9 +91,7 @@ export default function StuDashboard() {
           {activeTab === "overview" && <DashboardOverview setActiveTab={setActiveTab} />}
           {activeTab === "my-tests" && <MyTests setActiveTab={setActiveTab} />}
           {activeTab === "explore" && <AllMockTests isEmbedded={true} />}
-          {(activeTab === "performance" || activeTab === "performance-all") && <PerformanceHistory initialFilter="all" />}
-          {activeTab === "performance-mock" && <PerformanceHistory initialFilter="mock" />}
-          {activeTab === "performance-grand" && <PerformanceHistory initialFilter="grand" />}
+          {activeTab === "performance" && <PerformanceHistory initialFilter="all" />}
           {activeTab === "settings" && <ProfileSettings />}
           {activeTab === "doubts" && <StudentDoubts />}
         </div>

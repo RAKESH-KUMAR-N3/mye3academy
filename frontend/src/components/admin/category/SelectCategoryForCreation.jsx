@@ -116,63 +116,48 @@ const SelectCategoryForCreation = () => {
                 <div
                     key={cat._id}
                     onClick={() => navigate(`/admin/mocktests/${cat.slug}`)}
-                    className="group bg-white rounded-none border border-slate-100 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_40px_80px_rgba(0,0,0,0.12)] transition-all duration-500 hover:-translate-y-2 cursor-pointer relative"
+                    className="group relative bg-white border border-slate-200 hover:border-slate-300 transition-all duration-300 cursor-pointer overflow-hidden p-4 flex items-center gap-4 rounded-3xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)]"
                 >
-                    {/* Image Container - Visual Focused */}
-                    <div className="aspect-[16/10] bg-slate-100 relative overflow-hidden">
+                    {/* Logo Hub - Compact & Filling */}
+                    <div className="relative shrink-0 w-16 h-16 bg-white border border-slate-100 rounded-2xl flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300 shadow-sm">
                         <img 
                             src={getImageUrl(cat.image)} 
                             alt={cat.name}
                             onError={handleImageError}
-                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                            className="w-full h-full object-contain"
                         />
-                        
-                        {/* Glassmorphic Actions Overlay */}
-                        <div className="absolute top-3 right-3 z-20 flex flex-col gap-2 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
-                            <button 
-                                onClick={(e) => handleEdit(e, cat)}
-                                className="w-8 h-8 bg-white/90 backdrop-blur-md text-slate-600 hover:text-[#21b731] transition-all flex items-center justify-center shadow-lg"
-                            >
-                                <Edit size={14} />
-                            </button>
-                            <button 
-                                onClick={(e) => handleDelete(e, cat._id)}
-                                className="w-8 h-8 bg-white/90 backdrop-blur-md text-slate-600 hover:text-rose-500 transition-all flex items-center justify-center shadow-lg"
-                            >
-                                <Trash2 size={14} />
-                            </button>
-                        </div>
-
-                        {/* Category Label Overlay */}
-                        <div className="absolute bottom-3 left-3 z-10 px-3 py-1 bg-black/40 backdrop-blur-md border border-white/10 text-[9px] font-black text-white uppercase tracking-[0.2em]">
-                            {cat.slug}
-                        </div>
-
-                        {/* Hover Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
-                    
+
                     {/* Content Section */}
-                    <div className="p-5 space-y-3 relative">
-                        <div className="flex items-start justify-between">
-                            <h3 className="text-[18px] font-black text-[#3e4954] tracking-tight group-hover:text-[#21b731] transition-colors line-clamp-1 leading-tight uppercase">
+                    <div className="flex-grow min-w-0">
+                        <div className="flex flex-col">
+                            <h3 className="text-[15px] font-bold text-slate-800 leading-tight uppercase group-hover:text-blue-600 transition-colors line-clamp-2">
                                 {cat.name}
                             </h3>
-                            <div className="w-8 h-8 bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-[#21b731]/10 group-hover:text-[#21b731] transition-all">
-                                <ArrowRight size={14} />
-                            </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                             <div className="h-[2px] w-6 bg-[#21b731] rounded-full" />
-                             <span className="text-[10px] font-bold text-[#7e7e7e] uppercase tracking-widest font-poppins">Explore tests</span>
+                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                                {cat.slug} Series
+                            </span>
                         </div>
                     </div>
 
-                    {/* Premium Shimmer Line */}
-                    <div className="absolute bottom-0 left-0 w-full h-[3px] bg-slate-100">
-                      <div className="h-full bg-gradient-to-r from-[#21b731] to-emerald-400 w-0 group-hover:w-full transition-all duration-700 ease-in-out" />
+                    {/* Management Actions */}
+                    <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button 
+                            onClick={(e) => handleEdit(e, cat)}
+                            className="w-8 h-8 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-blue-600 transition-all flex items-center justify-center active:scale-95"
+                        >
+                            <Edit size={13} strokeWidth={2.5} />
+                        </button>
+                        <button 
+                            onClick={(e) => handleDelete(e, cat._id)}
+                            className="w-8 h-8 rounded-xl hover:bg-rose-50 text-slate-400 hover:text-rose-500 transition-all flex items-center justify-center active:scale-95"
+                        >
+                            <Trash2 size={13} strokeWidth={2.5} />
+                        </button>
                     </div>
+
+                    {/* Neat Side Accent */}
+                    <div className="absolute left-0 top-6 bottom-6 w-[4px] bg-slate-100 rounded-r-full transition-all group-hover:bg-blue-600" />
                 </div>
             ))}
         </div>

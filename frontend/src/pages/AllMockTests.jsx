@@ -13,6 +13,7 @@ import {
 } from "../redux/studentSlice";
 import { fetchCategories } from "../redux/categorySlice";
 import MockTestCard from "../components/MockTestCard";
+import PremiumTestCard from "../components/PremiumTestCard";
 
 const getCategoryTheme = (name = "") => {
   const n = name.toLowerCase();
@@ -26,14 +27,14 @@ const getCategoryTheme = (name = "") => {
 };
 
 const TYPE_THEME = {
-  all: { border: "border-blue-200", text: "text-blue-600", bg: "bg-blue-50", primary: "bg-blue-600", hover: "hover:border-blue-600" },
-  mock: { border: "border-[#21b731]/20", text: "text-[#21b731]", bg: "bg-[#21b731]/5", primary: "bg-[#21b731]", hover: "hover:border-[#21b731]" },
-  grand: { border: "border-amber-200", text: "text-amber-600", bg: "bg-amber-50", primary: "bg-amber-500", hover: "hover:border-amber-500" }
+  all: { border: "border-indigo-200", text: "text-indigo-600", bg: "bg-indigo-50", primary: "bg-indigo-600", hover: "hover:border-indigo-600", accent: "indigo", sideActive: "border-indigo-600 bg-indigo-50 text-indigo-600", sideIcon: "bg-indigo-100 text-indigo-600", sideDot: "bg-indigo-600" },
+  mock: { border: "border-emerald-200", text: "text-emerald-600", bg: "bg-emerald-50", primary: "bg-emerald-600", hover: "hover:border-emerald-600", accent: "emerald", sideActive: "border-emerald-600 bg-emerald-50 text-emerald-600", sideIcon: "bg-emerald-100 text-emerald-600", sideDot: "bg-emerald-600" },
+  grand: { border: "border-amber-200", text: "text-amber-600", bg: "bg-amber-50", primary: "bg-amber-500", hover: "hover:border-amber-500", accent: "amber", sideActive: "border-amber-600 bg-amber-50 text-amber-600", sideIcon: "bg-amber-100 text-amber-600", sideDot: "bg-amber-600" }
 };
 
 const TypeTabs = ({ activeType, onTypeChange, isEmbedded }) => {
   const tabs = [
-    { id: 'all', label: 'All Exams', path: '/mocktests' },
+    { id: 'all', label: 'All Tests', path: '/all-tests' },
     { id: 'mock', label: 'Mock Tests', path: '/mock-tests' },
     { id: 'grand', label: 'Grand Tests', path: '/grand-tests' },
   ];
@@ -89,6 +90,8 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
   const [sortBy, setSortBy] = useState("newest"); // newest, oldest, name-az, name-za
   const [testType, setTestType] = useState(overrideType || searchParams.get("type") || "all"); // all, mock, grand
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const activeTheme = TYPE_THEME[testType] || TYPE_THEME.all;
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
@@ -191,10 +194,10 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
 
         {/* ── TYPE HERO BANNER ── */}
         {testType === "mock" && (
-          <div className="mt-2 mb-6 border-l-4 border-[#21b731] bg-white shadow-sm px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4 w-full md:w-auto">
-              <div className="w-12 h-12 bg-[#21b731]/10 flex items-center justify-center text-[#21b731] flex-shrink-0">
-                <IoDocumentText size={24} />
+          <div className="mt-2 mb-6 border-l-4 border-[#21b731] bg-white shadow-sm px-5 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="w-11 h-11 bg-[#21b731]/10 flex items-center justify-center text-[#21b731] flex-shrink-0">
+                <IoDocumentText size={22} />
               </div>
               <div>
                 <h1 className="text-xl font-black text-[#3e4954] tracking-tight">Mock Tests</h1>
@@ -250,10 +253,10 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
         )}
 
         {testType === "grand" && (
-          <div className="mt-2 mb-6 border-l-4 border-amber-500 bg-white shadow-sm px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4 w-full md:w-auto">
-              <div className="w-12 h-12 bg-amber-50 flex items-center justify-center text-amber-500 flex-shrink-0">
-                <IoTrophy size={24} />
+          <div className="mt-2 mb-6 border-l-4 border-amber-500 bg-white shadow-sm px-5 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="w-11 h-11 bg-amber-50 flex items-center justify-center text-amber-500 flex-shrink-0">
+                <IoTrophy size={22} />
               </div>
               <div>
                 <h1 className="text-xl font-black text-[#3e4954] tracking-tight">Grand Tests</h1>
@@ -309,17 +312,15 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
         )}
 
         {!["mock", "grand"].includes(testType) && (
-          <div className="mt-2 mb-6 border-l-4 border-blue-600 bg-white shadow-sm px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4 w-full md:w-auto">
-              <div className="w-12 h-12 bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
-                <IoDocumentText size={24} />
+          <div className="mt-2 mb-6 border-l-4 border-indigo-600 bg-white shadow-sm px-5 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="w-11 h-11 bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
+                <IoDocumentText size={22} />
               </div>
               <div>
-                <h1 className="text-xl font-black text-[#3e4954] tracking-tight">
-                  {testType === "mock" ? "Mock Tests" : testType === "grand" ? "Grand Tests" : "All Tests"}
-                </h1>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
-                  {allTests.length} {testType === "mock" ? "Mock Tests" : testType === "grand" ? "Grand Tests" : "Total Tests"} Available
+                <h1 className="text-2xl font-black text-[#3e4954] tracking-tight">All Tests</h1>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                  {allTests.length} Total Tests Available
                 </p>
               </div>
             </div>
@@ -328,7 +329,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
               <TypeTabs activeType="all" onTypeChange={setTestType} isEmbedded={isEmbedded} />
 
               <div className="relative w-full md:w-80 group">
-                <div className="relative flex items-center bg-slate-50 border border-slate-200 rounded-lg focus-within:bg-white focus-within:border-blue-600 transition-all duration-300 overflow-hidden p-1">
+                <div className="relative flex items-center bg-slate-50 border border-slate-200 rounded-lg focus-within:bg-white focus-within:border-indigo-600 transition-all duration-300 overflow-hidden p-1">
                   <div className="pl-3 pr-2 py-2 text-slate-400">
                     <IoSearch size={18} />
                   </div>
@@ -338,14 +339,14 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
                     placeholder="Search Test Series"
                     className="w-full px-1 py-1.5 outline-none text-[13px] text-slate-700 placeholder:text-slate-400 bg-transparent"
                   />
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-[11px] font-bold shadow-sm transition-all ml-1 tracking-wider">
+                  <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-md text-[11px] font-bold shadow-sm transition-all ml-1 tracking-wider">
                     SEARCH
                   </button>
                 </div>
               </div>
 
               <div className="relative w-full md:w-auto">
-                <div className="flex items-center bg-slate-50 border border-slate-200 rounded-lg hover:border-blue-600 transition-all cursor-pointer p-0.5">
+                <div className="flex items-center bg-slate-50 border border-slate-200 rounded-lg hover:border-indigo-600 transition-all cursor-pointer p-0.5">
                   <div className="pl-3 text-slate-400">
                     <IoSwapVertical size={16} />
                   </div>
@@ -406,12 +407,12 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
                   onClick={() => handleSelectCategory("")}
                   className={`group flex items-center gap-2.5 px-3 py-2.5 text-left transition-all duration-150 border-l-2 ${
                     !filters.category
-                      ? "border-[#21b731] bg-[#21b731]/5 text-[#21b731]"
+                      ? activeTheme.sideActive
                       : "border-transparent text-slate-500 hover:bg-slate-50 hover:border-slate-200"
                   }`}
                 >
                   <div className={`w-7 h-7 flex items-center justify-center flex-shrink-0 transition-colors ${
-                    !filters.category ? "bg-[#21b731]/10 text-[#21b731]" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                    !filters.category ? activeTheme.sideIcon : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
                   }`}>
                     <IoApps size={14} />
                   </div>
@@ -437,9 +438,9 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
                       <button
                         key={cat._id}
                         onClick={() => handleSelectCategory(cat.slug)}
-                        className={`group flex items-center gap-2.5 px-3 py-2 text-left transition-all duration-150 border-l-2 ${
+                         className={`group flex items-center gap-2.5 px-3 py-2 text-left transition-all duration-150 border-l-2 ${
                           isActive
-                            ? "border-[#21b731] bg-[#21b731]/5"
+                            ? activeTheme.sideActive
                             : "border-transparent hover:bg-slate-50 hover:border-slate-100"
                         }`}
                       >
@@ -468,7 +469,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
                         </span>
 
                         {isActive && (
-                          <div className="ml-auto w-1.5 h-1.5 bg-[#21b731] flex-shrink-0" />
+                          <div className={`ml-auto w-1.5 h-1.5 ${activeTheme.sideDot} flex-shrink-0`} />
                         )}
                       </button>
                     );
@@ -497,10 +498,14 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
             </div>
 
             {/* Unified grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {currentTests.length > 0 ? (
                 currentTests.map((test, index) => (
-                  <MockTestCard key={test._id} test={test} isEmbedded={isEmbedded} index={index} />
+                  test.isGrandTest ? (
+                    <PremiumTestCard key={test._id} test={test} index={index} />
+                  ) : (
+                    <MockTestCard key={test._id} test={test} index={index} isEmbedded={isEmbedded} />
+                  )
                 ))
               ) : (
                 <div className="col-span-full py-16 bg-white border-2 border-dashed border-slate-100 flex flex-col items-center justify-center text-center">
@@ -512,9 +517,9 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
                     onClick={() => {
                       setSearchTerm("");
                       dispatch(setPublicSearch(""));
-                      dispatch(setPublicCategoryFilter(""));
+                       dispatch(setPublicCategoryFilter(""));
                     }}
-                    className="mt-4 text-[#21b731] font-black uppercase tracking-widest text-[10px] hover:underline"
+                    className={`mt-4 ${activeTheme.text} font-black uppercase tracking-widest text-[10px] hover:underline`}
                   >
                     Clear Filters
                   </button>
@@ -540,7 +545,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
                       onClick={() => handlePageChange(i + 1)}
                       className={`w-8 h-8 text-[11px] font-black flex items-center justify-center transition-all border ${
                         currentPage === i + 1
-                          ? "bg-[#21b731] border-[#21b731] text-white shadow-md"
+                          ? `${activeTheme.primary} border-transparent text-white shadow-md`
                           : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                       }`}
                     >

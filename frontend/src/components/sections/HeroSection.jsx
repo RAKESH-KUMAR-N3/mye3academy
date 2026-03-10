@@ -13,7 +13,7 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate("/mocktests");
+    navigate("/all-tests");
   };
 
   return (

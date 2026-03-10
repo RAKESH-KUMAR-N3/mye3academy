@@ -348,7 +348,7 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
             </div>
             <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Attempt History</h3>
           </div>
-          <div className="hidden items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
             <Filter size={13} className="text-slate-400" />
             {FILTER_TABS.map(({ key, label, icon: Icon }) => (
               <button

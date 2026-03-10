@@ -118,19 +118,23 @@ const App = () => {
               ) : userData.role === "instructor" ? (
                 <Navigate to="/instructor-dashboard" replace />
               ) : (
-                <Navigate to="/mocktests" replace />
+                <Navigate to="/all-tests" replace />
               )
             }
           />
 
           {/* ---------------- STUDENT ROUTES ---------------- */}
           <Route
-            path="/mocktests"
+            path="/all-tests"
             element={
               <ProtectedRoute>
                 <AllMockTests />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/mocktests"
+            element={<Navigate to="/all-tests" replace />}
           />
           <Route
             path="/mock-tests"
@@ -149,12 +153,16 @@ const App = () => {
             }
           />
           <Route
-            path="/mocktests/:id"
+            path="/all-tests/:id"
             element={
               <ProtectedRoute>
                 <MockTestDetail />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/mocktests/:id"
+            element={<Navigate to="/all-tests/:id" replace />}
           />
 
           <Route

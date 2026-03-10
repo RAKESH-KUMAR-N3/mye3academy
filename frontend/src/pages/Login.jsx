@@ -104,8 +104,13 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       if (error.response?.status === 403) {
-        toast.info("Verification needed. Check email.");
-        await api.post("/api/auth/resend-otp", { email });
+        toast("Verification needed. Check email.");
+        try {
+          await api.post("/api/auth/resend-otp", { email });
+        } catch (resendError) {
+          console.error("Resend OTP error:", resendError);
+          // Optional: toast.error("Verification email could not be sent. Please try again later.");
+        }
         setStep(2);
       } else {
         toast.error(error.response?.data?.message || "Login failed");

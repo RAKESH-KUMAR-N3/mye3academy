@@ -1,40 +1,44 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Users,
   Zap,
   BarChart3,
   MessageSquare,
   ShieldCheck,
+  GraduationCap,
 } from "lucide-react";
 
 const FeaturesSection = () => {
+  const navigate = useNavigate();
   return (
     <section className="py-24 bg-transparent overflow-hidden">
       <div className="max-w-6xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
           {/* ================= LEFT CONTENT ================= */}
           <div className="lg:col-span-1 space-y-4">
-            <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100 shadow-sm">
-              <ShieldCheck className="text-blue-600" size={20} />
+            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-xl shadow-slate-200/50 mb-8 group transition-transform duration-500 hover:rotate-6">
+              <div className="bg-indigo-600 p-2.5 rounded-lg shadow-lg shadow-indigo-100">
+                <GraduationCap className="text-white w-8 h-8" />
+              </div>
             </div>
 
-            <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tighter uppercase leading-tight">
-              Why <span className="text-emerald-500">MYE 3</span> Academy?
+            <h2 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight leading-tight uppercase font-poppins">
+              WHY <span className="text-emerald-500">MYE3</span> ACADEMY?
             </h2>
 
-            <p className="text-sm text-slate-600 leading-relaxed">
-              With{" "}
-              <span className="font-bold text-slate-900">
-                50+ Lakh Students
-              </span>{" "}
-              and
-              <span className="font-bold text-slate-900">
-                {" "}
-                One of the best Selection rate in India
-              </span>{" "}
-              amongst online learning platforms, you can surely rely on us to
-              excel.
+            <p className="text-[15px] text-slate-600 leading-relaxed font-medium">
+              With <span className="font-bold text-slate-900">50+ Lakh Students</span> and <span className="font-bold text-slate-900">One of the best Selection rate in India</span> amongst online learning platforms, you can surely rely on us to excel.
             </p>
+
+            <div className="pt-4">
+              <button 
+                onClick={() => navigate("/all-tests")}
+                className="px-8 py-3.5 bg-emerald-500 text-white font-black text-[11px] rounded-xl shadow-lg shadow-emerald-100 hover:bg-emerald-600 hover:scale-105 transition-all duration-300 uppercase tracking-widest"
+              >
+                Get Started For Free
+              </button>
+            </div>
 
 
           </div>

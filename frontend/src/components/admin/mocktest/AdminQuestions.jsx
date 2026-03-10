@@ -55,6 +55,13 @@ export default function AdminQuestions() {
     marksPerQuestion: "",
     negativeMarking: "",
     price: "",
+    languages: "English",
+    totalTests: "",
+    freeTests: "",
+    liveTests: "",
+    chapterTests: "",
+    fullTests: "",
+    baseEnrolledCount: "",
   });
   const [isFree, setIsFree] = useState(true);
   const [isGrandTest, setIsGrandTest] = useState(typeParam === "grand");
@@ -140,6 +147,13 @@ export default function AdminQuestions() {
           marksPerQuestion: mPerQ,
           negativeMarking: raw.negativeMarking?.toString() || "0",
           price: raw.price?.toString() || "",
+          languages: raw.languages?.join(", ") || "English",
+          totalTests: raw.totalTests?.toString() || "",
+          freeTests: raw.freeTests?.toString() || "",
+          liveTests: raw.featureCounts?.liveTests?.toString() || "",
+          chapterTests: raw.featureCounts?.chapterTests?.toString() || "",
+          fullTests: raw.featureCounts?.fullTests?.toString() || "",
+          baseEnrolledCount: raw.baseEnrolledCount?.toString() || "",
         });
 
         if (raw.thumbnail) setThumbnailPreview(getImageUrl(raw.thumbnail));
@@ -201,7 +215,8 @@ export default function AdminQuestions() {
   }, [location.pathname]);
 
   // --- DERIVED STATS ---
-  const totalMarks = (Number(configForm.totalQuestions) || 0) * (Number(configForm.marksPerQuestion) || 0);
+  const actualQuestionCount = addedQuestions?.length || 0;
+  const totalMarks = actualQuestionCount * (Number(configForm.marksPerQuestion) || 0);
   const totalAssignedQs = testSubjects.reduce((sum, s) => sum + (Number(s.limit) || 0), 0);
 
   // --- HANDLERS: TEST SETTINGS ---
@@ -219,6 +234,18 @@ export default function AdminQuestions() {
     fd.append("totalMarks", totalMarks);
     fd.append("isFree", isFree);
     fd.append("isGrandTest", isGrandTest);
+    
+    // Process languages
+    const langArray = configForm.languages.split(",").map(l => l.trim()).filter(Boolean);
+    fd.append("languages", JSON.stringify(langArray));
+    fd.append("totalQuestions", actualQuestionCount);
+    fd.append("baseEnrolledCount", Number(configForm.baseEnrolledCount) || 0);
+    
+    fd.append("featureCounts", JSON.stringify({
+      liveTests: Number(configForm.liveTests) || 0,
+      chapterTests: Number(configForm.chapterTests) || 0,
+      fullTests: Number(configForm.fullTests) || 0,
+    }));
     fd.append("category", isEditMode ? (testData?.category?._id || categorySlug) : categorySlug);
     fd.append("subjects", JSON.stringify(testSubjects.map(s => ({ name: s.name, easy: Number(s.limit) || 0, medium: 0, hard: 0 }))));
     if (thumbnail) fd.append("thumbnail", thumbnail);
@@ -448,85 +475,101 @@ export default function AdminQuestions() {
               <div className={`h-1 w-full ${isGrandTest ? 'bg-amber-500' : 'bg-[#21b731]'}`} />
 
               <div className="p-4 space-y-4">
-                {/* IDENTITY SECTION */}
-                <div className="space-y-3">
-                  <div className="border-b border-slate-50 pb-2">
-                    <h2 className="text-[11px] font-black text-[#3e4954] uppercase tracking-[0.2em]">create or edit mock test</h2>
-                  </div>
-
-                  {/* THUMBNAIL UPLOAD */}
-                  <div className="flex flex-col md:flex-row gap-4 mb-4">
-                    <div className={`w-40 h-24 border-2 border-dashed flex items-center justify-center overflow-hidden group transition-all ${thumbnailPreview ? 'border-slate-200 bg-slate-50 hover:border-indigo-400' : 'border-red-400 bg-red-50 hover:border-red-500'}`}>
+                {/* 1. IDENTITY & BRANDING */}
+                <div className="space-y-4">
+                  <div className="flex flex-col md:flex-row gap-6 mb-6">
+                    <label 
+                      htmlFor="thumbUpload"
+                      className={`w-40 h-28 border-2 border-dashed flex items-center justify-center overflow-hidden rounded-xl transition-all cursor-pointer group/thumb hover:scale-[1.02] active:scale-[0.98] ${thumbnailPreview ? 'border-slate-200 bg-slate-50' : 'border-emerald-200 bg-emerald-50 hover:bg-emerald-100/50'}`}
+                    >
                       {thumbnailPreview ? (
-                        <img src={thumbnailPreview} className="w-full h-full object-cover" />
-                      ) : categoryObj?.image ? (
-                        <img src={getImageUrl(categoryObj.image)} className="w-full h-full object-cover opacity-50" />
+                        <img src={thumbnailPreview} className="w-full h-full object-cover group-hover/thumb:brightness-90 transition-all" />
                       ) : (
-                        <ImageIcon size={24} className="text-slate-300 group-hover:text-indigo-400" />
+                        <ImageIcon size={32} className="text-slate-300 group-hover/thumb:text-emerald-400 transition-colors" />
                       )}
-                    </div>
-                    <div className="flex flex-col justify-center gap-2">
-                      <label className={labelClass}>Exam Thumbnail <span className="text-red-500">*</span></label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        id="thumbUpload"
-                        className="hidden"
-                        onChange={e => {
-                          const f = e.target.files[0];
-                          if (f) {
-                            setThumbnail(f);
-                            setThumbnailPreview(URL.createObjectURL(f));
-                          }
-                        }}
-                      />
-                      <label
-                        htmlFor="thumbUpload"
-                        className="px-6 py-2 bg-white border border-slate-200 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:border-indigo-600 hover:text-indigo-600 cursor-pointer transition-all text-center"
-                      >
-                        Upload Thumbnail
-                      </label>
-                      <p className="text-[8px] font-bold tracking-tighter">
-                        {!thumbnailPreview
-                          ? <span className="text-red-500">Required — please upload an image</span>
-                          : <span className="text-slate-400">* Recommended size: 400x240</span>
-                        }
-                      </p>
+                    </label>
+                    <div className="flex flex-col justify-center gap-3">
+                      <label className={labelClass}>Exam Thumbnail *</label>
+                      <input type="file" accept="image/*" id="thumbUpload" className="hidden" onChange={e => { const f = e.target.files[0]; if (f) { setThumbnail(f); setThumbnailPreview(URL.createObjectURL(f)); } }} />
+                      <label htmlFor="thumbUpload" className="px-8 py-2.5 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-md hover:bg-emerald-700 cursor-pointer transition-all">Upload Image</label>
                     </div>
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-1.5">
-                      <label className={labelClass}>Exam Name *</label>
-                      <input className={`${inputClass} ${getRequiredClass(configForm.title)}`} value={configForm.title} onChange={e => setConfigForm({ ...configForm, title: e.target.value })} placeholder="e.g. SSC CGL Mock 01" />
+                    <div className="space-y-2">
+                       <label className={labelClass}>Exam Name *</label>
+                       <input className={`${inputClass} font-bold`} value={configForm.title} onChange={e => setConfigForm({ ...configForm, title: e.target.value })} placeholder="e.g. IBPS Clerk Mock 01" />
                     </div>
-                    <div className="space-y-1.5">
-                      <label className={labelClass}>Exam Category *</label>
-                      <input className={`${inputClass} ${getRequiredClass(configForm.subcategory)}`} value={configForm.subcategory} onChange={e => setConfigForm({ ...configForm, subcategory: e.target.value })} placeholder="e.g. SSC CHSL / GD" />
+                    <div className="space-y-2">
+                       <label className={labelClass}>Exam category *</label>
+                       <input className={`${inputClass} font-bold`} value={configForm.subcategory} onChange={e => setConfigForm({ ...configForm, subcategory: e.target.value })} placeholder="e.g. Banking / SSC" />
                     </div>
                   </div>
                 </div>
 
-                {/* PRICING SECTION */}
-                <div className="space-y-4">
-                  <div className="border-b border-slate-50 pb-2">
-                    <h2 className="text-[11px] font-black text-[#3e4954] uppercase tracking-[0.2em]">Price & Enrollment</h2>
-                  </div>
+                {/* 2. EXAM SPECS (ONLY ESSENTIALS) */}
+                <div className="space-y-6 pt-2">
+                   <div className="border-b border-slate-100 pb-2">
+                      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Exam Specifications</h3>
+                   </div>
 
-                  <div className="flex flex-col gap-4">
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 p-1 bg-slate-100 border border-slate-200">
-                        <button type="button" onClick={() => setIsFree(false)} className={`py-3 text-[9px] font-black uppercase tracking-widest transition-all ${!isFree ? 'bg-[#3e4954] text-white shadow-lg' : 'text-[#7e7e7e] hover:text-[#3e4954]'}`}>Paid</button>
-                        <button type="button" onClick={() => setIsFree(true)} className={`py-3 text-[9px] font-black uppercase tracking-widest transition-all ${isFree ? 'bg-[#21b731] text-white shadow-lg' : 'text-[#7e7e7e] hover:text-[#3e4954]'}`}>Free</button>
+                   <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                         <label className={labelClass}>Test Subjects (Comma Separated)</label>
+                         <input 
+                           className={inputClass} 
+                           value={configForm.languages} // Overriding languages for subjects input temporarily or just using it
+                           onChange={e => setConfigForm({ ...configForm, languages: e.target.value })} 
+                           placeholder="Eng, Quant, Reasoning" 
+                         />
                       </div>
-                      {!isFree && (
-                        <div className="space-y-2 animate-in zoom-in-95 duration-300">
-                          <label className={labelClass}>Enrollment Fee (₹)</label>
-                          <input type="number" className={inputClass} value={configForm.price} onChange={e => setConfigForm({ ...configForm, price: e.target.value })} placeholder="0" min="0" />
-                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">* Pricing to unlock.</p>
-                        </div>
-                      )}
+                      <div className="space-y-2">
+                         <label className={labelClass}>Duration (Minutes) *</label>
+                         <input type="number" className={inputClass} value={configForm.durationMinutes} onChange={e => setConfigForm({ ...configForm, durationMinutes: e.target.value })} placeholder="60" />
+                      </div>
+                   </div>
+
+                   <div className="grid grid-cols-4 gap-4">
+                      <div className="space-y-2">
+                         <label className={labelClass}>Total Qs</label>
+                         <div className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-black text-slate-700">
+                            {actualQuestionCount} Qs
+                         </div>
+                      </div>
+                      <div className="space-y-2">
+                         <label className={labelClass}>Total Marks</label>
+                         <div className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-black text-slate-700">
+                            {totalMarks || 0} Points
+                         </div>
+                      </div>
+                      <div className="space-y-2">
+                         <label className={labelClass}>Marks/Q</label>
+                         <input type="number" className={inputClass} value={configForm.marksPerQuestion} onChange={e => setConfigForm({ ...configForm, marksPerQuestion: e.target.value })} />
+                      </div>
+                      <div className="space-y-2">
+                         <label className={labelClass}>Neg Marking</label>
+                         <input type="number" step="0.25" className={inputClass} value={configForm.negativeMarking} onChange={e => setConfigForm({ ...configForm, negativeMarking: e.target.value })} />
+                      </div>
+                   </div>
+                </div>
+
+                {/* 3. PRICING */}
+                <div className="space-y-4 pt-2">
+                  <div className="border-b border-slate-100 pb-2">
+                      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pricing & Access</h3>
+                   </div>
+                   
+                  <div className="grid md:grid-cols-2 gap-4 items-end">
+                    <div className="flex bg-slate-100 p-1 rounded-xl">
+                      <button type="button" onClick={() => setIsFree(false)} className={`flex-1 py-3 text-[9px] font-black uppercase tracking-widest transition-all rounded-lg ${!isFree ? 'bg-white shadow-sm text-slate-800' : 'text-slate-400'}`}>Paid</button>
+                      <button type="button" onClick={() => setIsFree(true)} className={`flex-1 py-3 text-[9px] font-black uppercase tracking-widest transition-all rounded-lg ${isFree ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400'}`}>Free</button>
                     </div>
+                    {!isFree && (
+                       <div className="space-y-2">
+                          <label className={labelClass}>Enrollment Fee (₹)</label>
+                          <input type="number" className={inputClass} value={configForm.price} onChange={e => setConfigForm({ ...configForm, price: e.target.value })} placeholder="0" />
+                       </div>
+                    )}
                   </div>
                 </div>
 
@@ -718,7 +761,7 @@ export default function AdminQuestions() {
                               })
                             ) : (
                               <div className="h-full flex flex-col items-center justify-center p-8 opacity-20">
-                                <PlusCircle size={40} className="mb-2" />
+                                <Plus size={40} className="mb-2" />
                                 <p className="text-[10px] font-black uppercase tracking-widest">No questions to preview</p>
                               </div>
                             )}
@@ -786,7 +829,7 @@ export default function AdminQuestions() {
                     })}
                   {addedQuestions.length === 0 && (
                     <div className="h-full flex flex-col items-center justify-center p-8 opacity-20">
-                      <PlusCircle size={40} className="mb-2" />
+                      <Plus size={40} className="mb-2" />
                       <p className="text-[10px] font-black uppercase tracking-widest">No questions added</p>
                     </div>
                   )}
