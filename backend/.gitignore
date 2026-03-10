@@ -21,6 +21,3 @@ debug_*.js
 probe_api.js
 seed_category.js
 
-# User Uploads
-uploads/
-backend/uploads/
