@@ -17,6 +17,21 @@ export const fetchPublicMockTests = createAsyncThunk(
   }
 );
 
+export const fetchUpcomingExams = createAsyncThunk(
+  "students/fetchUpcomingExams",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/api/public/upcoming-exams");
+      return {
+        upcoming: res.data.upcoming || [],
+        popular: res.data.popular || []
+      };
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to load upcoming exams");
+    }
+  }
+);
+
 export const startMockTestAttempt = createAsyncThunk(
   "students/startTest",
   async (mockTestId, { rejectWithValue }) => {
@@ -153,6 +168,10 @@ const initialState = {
   publicStatus: "idle",
   publicError: null,
 
+  upcomingExams: { upcoming: [], popular: [] },
+  upcomingStatus: "idle",
+  upcomingError: null,
+
   selectedMocktest: null,
   selectedStatus: "idle",
   selectedError: null,
@@ -225,6 +244,20 @@ const studentSlice = createSlice({
         state.publicStatus = "failed";
         state.publicError = action.payload;
         state.publicMocktests = [];
+      });
+
+    /* UPCOMING EXAMS */
+    builder
+      .addCase(fetchUpcomingExams.pending, (state) => {
+        state.upcomingStatus = "loading";
+      })
+      .addCase(fetchUpcomingExams.fulfilled, (state, action) => {
+        state.upcomingStatus = "succeeded";
+        state.upcomingExams = action.payload;
+      })
+      .addCase(fetchUpcomingExams.rejected, (state, action) => {
+        state.upcomingStatus = "failed";
+        state.upcomingError = action.payload;
       });
 
     /* SINGLE TEST */

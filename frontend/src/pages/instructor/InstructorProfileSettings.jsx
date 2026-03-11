@@ -112,141 +112,146 @@ const InstructorProfileSettings = () => {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto mt-6 border border-gray-100">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">
-        Instructor Profile Settings
-      </h2>
+    <div className="bg-transparent w-full">
+      <div className="max-w-5xl mx-auto pb-12 px-4">
+        <header className="mb-6 text-center md:text-left pt-4">
+          <h1 className="text-2xl md:text-5xl font-black text-slate-800 tracking-tight uppercase italic leading-none">
+            Pro Profile
+          </h1>
+          <p className="text-indigo-500 font-bold uppercase text-[9px] tracking-[0.3em] mt-2 opacity-60">
+            Expert Metadata & Security
+          </p>
+        </header>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Messages */}
-        {profileStatus === "failed" && (
-          <div className="p-4 bg-red-50 text-red-700 rounded-lg border border-red-200">
-            <span className="font-bold">Error:</span> {profileError}
-          </div>
-        )}
-        {profileStatus === "succeeded" && (
-          <div className="p-4 bg-green-50 text-green-700 rounded-lg border border-green-200">
-            <span className="font-bold">Success:</span> {profileSuccessMessage}
-          </div>
-        )}
-
-        <div className="flex flex-col md:flex-row gap-10 items-start">
-          {/* --- IMAGE UPLOAD --- */}
-          <div className="flex flex-col items-center space-y-4 w-full md:w-1/3 pt-2">
-            <div className="relative group">
-              <img
-                src={avatarPreview}
-                alt="Profile"
-                className="w-40 h-40 rounded-full object-cover border-4 border-white shadow-xl"
-              />
-              <label
-                htmlFor="avatar-upload"
-                className="absolute bottom-2 right-2 bg-purple-600 p-2.5 rounded-full text-white cursor-pointer hover:bg-purple-700 transition shadow-md hover:scale-105"
-              >
-                <Camera size={20} />
-              </label>
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </div>
-          </div>
-
-          {/* --- INPUT FIELDS --- */}
-          <div className="w-full md:w-2/3 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  First Name
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Avatar Area */}
+          <div className="lg:col-span-4 space-y-4">
+            <div className="bg-white p-6 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col items-center">
+              <div className="relative group">
+                <img
+                  src={avatarPreview}
+                  alt="Profile"
+                  className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] object-cover ring-8 ring-indigo-50 shadow-2xl transition group-hover:brightness-90"
+                />
+                <label className="absolute bottom-1 right-1 bg-indigo-600 text-white p-3 rounded-2xl cursor-pointer shadow-lg hover:bg-indigo-700 transition active:scale-90">
+                  <Camera size={18} />
+                  <input type="file" className="hidden" onChange={handleImageChange} />
                 </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-                />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-                />
-              </div>
+              <h3 className="mt-6 font-black text-slate-800 text-lg uppercase italic tracking-tight">Expert Identity</h3>
+              <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">Platform Visual Representative</p>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={instructorProfile?.email || ""}
-                disabled
-                className="w-full p-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-              />
-            </div>
-
-            <hr className="my-6 border-gray-200" />
-
-            <div>
-              <h3 className="text-md font-semibold text-gray-800 mb-4">
-                Change Password
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="New Password"
-                  className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-                />
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="Confirm Password"
-                  className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="pt-4 flex justify-end">
-              <button
-                type="submit"
-                disabled={profileStatus === "loading"}
-                className="bg-purple-600 text-white py-2.5 px-8 rounded-lg font-semibold hover:bg-purple-700 transition-colors disabled:bg-purple-300 shadow-md"
-              >
-                {profileStatus === "loading" ? "Updating..." : "Save Changes"}
-              </button>
+            <div className="bg-slate-900 p-6 rounded-[2.5rem] shadow-xl text-white relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+               <h4 className="font-black text-sm mb-1 relative z-10 italic uppercase tracking-widest">Instructor Status</h4>
+               <p className="text-[10px] text-indigo-300 font-bold tracking-widest uppercase relative z-10 opacity-80">
+                 Verified Educator
+               </p>
             </div>
           </div>
-        </div>
-      </form>
+
+          {/* Form Fields Area */}
+          <div className="lg:col-span-8 space-y-4">
+            <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-indigo-600 pl-2">First Mention</label>
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className="w-full bg-slate-50 border-none rounded-xl pl-11 py-3 focus:ring-1 focus:ring-indigo-600 font-bold text-slate-800 text-sm"
+                        placeholder="John"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-indigo-600 pl-2">Surname</label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border-none rounded-xl px-5 py-3 focus:ring-1 focus:ring-indigo-600 font-bold text-slate-800 text-sm"
+                      placeholder="Doe"
+                    />
+                  </div>
+               </div>
+
+               <div className="space-y-1.5 mb-4">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-indigo-600 pl-2">Sync Email</label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
+                    <input
+                      type="email"
+                      value={instructorProfile?.email || ""}
+                      disabled
+                      className="w-full bg-slate-100 border-none rounded-xl pl-11 py-3 text-slate-400 font-bold text-sm cursor-not-allowed italic"
+                    />
+                  </div>
+               </div>
+
+               <div className="space-y-1.5 mb-4">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-indigo-600 pl-2">Mobile Terminal</label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border-none rounded-xl pl-11 py-3 focus:ring-1 focus:ring-indigo-600 font-bold text-slate-800 text-sm"
+                      placeholder="+91 000-000-0000"
+                    />
+                  </div>
+               </div>
+
+               <hr className="my-6 border-slate-100" />
+
+               <h3 className="text-sm font-black text-slate-800 mb-4 flex items-center gap-2 uppercase italic tracking-tigh">
+                  <Lock size={16} className="text-indigo-600" /> Security Threshold
+               </h3>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 pl-2">New Cipher</label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="••••••••"
+                      className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 focus:ring-1 focus:ring-indigo-600 transition text-sm font-bold"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 pl-2">Verify Cipher</label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="••••••••"
+                      className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 focus:ring-1 focus:ring-indigo-600 transition text-sm font-bold"
+                    />
+                  </div>
+               </div>
+
+               <button
+                  type="submit"
+                  disabled={profileStatus === "loading"}
+                  className="w-full bg-indigo-600 text-white py-4 rounded-xl font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition active:scale-[0.98] flex justify-center items-center gap-3 disabled:opacity-50 text-[10px]"
+               >
+                  {profileStatus === "loading" ? "Syncing..." : <><Save size={16} /> Propagate Changes</>}
+               </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

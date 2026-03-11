@@ -17,17 +17,18 @@ import HeroSection from "../components/sections/HeroSection";
 import FeaturesSection from "../components/sections/FeaturesSection";
 import CategoriesSection from "../components/sections/CategoriesSection";
 import FeaturedTestsSection from "../components/sections/FeaturedTestsSection";
+import UpcomingExamsGallery from "../components/sections/UpcomingExamsGallery";
 import TestimonialsSection from "../components/sections/TestimonialsSection";
 
 import MockTestCard from "../components/MockTestCard";
 import PremiumTestCard from "../components/PremiumTestCard";
 
 import { fetchCategories } from "../redux/categorySlice";
-import { fetchPublicMockTests } from "../redux/studentSlice";
+import { fetchPublicMockTests, fetchUpcomingExams } from "../redux/studentSlice";
 
 /* =========================================
    1. REDESIGNED: ROLE SELECTION SECTION
-   ========================================= */
+========================================= */
 const RoleSelectionSection = ({ onNavigate }) => {
   return (
     <section className="py-24 relative bg-slate-200/30 overflow-hidden">
@@ -223,7 +224,7 @@ const Home = () => {
     (state) => state.category,
   );
 
-  const { publicMocktests, publicStatus } = useSelector(
+  const { publicMocktests, publicStatus, upcomingExams, upcomingStatus } = useSelector(
     (state) => state.students,
   );
 
@@ -233,9 +234,12 @@ const Home = () => {
     .filter((t) => t.isGrandTest === true)
     .slice(0, 4);
 
+  const { userData } = useSelector((state) => state.user);
+
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchPublicMockTests("?limit=100"));
+    dispatch(fetchUpcomingExams()); // Fetch specialized home gallery content
   }, [dispatch]);
 
   const handleSearch = (e) => {
@@ -271,6 +275,12 @@ const Home = () => {
           </div>
         </div>
 
+        {/* UPCOMING & POPULAR EXAMS - New Logo Grid */}
+        <UpcomingExamsGallery 
+          data={upcomingExams} 
+          loading={upcomingStatus === "loading"} 
+        />
+
         {/* FEATURES */}
         <div className="bg-slate-100 py-6">
           <FeaturesSection />
@@ -280,7 +290,7 @@ const Home = () => {
         <div className="bg-slate-200/20 border-t border-slate-300/30">
           <FeaturedTestsSection
             id="mock-tests"
-            title="Top Rated Mock Series"
+            title="TOP RATED MOCK SERIES"
             tests={mockTests}
             loading={publicStatus === "loading"}
             showViewAll
@@ -294,7 +304,7 @@ const Home = () => {
         <div className="bg-slate-300/20 border-t border-slate-300/40">
           <FeaturedTestsSection
             id="grand-tests"
-            title="All-India Grand Tests"
+            title="ALL-INDIA GRAND TESTS"
             tests={grandTests}
             loading={publicStatus === "loading"}
             showViewAll

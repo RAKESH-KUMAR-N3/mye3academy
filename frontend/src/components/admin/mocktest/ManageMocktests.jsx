@@ -209,7 +209,13 @@ const ManageMocktests = () => {
                  </span>
               </td>
               <td className="px-4 py-3 text-center">
-                 <span className="text-[11px] font-black text-[#3e4954] bg-slate-50 border border-slate-100 px-2 py-1 inline-block min-w-[35px]">{test.attempts?.length || 0}</span>
+                 <button 
+                  onClick={() => navigate(`/admin/tests/manage-tests/${test._id}/attempts`)}
+                  className="text-[11px] font-black text-[#3e4954] bg-slate-50 border border-slate-100 px-2.5 py-1.5 inline-block min-w-[35px] hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all cursor-pointer shadow-sm group"
+                  title="Click to view all student attempts"
+                 >
+                    {test.attemptsCount || 0}
+                 </button>
               </td>
               <td className="px-4 py-3">
                 <div className="flex items-center justify-center gap-4">
@@ -218,7 +224,7 @@ const ManageMocktests = () => {
                      <span className="text-[7px] text-slate-400 font-extrabold uppercase tracking-widest mt-0.5">Marks</span>
                   </div>
                   <div className="flex flex-col items-center">
-                     <span className="text-[10px] font-black text-[#3e4954]">{test.questions?.length || 0}</span>
+                     <span className="text-[10px] font-black text-[#3e4954]">{test.totalQuestions || 0}</span>
                      <span className="text-[7px] text-slate-400 font-extrabold uppercase tracking-widest mt-0.5">MCQs</span>
                   </div>
                   <div className="flex flex-col items-center">

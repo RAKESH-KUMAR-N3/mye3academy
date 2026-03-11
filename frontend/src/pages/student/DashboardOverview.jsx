@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux'; 
-import { fetchGlobalLeaderboard, fetchPerformanceHistory, fetchPublicMockTests } from '../../redux/studentSlice'; 
+import { fetchGlobalLeaderboard, fetchPerformanceHistory, fetchPublicMockTests, fetchUpcomingExams } from '../../redux/studentSlice'; 
+import { fetchMyMockTests } from '../../redux/userSlice';
 import { fetchStudentDoubts } from '../../redux/doubtSlice';
+import UpcomingExamsGallery from '../../components/sections/UpcomingExamsGallery';
 import {
   BookOpen,
   CheckCircle,
@@ -22,30 +24,42 @@ import { getImageUrl } from '../../utils/imageHelper';
 const DashboardOverview = ({ setActiveTab }) => {
   const dispatch = useDispatch();
   
-  const { userData } = useSelector((state) => state.user);
+  const { userData, myMockTests, myMockTestsStatus } = useSelector((state) => state.user);
   const { 
     attemptsHistory, 
     attemptsHistoryStatus,
     globalLeaderboard,
-    globalLeaderboardStatus
+    globalLeaderboardStatus,
+    upcomingExams,
+    upcomingStatus
   } = useSelector((state) => state.students);
   const { myDoubts, myStatus } = useSelector((state) => state.doubts);
   
   useEffect(() => {
     dispatch(fetchPublicMockTests());
-    // Always re-fetch so stats are fresh when returning to dashboard
+    dispatch(fetchUpcomingExams());
     dispatch(fetchPerformanceHistory());
-    if (globalLeaderboardStatus === 'idle') dispatch(fetchGlobalLeaderboard());
-    if (myStatus === 'idle') dispatch(fetchStudentDoubts());
-  }, [dispatch, globalLeaderboardStatus, myStatus]);
+    
+    if (globalLeaderboardStatus === 'idle') {
+      dispatch(fetchGlobalLeaderboard());
+    }
+    
+    // Fetch doubts to show on dashboard
+    if (myStatus === 'idle') {
+      dispatch(fetchStudentDoubts());
+    }
+    
+    // FETCH MY TESTS FOR NAVIGATION CONSISTENCY
+    if (myMockTestsStatus === 'idle') {
+      dispatch(fetchMyMockTests());
+    }
+  }, [dispatch, globalLeaderboardStatus, myMockTestsStatus, myStatus]);
 
-  const myTests = userData?.purchasedTests || [];
-  // Use attemptsHistory as single source of truth (always re-fetched on mount)
+  const myTestsCount = userData?.purchasedTests?.length || 0;
   const myAttempts = attemptsHistory || [];
 
   const { grandAttempts } = useMemo(() => {
     return myAttempts.reduce((acc, curr) => {
-      // Use backend-supplied isGrandTest flag; fallback to title check for legacy data
       if (curr.mocktestId?.isGrandTest === true || curr.mocktestId?.title?.toLowerCase().includes("grand")) {
         acc.grandAttempts.push(curr);
       }
@@ -53,14 +67,12 @@ const DashboardOverview = ({ setActiveTab }) => {
     }, { grandAttempts: [] });
   }, [myAttempts]);
 
-  const { pendingDoubts } = useMemo(() => {
-    return myDoubts.reduce((acc, curr) => {
-      if (curr.status !== 'answered' && curr.status !== 'resolved') acc.pendingDoubts++;
-      return acc;
-    }, { pendingDoubts: 0 });
+  // Doubts count
+  const pendingDoubts = useMemo(() => {
+    if (!myDoubts) return 0;
+    return myDoubts.filter(d => d.status !== 'answered' && d.status !== 'resolved').length;
   }, [myDoubts]);
 
-  // Avg score as a percentage (0–100 scale), only counting completed attempts with valid totalMarks
   const avgScore = useMemo(() => {
     const completed = myAttempts.filter(a => (a.mocktestId?.totalMarks || 0) > 0);
     if (completed.length === 0) return "0.0";
@@ -74,13 +86,12 @@ const DashboardOverview = ({ setActiveTab }) => {
   return (
     <div className="space-y-6 animate-in fade-in duration-700 pb-10">
       
-      {/* 🚀 PRIMARY METRICS GRID - HIGH IMPACT */}
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           <StatCard
             icon={<BookOpen />}
             title="Tests Enrolled"
-            value={myTests.length}
+            value={myTestsCount}
             color="blue"
             onClick={() => setActiveTab('my-tests')}
           />
@@ -90,14 +101,14 @@ const DashboardOverview = ({ setActiveTab }) => {
             value={grandAttempts.length}
             color="amber"
             subValue="ATTEMPTS"
-            onClick={() => setActiveTab('performance-all')}
+            onClick={() => setActiveTab('performance')}
           />
           <StatCard
             icon={<CheckCircle />}
             title="Total Attempts"
             value={myAttempts.length}
             color="emerald"
-            onClick={() => setActiveTab('performance-all')}
+            onClick={() => setActiveTab('performance')}
           />
           <StatCard
             icon={<Target />}
@@ -105,7 +116,7 @@ const DashboardOverview = ({ setActiveTab }) => {
             value={avgScore} 
             color="indigo"
             subValue="/ 100"
-            onClick={() => setActiveTab('performance-all')}
+            onClick={() => setActiveTab('performance')}
           />
           <StatCard
             icon={<MessageSquare />}
@@ -118,7 +129,6 @@ const DashboardOverview = ({ setActiveTab }) => {
         </div>
       </section>
 
-      {/* ⚡ ANALYTICS & LEADERBOARD GRID - SIDE BY SIDE LIKE ADMIN */}
       <style>
         {`
             @keyframes shimmer {
@@ -180,7 +190,6 @@ const DashboardOverview = ({ setActiveTab }) => {
       
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
         
-        {/* LEFT: GLOBAL LEADERBOARD */}
         <div className="flex flex-col">
            <div className="bg-white p-6 rounded-none border border-slate-100 shadow-[0_30px_70px_rgba(0,0,0,0.15)] h-full overflow-hidden relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 blur-[50px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
@@ -204,7 +213,6 @@ const DashboardOverview = ({ setActiveTab }) => {
                  {globalLeaderboard && globalLeaderboard.length > 0 ? (
                     globalLeaderboard.slice(0, 4).map((ranker, index) => {
                        const isFirst = index === 0;
-                       const isTopThree = index < 3;
                        
                        let rankStyles = {
                           bg: "bg-white", border: "border-slate-100", text: "text-slate-700", 
@@ -235,10 +243,6 @@ const DashboardOverview = ({ setActiveTab }) => {
                              key={ranker._id}
                              className={`flex items-center gap-4 p-4 rounded-none border ${rankStyles.border} ${rankStyles.bg} transition-all duration-400 hover:shadow-xl group relative overflow-hidden`}
                           >
-                             {isTopThree && (
-                                <div className={`absolute top-0 left-0 w-1 h-full ${index === 0 ? 'bg-amber-500' : index === 1 ? 'bg-orange-400' : 'bg-slate-400'}`}></div>
-                             )}
-
                              {isFirst && (
                                 <div className="absolute top-0 right-0 z-20 overflow-hidden w-24 h-24 pointer-events-none">
                                     <div className="absolute top-4 -right-8 w-32 bg-gradient-to-r from-amber-600 via-amber-200 to-amber-600 text-amber-950 text-[9px] font-black py-1 transform rotate-45 text-center shadow-md uppercase tracking-widest drop-shadow-md">
@@ -282,7 +286,6 @@ const DashboardOverview = ({ setActiveTab }) => {
                                     {ranker.totalScore}
                                  </div>
                               </div>
-
                           </div>
                        );
                     })
@@ -290,7 +293,7 @@ const DashboardOverview = ({ setActiveTab }) => {
                     <div className="py-12 bg-slate-50/50 rounded-none border-2 border-dashed border-slate-200 flex flex-col items-center justify-center">
                        <Trophy className="text-slate-200 mb-2" size={40} />
                        <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest italic">
-                         {globalLeaderboardStatus === 'loading' ? 'Calculating rankings...' : 'No ranking data available yet'}
+                          {globalLeaderboardStatus === 'loading' ? 'Calculating rankings...' : 'No ranking data available yet'}
                        </p>
                     </div>
                  )}
@@ -298,10 +301,8 @@ const DashboardOverview = ({ setActiveTab }) => {
            </div>
         </div>
 
-        {/* RIGHT: ACTION CARD (CHALLENGE) */}
         <div className="flex flex-col">
            <div className="bg-gradient-to-br from-[#122b5e] to-[#1e4db7] rounded-none p-8 md:p-10 text-white relative overflow-hidden group shadow-[0_30px_70px_rgba(0,0,0,0.15)] border border-white/10 h-full flex flex-col justify-center">
-              {/* Dynamic Accents */}
               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-400 rounded-full blur-[120px] opacity-20 -mr-32 -mt-32 animate-pulse"></div>
               
               <div className="relative z-10">
@@ -311,7 +312,7 @@ const DashboardOverview = ({ setActiveTab }) => {
                   </div>
                   <h3 className="text-3xl md:text-5xl font-black mb-6 tracking-tight leading-[1.1]">Challenge Your <br/><span className="text-blue-300">Knowledge</span></h3>
                   <p className="text-blue-100/80 font-medium text-lg leading-relaxed mb-10 max-w-sm">
-                     You have <span className="text-white font-black underline decoration-blue-400 underline-offset-4">{myTests.length}</span> active test series waiting for you. Start testing your skills today!
+                     Start testing your skills today! Browse our expert-curated mock tests.
                   </p>
 
                   <button 
@@ -327,6 +328,11 @@ const DashboardOverview = ({ setActiveTab }) => {
            </div>
         </div>
       </section>
+
+      <UpcomingExamsGallery 
+        data={upcomingExams} 
+        loading={upcomingStatus === "loading"} 
+      />
     </div>
   );
 };

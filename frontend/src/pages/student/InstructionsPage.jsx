@@ -15,8 +15,6 @@ import {
   HelpCircle,
   FileText,
   Zap,
-  CheckSquare,
-  Tag,
   Play,
   BarChart2,
   AlertCircle,
@@ -24,6 +22,7 @@ import {
   ArrowLeft,
   GraduationCap,
 } from "lucide-react";
+import RelatedTests from "../../components/sections/RelatedTests";
 
 const InstructionsPage = () => {
   const navigate = useNavigate();
@@ -38,6 +37,9 @@ const InstructionsPage = () => {
 
   useEffect(() => {
     dispatch(fetchMyMockTests());
+    // Reset local test state when ID changes to prevent showing old test data
+    setTest(null);
+    setFetchError(false);
   }, [dispatch, mocktestId]);
 
   useEffect(() => {
@@ -68,11 +70,11 @@ const InstructionsPage = () => {
       }
     };
 
-    if (mocktestId) {
-      // 1. First try to find in Redux store (if available)
-      const foundInStore = myMockTests?.find((t) => t._id === mocktestId);
+    if (mocktestId && !test && !fetchError) {
+      // 1. First try to find in Redux store (if available) - check loosely for ID
+      const foundInStore = myMockTests?.find((t) => (t._id || t) === mocktestId);
 
-      if (foundInStore) {
+      if (foundInStore && typeof foundInStore === 'object') {
         console.log("✅ FOUND IN STORE:", foundInStore.title);
         setTest(foundInStore);
       }
@@ -82,7 +84,7 @@ const InstructionsPage = () => {
         fetchTestDetails(mocktestId);
       }
     }
-  }, [myMockTestsStatus, myMockTests, mocktestId]);
+  }, [myMockTestsStatus, myMockTests, mocktestId, test, fetchError]);
 
   // Fail-safe: If still loading after 5 seconds, show error
   useEffect(() => {
@@ -318,20 +320,17 @@ const InstructionsPage = () => {
               </div>
             </section>
 
-            {subjects?.length > 0 && (
+            {test && (
               <section className="pt-5 border-t border-slate-100">
                 <h3 className="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-3">
-                  Included Sections
+                  Available Languages
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
-                  {subjects.map((s, i) => (
                     <span
-                      key={i}
                       className="px-3 py-1.5 bg-slate-100 text-slate-700 text-[9px] font-black uppercase tracking-widest border border-slate-200"
                     >
-                      {s.name}
+                      {test.languages && test.languages.length > 0 ? test.languages.join(", ") : "English"}
                     </span>
-                  ))}
                 </div>
               </section>
             )}
@@ -391,6 +390,15 @@ const InstructionsPage = () => {
             AUTO-SUBMIT AT 00:00
           </p>
         </div>
+
+        {/* RELATED TESTS SECTION */}
+        {test && (
+           <RelatedTests 
+             categorySlug={test.category?.slug} 
+             excludeId={mocktestId} 
+             limit={4} 
+           />
+        )}
       </div>
     </div>
   );

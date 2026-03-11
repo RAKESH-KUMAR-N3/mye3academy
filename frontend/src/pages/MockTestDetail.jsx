@@ -5,10 +5,11 @@ import { fetchPublicTestById } from "../redux/mockTestSlice";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
 import api from "../api/axios";
-import { Clock, BookOpen, FileText, MinusCircle, Tag, ArrowLeft, Play, ShieldCheck, Target, Globe } from "lucide-react";
+import { Clock, BookOpen, FileText, MinusCircle, Tag, ArrowLeft, Play, ShieldCheck, Target, Globe, HelpCircle, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { getImageUrl, handleImageError } from "../utils/imageHelper";
 import { addPurchasedTest, fetchMyMockTests } from "../redux/userSlice";
+import RelatedTests from "../components/sections/RelatedTests";
 
 export default function MockTestDetail() {
     const { id } = useParams();
@@ -28,8 +29,8 @@ export default function MockTestDetail() {
     }, [dispatch, id]);
 
     const isPurchased =
-        userData?.purchasedTests?.some((pid) => pid === id || (pid._id && pid._id === id)) ||
-        myMockTests?.some((t) => t._id === id);
+        userData?.purchasedTests?.some((pid) => String(pid._id || pid) === String(id)) ||
+        myMockTests?.some((t) => String(t._id) === String(id));
 
     const effectivePrice =
         test?.discountPrice > 0 && Number(test?.discountPrice) < Number(test?.price)
@@ -183,20 +184,43 @@ export default function MockTestDetail() {
 
     if (status === "loading") {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-[#f4f7fa]">
-                <CgSpinner className="animate-spin text-4xl text-[#21b731]" />
+            <div className="flex flex-col items-center justify-center min-h-screen bg-[#f8fafc] gap-6">
+                <div className="relative">
+                    <div className="w-16 h-16 border-4 border-slate-100 rounded-full"></div>
+                    <div className="w-16 h-16 border-4 border-blue-600 rounded-full border-t-transparent animate-spin absolute top-0 left-0"></div>
+                </div>
+                <div className="text-center">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] animate-pulse">Initializing Portal</p>
+                    <p className="text-sm font-black text-slate-900 mt-1">Preparing your assessment...</p>
+                </div>
             </div>
         );
     }
 
     if (status === "failed") {
         return (
-            <div className="max-w-xl mx-auto pt-40 text-center">
-                <h2 className="text-lg font-black text-red-600 uppercase tracking-widest">Unable to load test</h2>
-                <p className="text-slate-500 mt-2 text-sm">{error}</p>
-                <Link to="/all-tests" className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-[#21b731] text-white text-[11px] font-black uppercase tracking-widest">
-                    <ArrowLeft size={14} /> Back to Tests
-                </Link>
+            <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center px-4">
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="max-w-md w-full bg-white p-12 rounded-[40px] shadow-2xl shadow-blue-900/5 text-center border border-slate-100"
+                >
+                    <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-8">
+                        <MinusCircle size={40} />
+                    </div>
+                    <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight mb-2">Technical Disruption</h2>
+                    <p className="text-slate-500 text-sm mb-10 leading-relaxed font-medium">
+                        We encountered an issue while retrieving this assessment. This might be due to a synchronization error.
+                    </p>
+                    <div className="space-y-4">
+                        <Link to="/all-tests" className="flex items-center justify-center gap-3 w-full py-4 bg-[#122b5e] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-blue-900/20 hover:bg-black transition-all">
+                            <ArrowLeft size={16} /> Return to Tests
+                        </Link>
+                        <button onClick={() => window.location.reload()} className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors">
+                            Attempt Reconnect
+                        </button>
+                    </div>
+                </motion.div>
             </div>
         );
     }
@@ -225,234 +249,212 @@ export default function MockTestDetail() {
     ];
 
     return (
-        <div className="bg-[#f4f7fa] min-h-screen pt-20 pb-16">
-            <div className="max-w-5xl mx-auto px-4 md:px-8">
-
-        <div className="flex items-center gap-2 mb-8 pt-4">
-            <Link to="/all-tests" className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:text-[#21b731] transition-colors">
-                <ArrowLeft size={12} /> All Tests
-            </Link>
-            <span className="text-slate-300 text-xs">/</span>
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] truncate max-w-[200px]">{test.title}</span>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-
-            {/* LEFT — MAIN CONTENT */}
-            <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="flex-1 min-w-0"
-            >
-                {/* Hero Area */}
-                <div className="relative w-full aspect-[21/9] overflow-hidden bg-slate-200 mb-6 shadow-2xl shadow-slate-200/50">
-                    <img
-                        src={imgSrc}
-                        alt={test.title}
-                        onError={handleImageError}
-                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-                    {/* Category logo */}
-                    <div className="absolute top-4 left-4 w-12 h-12 bg-white rounded-none border-2 border-white overflow-hidden shadow-xl flex items-center justify-center">
-                        <img
-                            src={(test.category?.icon || test.category?.image) ? getImageUrl(test.category.icon || test.category.image) : "/logo.png"}
-                            alt="cat"
-                            onError={handleImageError}
-                            className="w-full h-full object-contain"
-                        />
-                    </div>
-
-                    {/* Tags */}
-                    <div className="absolute bottom-4 left-4 flex gap-2">
-                        {test.isGrandTest && (
-                            <div className="bg-amber-500 text-white text-[9px] font-black tracking-[0.2em] px-3 py-1 uppercase shadow-lg">
-                                GRAND TEST
-                            </div>
-                        )}
-                        {(test.isFree || effectivePrice <= 0) && (
-                            <div className="bg-emerald-500 text-white text-[9px] font-black tracking-[0.2em] px-3 py-1 uppercase shadow-lg">
-                                FREE
-                            </div>
-                        )}
-                    </div>
+        <div className="bg-[#f8fafc] min-h-screen pb-16">
+            <div className="max-w-6xl mx-auto px-4 md:px-8 pt-8">
+                
+                {/* ── BREADCRUMBS ── */}
+                <div className="flex items-center gap-2 mb-6 overflow-x-auto no-scrollbar whitespace-nowrap px-1">
+                    <Link to="/all-tests" className="flex items-center gap-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-all group">
+                        <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" /> 
+                        <span>Tests</span>
+                    </Link>
+                    <span className="text-slate-200">/</span>
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">{test.category?.name || "EXAMS"}</span>
+                    <span className="text-slate-200">/</span>
+                    <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest truncate max-w-[150px]">{test.title}</span>
                 </div>
 
-                {/* Title Card */}
-                <div className="bg-white rounded-none border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] px-6 py-8 mb-6 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-[#122b5e]"></div>
-                    <div className="flex items-center gap-3 mb-4">
-                        <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 uppercase tracking-[0.2em]">{test.category?.name || "General"}</span>
-                        {test.subcategory && (
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-200 pl-3">{test.subcategory}</span>
-                        )}
-                    </div>
-                    <h1 className="text-2xl md:text-3xl font-black text-[#122b5e] tracking-tight leading-tight max-w-2xl text-shadow-sm">
-                        {test.title}
-                    </h1>
-                </div>
-
-                {/* Stats Grid - Premium Style */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    {stats.map((s, i) => (
-                        <div key={i} className="bg-white rounded-none border border-slate-100 shadow-sm px-5 py-5 flex flex-col gap-3 relative overflow-hidden group hover:border-[#122b5e] transition-all">
-                            <div className="absolute top-0 left-0 w-1 h-0 group-hover:h-full bg-[#122b5e] transition-all duration-300"></div>
-                            <div className="w-8 h-8 rounded-none bg-slate-50 flex items-center justify-center text-[#122b5e] group-hover:bg-[#122b5e] group-hover:text-white transition-colors">
-                                {s.icon}
-                            </div>
-                            <div>
-                                <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">{s.label}</div>
-                                <div className="text-[16px] font-black text-[#122b5e]">{s.val}</div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Description Area */}
-                {test.description && (
-                    <div className="bg-white rounded-none border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] px-6 py-8">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-6 h-1 bg-[#122b5e]"></div>
-                            <h2 className="text-[11px] font-black text-[#122b5e] uppercase tracking-[0.3em]">Module Overview</h2>
-                        </div>
-                        <p className="text-[15px] text-slate-600 leading-relaxed font-medium">
-                            {test.description}
-                        </p>
-
-                        {/* Subjects Inclusion */}
-                        {test.subjects && test.subjects.length > 0 && (
-                          <div className="mt-8 pt-8 border-t border-slate-50">
-                            <div className="flex items-center gap-3 mb-4">
-                              <div className="w-1.5 h-4 bg-emerald-500"></div>
-                              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Curriculum Coverage</h3>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              {test.subjects.map((sub, idx) => (
-                                <div key={idx} className="flex flex-col bg-slate-50 px-4 py-3 border border-slate-100 min-w-[120px]">
-                                   <span className="text-[11px] font-black text-[#122b5e] uppercase tracking-tight">{sub.name}</span>
-                                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                                     {sub.easy + sub.medium + sub.hard > 0 ? `${sub.easy + sub.medium + sub.hard} Modules` : "Full Prep"}
-                                   </span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                    </div>
-                )}
-            </motion.div>
-
-            {/* RIGHT — STICKY ACTION PANEL */}
-            <motion.aside
-                initial={{ opacity: 0, x: 16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.35, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="w-full lg:w-72 shrink-0 lg:sticky lg:top-24"
-            >
-                <div className="bg-white rounded-none border border-slate-100 shadow-[0_30px_70px_rgba(0,0,0,0.1)] overflow-hidden">
-                    {/* Price Header */}
-                    <div className="bg-gradient-to-br from-[#122b5e] to-[#1e4db7] p-8 text-white relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -translate-y-12 translate-x-12"></div>
-                        <div className="relative z-10">
-                            {(test.isFree || effectivePrice <= 0) ? (
-                                <div className="text-4xl font-black tracking-tight text-white">FREE</div>
-                            ) : (
-                                <div>
-                                    {test.discountPrice > 0 && test.discountPrice < test.price && (
-                                        <div className="text-[13px] font-bold text-blue-200/60 line-through mb-1">₹{test.price}</div>
-                                    )}
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-[14px] font-black">₹</span>
-                                        <span className="text-4xl font-black text-white tracking-tighter">{effectivePrice}</span>
+                <div className="flex flex-col lg:flex-row gap-6 items-start">
+                    {/* ── LEFT AREA ── */}
+                    <div className="flex-1 w-full space-y-6">
+                        {/* HERO BANNER (2-Column Card Layout) */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.99 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="relative w-full overflow-hidden shadow-xl shadow-blue-900/5 bg-white border border-slate-100 rounded-3xl"
+                        >
+                            <div className="flex flex-col md:flex-row min-h-[180px]">
+                                {/* Left: Image (Like a card) */}
+                                <div className="w-full md:w-[240px] bg-slate-50 flex items-center justify-center p-6 border-r border-slate-100">
+                                    <div className="w-full h-full max-h-[120px] relative group/thumb">
+                                        <div className="absolute -inset-4 bg-blue-400/5 blur-3xl opacity-0 group-hover/thumb:opacity-100 transition-opacity" />
+                                        <img 
+                                            src={imgSrc} 
+                                            alt={test.title} 
+                                            className="w-full h-full object-contain drop-shadow-xl relative z-10 transition-transform duration-500 group-hover/thumb:scale-110"
+                                            onError={handleImageError}
+                                        />
                                     </div>
-                                    {test.discountPrice > 0 && test.discountPrice < test.price && (
-                                        <div className="mt-3 inline-flex px-2 py-0.5 bg-white/20 rounded-none text-[10px] font-black uppercase tracking-widest text-white border border-white/20">
-                                            SAVE {Math.round((1 - test.discountPrice / test.price) * 100)}%
+                                </div>
+
+                                {/* Right: Info */}
+                                <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className={`px-3 py-1 bg-blue-600 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded shadow-lg shadow-blue-600/10`}>
+                                            {test.category?.name || "Mock Test"}
+                                        </span>
+                                        {test.subcategory && (
+                                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic opacity-60">
+                                                {test.subcategory}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <h1 className="text-xl md:text-2xl font-black text-slate-900 leading-tight uppercase tracking-tight mb-4">
+                                        {test.title}
+                                    </h1>
+                                    
+                                    <div className="flex flex-wrap gap-5 items-center pt-4 border-t border-slate-50">
+                                        <div className="flex items-center gap-2">
+                                            <Clock size={14} className="text-blue-500" />
+                                            <span className="text-[10px] font-black text-slate-800 uppercase">{test.durationMinutes || 0} MINS</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <HelpCircle size={14} className="text-blue-500" />
+                                            <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalQuestions || 0} Qs</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Trophy size={14} className="text-blue-500" />
+                                            <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalMarks || 0} Pts</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* STATS STRIP (Compact) */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            {stats.map((s, i) => (
+                                <motion.div 
+                                    key={i}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2 group hover:border-blue-500 transition-all duration-300"
+                                >
+                                    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all transform group-hover:rotate-3">
+                                        {s.icon}
+                                    </div>
+                                    <div>
+                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{s.label}</p>
+                                        <p className="text-sm font-black text-slate-900 uppercase leading-none">{s.val}</p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* DESCRIPTION & CURRICULUM */}
+                        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 sm:p-8 space-y-8">
+                            <div>
+                                <div className="flex items-center gap-2.5 mb-4">
+                                    <div className="w-1 h-6 bg-blue-600 rounded-full" />
+                                    <h2 className="text-[12px] font-black text-slate-900 uppercase tracking-widest">Test Information</h2>
+                                </div>
+                                <p className="text-slate-500 text-[13px] leading-relaxed font-medium">
+                                    {test.description || "This assessment is designed to evaluate your practical knowledge and speed. It covers the core concepts defined in the exam curriculum with high-quality questions curated by industry experts."}
+                                </p>
+                            </div>
+
+                            {test.subjects && test.subjects.length > 0 && (
+                                <div className="pt-8 border-t border-slate-100">
+                                    <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">Units & Coverage</h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        {test.subjects.map((sub, idx) => (
+                                            <div key={idx} className="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-100 group transition-all">
+                                                <div className="flex items-center gap-2.5">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                                                    <span className="text-[10px] font-black text-slate-700 uppercase tracking-tight">{sub.name}</span>
+                                                </div>
+                                                <span className="text-[9px] font-black text-slate-400 uppercase bg-white px-2.5 py-1 rounded-full border border-slate-100">
+                                                    {sub.easy + sub.medium + sub.hard > 0 ? `${sub.easy + sub.medium + sub.hard} Qs` : "Full"}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* ── SIDEBAR (STICKY) ── */}
+                    <aside className="w-full lg:w-[320px] shrink-0 lg:sticky lg:top-24">
+                        <div className="bg-white rounded-[32px] border border-slate-100 shadow-2xl shadow-blue-900/10 overflow-hidden flex flex-col">
+                            {/* PRICING AREA */}
+                            <div className="bg-[#122b5e] pt-12 pb-10 px-8 text-white text-center relative overflow-hidden">
+                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-400/10 rounded-full blur-3xl" />
+                                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl" />
+                                
+                                <div className="relative z-10">
+                                    {(test.isFree || effectivePrice <= 0) ? (
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-300/60 mb-2">Access Status</span>
+                                            <div className="text-5xl font-black tracking-tighter text-emerald-400 drop-shadow-sm">FREE</div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-300/60 mb-2">Enrollment Fee</span>
+                                            <div className="flex items-start gap-1 justify-center">
+                                                <span className="text-lg font-black mt-2 opacity-50">₹</span>
+                                                <span className="text-6xl font-black tracking-tighter">{effectivePrice}</span>
+                                            </div>
+                                            {test.discountPrice > 0 && test.discountPrice < test.price && (
+                                                <div className="flex gap-2 items-center mt-3 scale-110">
+                                                    <span className="text-xs font-bold text-blue-200/40 line-through tracking-wide">₹{test.price}</span>
+                                                    <span className="bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-widest shadow-lg">
+                                                        SAVE {Math.round((1 - test.discountPrice / test.price) * 100)}%
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Features list */}
-                    <div className="p-6 space-y-4 border-b border-slate-50">
-                        {[
-                            { label: "Total Questions", val: test.totalQuestions || 0, icon: <BookOpen size={12} className="text-blue-500" /> },
-                            { 
-                                label: "Exam Duration", 
-                                val: test.durationMinutes > 0 ? `${test.durationMinutes} min` : "Auto-calc", 
-                                icon: <Clock size={12} className="text-blue-500" /> 
-                            },
-                            { label: "Maximum Marks", val: test.totalMarks || 0, icon: <FileText size={12} className="text-blue-500" /> },
-                            { label: "Languages", val: test.languages?.join(", ") || "English", icon: <Globe size={12} className="text-blue-500" /> },
-                        ].map((s, i) => (
-                            <div key={i} className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-5 h-5 flex items-center justify-center bg-slate-50 text-blue-500">
-                                      {s.icon}
+                            </div>
+                            {/* DETAILS LIST (Sync with MockTestCard) */}
+                            <div className="p-8 space-y-5">
+                                {[
+                                    { label: "Questions", val: `${test.totalQuestions || 0} Qs`, icon: <HelpCircle size={12} /> },
+                                    { label: "Duration", val: test.durationMinutes > 0 ? `${test.durationMinutes} Min` : "Auto", icon: <Clock size={12} /> },
+                                    { label: "Max Marks", val: `${test.totalMarks || 0} Pts`, icon: <Trophy size={12} /> },
+                                    { label: "Languages", val: Array.isArray(test.languages) && test.languages.length > 0 ? test.languages.join(", ") : "English", icon: <Globe size={12} /> },
+                                ].map((s, i) => (
+                                    <div key={i} className="flex items-center justify-between group/sid">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded bg-slate-50 flex items-center justify-center text-blue-500 group-hover/sid:bg-blue-600 group-hover/sid:text-white transition-all">
+                                                {s.icon}
+                                            </div>
+                                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{s.label}</span>
+                                        </div>
+                                        <span className="text-[10px] font-black text-slate-800 uppercase">{s.val}</span>
                                     </div>
-                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">{s.label}</span>
-                                </div>
-                                <span className="text-[12px] font-black text-[#122b5e]">{s.val}</span>
+                                ))}
                             </div>
-                        ))}
-                    </div>
 
-                    {/* Meta Section */}
-                    <div className="p-6 bg-slate-50/50 border-b border-slate-50 grid grid-cols-3 gap-2">
-                        <div className="text-center">
-                            <div className="text-[14px] font-black text-[#122b5e]">{test.featureCounts?.liveTests || 0}</div>
-                            <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Live</div>
-                        </div>
-                        <div className="text-center border-x border-slate-200">
-                            <div className="text-[14px] font-black text-[#122b5e]">{test.featureCounts?.chapterTests || 0}</div>
-                            <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Chapters</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-[14px] font-black text-[#122b5e]">{test.featureCounts?.fullTests || 0}</div>
-                            <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Full</div>
-                        </div>
-                    </div>
-
-                    {/* CTA Section */}
-                    <div className="p-6">
-                        <motion.button
-                            whileHover={{ scale: 1.01 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={handleUnlock}
-                            disabled={isProcessing}
-                            className={`w-full flex items-center justify-center gap-3 py-5 px-6 rounded-none font-black uppercase tracking-[0.2em] text-[11px] text-white transition-all shadow-xl disabled:bg-slate-300 ${
-                                canStart 
-                                    ? (test.isGrandTest ? "bg-[#122b5e] hover:bg-black" : "bg-[#21b731] hover:bg-[#1a9227]") 
-                                    : "bg-gradient-to-r from-[#122b5e] to-[#1e40af] hover:from-black hover:to-slate-900"
-                            }`}
-                        >
-                            {isProcessing ? (
-                                <CgSpinner className="animate-spin" size={18} />
-                            ) : (
-                                <Play size={14} className="fill-current" />
-                            )}
-                            {canStart ? "Begin Assessment" : "Unlock Full Access"}
-                        </motion.button>
-
-                        <div className="mt-6 flex flex-col gap-2">
-                            <div className="flex items-center gap-2 text-slate-400">
-                                <ShieldCheck size={14} className="text-emerald-500" />
-                                <span className="text-[9px] font-black uppercase tracking-widest leading-none">Instant Activation</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-400">
-                                <Target size={14} className="text-blue-500" />
-                                <span className="text-[9px] font-black uppercase tracking-widest leading-none">Complete Performance Analytics</span>
+                            {/* CTA ACTION */}
+                            <div className="p-8 pt-0 mt-auto">
+                                <motion.button
+                                    whileHover={{ scale: 1.02, y: -1 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={handleUnlock}
+                                    disabled={isProcessing}
+                                    className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] text-white shadow-lg shadow-blue-600/10 disabled:bg-slate-300 ${
+                                        canStart 
+                                            ? "bg-[#21b731] hover:bg-[#1a9227]" 
+                                            : "bg-blue-600 hover:bg-slate-900"
+                                    }`}
+                                >
+                                    {isProcessing ? <CgSpinner className="animate-spin" size={16} /> : <Play size={14} className="fill-current" />}
+                                    {canStart ? "Start Assessment" : "Unlock Access"}
+                                </motion.button>
                             </div>
                         </div>
-                    </div>
+                    </aside>
                 </div>
-            </motion.aside>
-                </div>
+
+                {/* RELATED TESTS SECTION */}
+                <RelatedTests 
+                    categorySlug={test.category?.slug} 
+                    excludeId={id} 
+                    limit={4} 
+                />
             </div>
         </div>
     );

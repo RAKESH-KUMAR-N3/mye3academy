@@ -26,7 +26,7 @@ import {
   FaEdit,
 } from "react-icons/fa";
 
-import { Search, GraduationCap, Phone, Info, Globe, Building2, Download, ExternalLink, Calendar, CheckCircle2, Clock, MoreVertical, Trash2, Pencil, Plus } from "lucide-react";
+import { Search, GraduationCap, Phone, Info, Globe, Building2, Download, ExternalLink, Calendar, CheckCircle2, Clock, MoreVertical, Trash2, Pencil, Plus, ShieldCheck } from "lucide-react";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -298,26 +298,37 @@ const ManageStudents = () => {
                         </td>
 
                         <td className="px-4 py-3">
-                          <div className="flex flex-col gap-1">
+                          <div className="flex flex-col gap-1.5">
+                            {/* Source Badge */}
                             {s.registrationSource === "self" ? (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none text-[8px] font-black bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-widest w-fit">
-                                <Globe size={10} /> SELF
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[9px] font-black bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-[0.1em] w-fit shadow-sm">
+                                <Globe size={11} className="stroke-[3]" /> SELF REGISTERED
                               </span>
                             ) : (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none text-[8px] font-black bg-purple-50 text-purple-600 border border-purple-100 uppercase tracking-widest w-fit">
-                                  <Building2 size={10} /> {s.addedBy?.firstname ? "INSTITUTION" : "ADMIN"}
+                              <div className="flex flex-col gap-1">
+                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-[0.1em] w-fit shadow-sm border ${
+                                  s.registrationSource === 'admin' 
+                                    ? "bg-rose-50 text-rose-700 border-rose-100" 
+                                    : "bg-indigo-50 text-indigo-700 border-indigo-100"
+                                }`}>
+                                  {s.registrationSource === 'admin' ? <ShieldCheck size={11} className="stroke-[3]" /> : <Building2 size={11} className="stroke-[3]" />}
+                                  {s.registrationSource === 'admin' ? "ADMIN" : "INSTITUTION"}
                                 </span>
                                 {s.addedBy && (
-                                  <span className="text-[8px] font-black text-gray-400 pl-0.5 uppercase tracking-tighter opacity-70">
-                                    {s.addedBy.firstname} {s.addedBy.lastname}
+                                  <span className="text-[10px] font-extrabold text-[#7e7e7e] pl-1 uppercase tracking-wide opacity-70">
+                                    by {s.addedBy.firstname} {s.addedBy.lastname}
                                   </span>
                                 )}
                               </div>
                             )}
-                            <span className="text-xs text-gray-500 font-bold uppercase tracking-wide pl-0.5 mt-0.5">
-                              {new Date(s.createdAt).toLocaleDateString()}
-                            </span>
+                            
+                            {/* Date Display */}
+                            <div className="flex items-center gap-2 mt-0.5 pl-1">
+                              <Calendar size={12} className="text-slate-300" />
+                              <span className="text-[11px] text-[#3e4954] font-black tracking-tight">
+                                {new Date(s.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                              </span>
+                            </div>
                           </div>
                         </td>
 

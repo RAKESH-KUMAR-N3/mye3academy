@@ -17,6 +17,7 @@ import {
   getFilteredMocktests,
   getMockTestById,
   getPublishedMocktests,
+  getTestAttempts,
 } from "../../controllers/admin/adminMocktestController.js";
 
 // Controllers - Question Management
@@ -46,6 +47,10 @@ router.delete("/:id", deleteMockTest);
 
 // Toggle publish status
 router.put("/:id/publish", togglePublish);
+
+// Get specific test attempts (WHO took the test)
+router.get("/:id/attempts", getTestAttempts);
+
 router.get("/:id/questions", getMocktestQuestions);
 router.post("/:id/questions", upload.single("questionImage"), addQuestion);
 router.post(

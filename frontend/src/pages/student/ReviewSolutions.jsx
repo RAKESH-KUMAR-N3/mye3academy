@@ -35,7 +35,10 @@ const ReviewSolutions = () => {
   const dispatch = useDispatch();
 
   const { reviewData, reviewStatus, reviewError } = useSelector((s) => s.students);
-  const attempt = reviewData?.attempt || reviewData;
+  const attempt = useMemo(() => {
+    if (!reviewData) return null;
+    return reviewData.attempt || reviewData;
+  }, [reviewData]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -136,17 +139,28 @@ const ReviewSolutions = () => {
     : "±0";
 
   /* ── Loading / Error ── */
-  if (reviewStatus === "loading") return (
+  if (reviewStatus === "loading" || (reviewStatus === "idle" && !reviewData)) return (
     <div className="min-h-screen flex items-center justify-center bg-[#f8f9fc]">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-indigo-500" />
+      <div className="flex flex-col items-center gap-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-indigo-500" />
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] animate-pulse">Loading Results...</p>
+      </div>
     </div>
   );
-  if (reviewStatus === "failed" || !reviewData) return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8f9fc] gap-4">
-      <AlertCircle className="w-14 h-14 text-rose-500" />
-      <h2 className="text-2xl font-black text-slate-800">Failed to load results</h2>
-      <p className="text-slate-500">{reviewError || "Unknown error"}</p>
-      <button onClick={() => navigate("/student-dashboard")} className="px-6 py-2 bg-slate-900 text-white rounded-xl font-bold text-sm">Go to Dashboard</button>
+
+  if (reviewStatus === "failed" || (reviewStatus === "succeeded" && !reviewData)) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8f9fc] p-6 text-center gap-4">
+      <div className="w-20 h-20 bg-rose-50 rounded-3xl flex items-center justify-center mb-2 shadow-sm border border-rose-100">
+        <AlertCircle className="w-10 h-10 text-rose-500" />
+      </div>
+      <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Failed to load results</h2>
+      <p className="text-slate-500 text-sm max-w-xs">{reviewError || "The requested attempt data could not be retrieved. Please try again or contact support."}</p>
+      <button 
+        onClick={() => navigate("/student-dashboard?tab=performance")} 
+        className="mt-4 px-8 py-3 bg-slate-900 hover:bg-black text-white rounded-xl font-black text-[11px] uppercase tracking-widest shadow-xl transition-all active:scale-95"
+      >
+        Go back to Performance
+      </button>
     </div>
   );
 

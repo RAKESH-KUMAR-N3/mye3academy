@@ -9,7 +9,7 @@ import {
   ArrowLeft,
   Loader2,
   Smartphone,
-  Trophy,
+  GraduationCap,
 } from "lucide-react";
 import googleImg from "../assets/google.png";
 import { useNavigate } from "react-router-dom";
@@ -169,8 +169,8 @@ const Signup = () => {
           <div className="w-full max-w-[400px] flex flex-col">
             {/* Logo */}
             <div className="mb-4 flex items-center gap-3 group cursor-pointer" onClick={() => navigate("/")}>
-               <div className="w-11 h-11 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-                  <Trophy size={22} className="text-white" />
+                <div className="w-11 h-11 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
+                  <GraduationCap size={22} className="text-white" />
                </div>
                <div className="flex flex-col">
                   <span className="text-lg font-black text-slate-800 tracking-tight leading-none">Mye3</span>

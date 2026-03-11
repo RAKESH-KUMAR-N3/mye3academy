@@ -5,8 +5,9 @@ import { fetchAdminDoubts, assignDoubtToInstructor } from "../../redux/doubtSlic
 import { fetchInstructors } from "../../redux/instructorSlice"; 
 import { getSocket } from "../../socket"; // Socket import
 import toast from "react-hot-toast";
-import { User, BookOpen, Clock, CheckCircle, ChevronRight } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
+import { User, BookOpen, Clock, CheckCircle, ChevronRight, Eye, X, MessageSquare, ShieldCheck, Mail, Calendar } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const AdminDoubts = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,20 @@ const AdminDoubts = () => {
   // --- PAGINATION STATE ---
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 12;
+
+  // --- MODAL STATE ---
+  const [selectedDoubt, setSelectedDoubt] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openDoubtDetails = (doubt) => {
+    setSelectedDoubt(doubt);
+    setIsModalOpen(true);
+  };
+
+  const closeDoubtDetails = () => {
+    setSelectedDoubt(null);
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     dispatch(fetchAdminDoubts());
@@ -120,12 +135,24 @@ const AdminDoubts = () => {
                   </td>
 
                   <td className="px-4 py-3 text-right">
-                     {d.status === 'pending' && (
+                    <div className="flex items-center justify-end gap-3">
+                      <button 
+                        onClick={() => openDoubtDetails(d)}
+                        className="p-1.5 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors group/view"
+                        title="View Details"
+                      >
+                        <Eye size={16} className="group-hover/view:scale-110 transition-transform" />
+                      </button>
+
+                      {d.status === 'pending' && (
                         <button className="text-rose-500 hover:text-rose-700 text-[9px] font-black uppercase tracking-widest underline decoration-2 underline-offset-4">Reject</button>
-                     )}
-                     {d.status === 'answered' && (
-                        <span className="text-emerald-600 font-black text-[9px] uppercase tracking-widest flex items-center justify-end gap-1"><CheckCircle size={12}/> Success</span>
-                     )}
+                      )}
+                      {d.status === 'answered' && (
+                        <span className="text-emerald-600 font-black text-[9px] uppercase tracking-widest flex items-center gap-1">
+                          <CheckCircle size={12}/> Success
+                        </span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -191,6 +218,151 @@ const AdminDoubts = () => {
           </div>
         )}
       </div>
+      {/* DOUBT DETAILS MODAL - Fixed Top Cut-Off & Alignment */}
+      <AnimatePresence>
+        {isModalOpen && selectedDoubt && (
+          <div className="fixed inset-0 z-[999999] flex items-start justify-center p-4 overflow-y-auto pt-24">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeDoubtDetails}
+              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[-1]"
+            />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: -20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -20 }}
+              className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] border border-slate-200 flex flex-col mb-8 overflow-hidden"
+              style={{ zIndex: 1000000 }}
+            >
+              {/* Header - Neat & Compact */}
+              <div className="bg-slate-900 px-6 py-4 flex items-center justify-between text-white flex-shrink-0 shadow-md">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white">
+                    <MessageSquare size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] leading-tight">Investigation</h3>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">Ref: #{selectedDoubt._id.slice(-8).toUpperCase()}</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={closeDoubtDetails}
+                  className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-rose-500 transition-all border border-white/5"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Content Area */}
+              <div className="p-6 overflow-y-auto custom-scrollbar flex-1 bg-white">
+                {/* Info Cards */}
+                <div className="space-y-6">
+                  {/* Participant Bar */}
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Student Informant</span>
+                      <p className="text-sm font-black text-slate-900 uppercase">{selectedDoubt.student?.firstname} {selectedDoubt.student?.lastname}</p>
+                      <p className="text-[10px] font-bold text-slate-500 lowercase">{selectedDoubt.student?.email}</p>
+                    </div>
+                    <div className="text-right space-y-2">
+                       <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Subject Field</span>
+                       <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-100 inline-block">{selectedDoubt.subject}</span>
+                    </div>
+                  </div>
+
+                  {/* Date/Status Banner */}
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                       <div className={`w-2 h-2 rounded-full animate-pulse ${selectedDoubt.status === 'answered' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                       <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Case Status: {selectedDoubt.status}</span>
+                    </div>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
+                       <Calendar size={12} /> Filed: {new Date(selectedDoubt.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  {/* Query Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                       <div className="w-1.5 h-4 bg-slate-900 rounded-full" />
+                       <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Student Query</span>
+                    </div>
+                    <div className="bg-slate-50/50 rounded-2xl p-5 border border-slate-100 shadow-sm transition-hover hover:border-slate-200">
+                      <p className="text-[13px] font-bold text-slate-700 leading-relaxed italic">
+                        "{selectedDoubt.text}"
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Assignment Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                       <div className="w-1.5 h-4 bg-blue-500 rounded-full" />
+                       <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Instructor Assignment</span>
+                    </div>
+                    <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-white font-black text-xs">
+                          {selectedDoubt.assignedInstructor?.firstname?.charAt(0) || 'U'}
+                        </div>
+                        <div>
+                          <p className="text-xs font-black text-slate-900 uppercase">
+                            {selectedDoubt.assignedInstructor ? `${selectedDoubt.assignedInstructor.firstname} ${selectedDoubt.assignedInstructor.lastname}` : 'Unassigned'}
+                          </p>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{selectedDoubt.assignedInstructor ? 'Subject Expert' : 'Pending Assignment'}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                         <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest block mb-1">Status</span>
+                         {selectedDoubt.assignedInstructor ? (
+                           <span className="text-[10px] font-black text-blue-600 flex items-center gap-1.5 uppercase tracking-widest">
+                             <ShieldCheck size={14} /> Assigned
+                           </span>
+                         ) : (
+                           <span className="text-[10px] font-black text-rose-500 uppercase">Wait</span>
+                         )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Final Solution */}
+                  {selectedDoubt.status === 'answered' && (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-4 bg-emerald-500 rounded-full" />
+                        <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Official Resolution</span>
+                      </div>
+                      <div className="bg-emerald-50/30 rounded-2xl p-5 border border-emerald-100/50">
+                        <p className="text-sm font-bold text-emerald-950 leading-relaxed whitespace-pre-wrap">
+                          {selectedDoubt.answer}
+                        </p>
+                        <div className="mt-4 pt-3 border-t border-emerald-100/50 flex justify-end">
+                           <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest italic opacity-70">
+                             Solved on {new Date(selectedDoubt.answeredAt).toLocaleString()}
+                           </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Footer */}
+              <div className="bg-slate-50 px-6 py-5 border-t border-slate-100 flex-shrink-0">
+                <button 
+                  onClick={closeDoubtDetails}
+                  className="w-full bg-slate-900 text-white rounded-2xl py-4 font-black text-[11px] uppercase tracking-[0.3em] shadow-xl hover:bg-black transition-all active:scale-[0.98]"
+                >
+                  Close Panel
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

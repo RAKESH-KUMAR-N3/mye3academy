@@ -4,7 +4,7 @@ import InstructorDashboardPage from "./pages/instructor/InstructorDashboardPage"
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ScrollToTop from "./components/ScrollToTop";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { AnimatePresence } from "framer-motion";
 
@@ -22,6 +22,7 @@ import DashboardPage from "./components/admin/DashboardPage";
 import ManageInstructors from "./components/admin/instructors/ManageInstructors";
 import ManageStudents from "./components/admin/students/ManageStudents";
 import ManageMocktests from "./components/admin/mocktest/ManageMocktests";
+import TestAttempts from "./components/admin/mocktest/TestAttempts";
 
 import AdminQuestions from "./components/admin/mocktest/AdminQuestions";
 import SelectCategoryForCreation from "./components/admin/category/SelectCategoryForCreation";
@@ -100,7 +101,7 @@ const App = () => {
 
       <MainLayout>
         <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
+          <Routes>
           {/* ---------------- PUBLIC ROUTES ---------------- */}
           <Route path="/" element={<Home />} />
           <Route
@@ -117,6 +118,8 @@ const App = () => {
                 <Navigate to="/admin" replace />
               ) : userData.role === "instructor" ? (
                 <Navigate to="/instructor-dashboard" replace />
+              ) : userData.role === "institution" ? (
+                <Navigate to="/institution-dashboard" replace />
               ) : (
                 <Navigate to="/all-tests" replace />
               )
@@ -125,16 +128,24 @@ const App = () => {
 
           {/* ---------------- STUDENT ROUTES ---------------- */}
           <Route
+            path="/all-tests/:id"
+            element={
+              <ProtectedRoute>
+                <MockTestDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mocktests/:id"
+            element={<MocktestRedirect />}
+          />
+          <Route
             path="/all-tests"
             element={
               <ProtectedRoute>
                 <AllMockTests />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/mocktests"
-            element={<Navigate to="/all-tests" replace />}
           />
           <Route
             path="/mock-tests"
@@ -153,16 +164,8 @@ const App = () => {
             }
           />
           <Route
-            path="/all-tests/:id"
-            element={
-              <ProtectedRoute>
-                <MockTestDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/mocktests/:id"
-            element={<Navigate to="/all-tests/:id" replace />}
+            path="/mocktests"
+            element={<Navigate to="/all-tests" replace />}
           />
 
           <Route
@@ -292,6 +295,7 @@ const App = () => {
             {/* Test Management Section */}
             <Route path="tests">
               <Route path="manage-tests" element={<ManageMocktests />} />
+              <Route path="manage-tests/:id/attempts" element={<TestAttempts />} />
               <Route
                 path="add-new-test"
                 element={<SelectCategoryForCreation />}
@@ -325,6 +329,12 @@ const App = () => {
       </MainLayout>
     </>
   );
+};
+
+// Redirect helper
+const MocktestRedirect = () => {
+  const { id } = useParams();
+  return <Navigate to={`/all-tests/${id}`} replace />;
 };
 
 export default App;

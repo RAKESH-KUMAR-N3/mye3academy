@@ -20,6 +20,6 @@ router.use(isAuth);
 router.get("/", instructorGetMyDoubts);
 
 // Solve/Answer a doubt
-router.put("/:id/solve", instructorAnswerDoubt);
+router.put("/:id/answer", instructorAnswerDoubt);
 
 export default router;

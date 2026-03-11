@@ -430,14 +430,27 @@ export const updateUserProfile = async (req, res) => {
     }
 
     // 3. Handle Password Update (Securely)
-    if (req.body.password && req.body.password.trim() !== "") {
-      if (req.body.password.length < 8) {
+    const newPass = req.body.newPassword || req.body.password;
+    if (newPass && newPass.trim() !== "") {
+      if (newPass.length < 8) {
         return res
           .status(400)
           .json({ message: "Password must be at least 8 characters" });
       }
-      const hashPassword = await bcrypt.hash(req.body.password, 10);
-      user.password = hashPassword;
+
+      // Security measure: Require current password to set new one
+      if (req.body.currentPassword) {
+          const isMatch = await bcrypt.compare(req.body.currentPassword, user.password);
+          if (!isMatch) {
+              return res.status(401).json({ message: "Identity verification failed: Current password incorrect" });
+          }
+      } else {
+          // If no current password provided but trying to change password
+          return res.status(400).json({ message: "Current password is required to change security credentials" });
+      }
+
+      const hashPass = await bcrypt.hash(newPass, 10);
+      user.password = hashPass;
       updates.push("Password");
     }
 

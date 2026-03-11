@@ -12,32 +12,39 @@ const MockTestCard = ({ test, isEmbedded = false, index = 0 }) => {
 
   const isPurchased =
     userData?.purchasedTests?.some(
-      (id) => id === test._id || (id._id && id._id === test._id)
-    ) || myMockTests?.some((t) => t._id === test._id);
+      (id) => String(id._id || id) === String(test._id)
+    ) || myMockTests?.some((t) => String(t._id) === String(test._id));
 
   const effectivePrice =
     test.discountPrice > 0 && Number(test.discountPrice) < Number(test.price)
       ? Number(test.discountPrice)
-      : Number(test.price);
+      : Number(test.price || 0);
 
-  const canStart = test.isFree === true || effectivePrice <= 0 || isPurchased;
+  const canStart = test.isFree === true || String(test.isFree) === "true" || effectivePrice <= 0 || isPurchased;
 
-  const handleAction = (e) => {
-    if (e) e.stopPropagation();
+  const navigateToTest = (id) => {
+    console.log("MockTestCard: Navigating to test", { id: String(id), canStart, isPurchased, userData: !!userData });
     if (!userData) {
       toast.error("Please login to continue");
       return navigate("/login");
     }
     if (canStart) {
-      navigate(`/student/instructions/${test._id}`);
+      navigate(`/student/instructions/${String(id)}`);
     } else {
-      navigate(`/all-tests/${test._id}`);
+      navigate(`/all-tests/${String(id)}`);
     }
   };
 
-  const catImage = (test.category && (test.category.icon || test.category.image)) 
-    ? getImageUrl(test.category.icon || test.category.image) 
-    : "/logo.png";
+  const handleAction = (e) => {
+    if (e) e.stopPropagation();
+    navigateToTest(test._id);
+  };
+
+  const cardImage = test.thumbnail 
+    ? getImageUrl(test.thumbnail)
+    : (test.category && (test.category.icon || test.category.image)) 
+      ? getImageUrl(test.category.icon || test.category.image) 
+      : "/logo.png";
 
   const enrolledCount = useMemo(() => {
     const total = (test.baseEnrolledCount || 0) + (test.attempts?.length || 0);
@@ -56,34 +63,33 @@ const MockTestCard = ({ test, isEmbedded = false, index = 0 }) => {
 
   const languagesText = useMemo(() => {
     if (!test.languages || test.languages.length === 0) return "English";
-    if (test.languages.length <= 2) return test.languages.join(", ");
-    return `${test.languages.slice(0, 2).join(", ")} + ${test.languages.length - 2}`;
+    return test.languages.join(", ");
   }, [test.languages]);
+
+  const subcategoryText = test.subcategory || "Mock Test";
 
   const isGrand = test.isGrandTest === true;
 
   // Theme Definitions
   const theme = isGrand ? {
-    headerBg: "bg-gradient-to-br from-amber-50 via-orange-50/80 to-white",
-    pillBg: "bg-amber-100/50",
-    pillText: "text-amber-600",
-    accentText: "text-amber-500",
-    hoverText: "group-hover:text-amber-600",
-    buttonBg: "bg-amber-500",
-    buttonHover: "hover:bg-amber-600",
-    shadow: "shadow-amber-100",
-    badge: "iotrophy", 
+    headerBg: "bg-gradient-to-br from-orange-200 via-orange-100/60 to-white",
+    pillBg: "bg-orange-200",
+    pillText: "text-orange-800",
+    accentText: "text-orange-600",
+    hoverText: "group-hover:text-orange-800",
+    buttonBg: "bg-gradient-to-r from-orange-500 to-orange-600",
+    buttonHover: "hover:opacity-90",
+    shadow: "shadow-orange-200",
     btnLabel: "View Grand Test"
   } : {
-    headerBg: "bg-gradient-to-br from-[#f0fff4] via-emerald-50/80 to-white", 
-    pillBg: "bg-emerald-100/50",
-    pillText: "text-emerald-600",
-    accentText: "text-emerald-500",
-    hoverText: "group-hover:text-emerald-600",
-    buttonBg: "bg-[#21b731]", 
-    buttonHover: "hover:bg-[#1a9227]",
-    shadow: "shadow-emerald-100",
-    badge: "zap",
+    headerBg: "bg-gradient-to-br from-emerald-200 via-emerald-100/60 to-white", 
+    pillBg: "bg-emerald-200",
+    pillText: "text-emerald-800",
+    accentText: "text-emerald-600",
+    hoverText: "group-hover:text-emerald-800",
+    buttonBg: "bg-gradient-to-r from-emerald-500 to-emerald-600", 
+    buttonHover: "hover:opacity-90",
+    shadow: "shadow-emerald-200",
     btnLabel: "View Test Series"
   };
 
@@ -93,109 +99,111 @@ const MockTestCard = ({ test, isEmbedded = false, index = 0 }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
       whileHover={{ y: -6 }}
-      onClick={() => navigate(`/all-tests/${test._id}`)}
-      className={`flex flex-col bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-xl hover:${theme.shadow}/40 transition-all duration-300 overflow-hidden cursor-pointer group h-full`}
+      onClick={() => navigateToTest(test._id)}
+      className={`flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:${theme.shadow}/60 transition-all duration-500 overflow-hidden cursor-pointer group h-full`}
     >
       {/* ── HEADER (Dynamic Theme) ── */}
-      <div className={`pt-4 px-4 pb-2.5 ${theme.headerBg} relative border-b border-slate-50`}>
+      <div className={`pt-3 px-3 pb-1.5 ${theme.headerBg} relative border-b border-slate-50`}>
         <div className="flex justify-between items-start relative z-10">
-          {/* Circular Logo - High Elevation with Aura */}
-          <div className="relative group">
-            {/* Blow-out Aura backdrop */}
-            <div className={`absolute -inset-1 rounded-full blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-500 ${isGrand ? 'bg-amber-400' : 'bg-emerald-400'}`}></div>
+          {/* Circular Logo - Enhanced Elevation */}
+          <div className="relative group/logo">
+            <div className={`absolute -inset-1 rounded-full blur-2xl opacity-30 group-hover/logo:opacity-50 transition-opacity duration-700 ${isGrand ? 'bg-orange-400' : 'bg-emerald-400'}`}></div>
             
-            <div className="w-14 h-14 rounded-full bg-white shadow-[0_12px_24px_-8px_rgba(0,0,0,0.18),0_4px_6px_-2px_rgba(0,0,0,0.05)] border-2 border-white flex items-center justify-center overflow-hidden transform group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-[0_20px_35px_-12px_rgba(0,0,0,0.25)] transition-all duration-500 relative z-20">
-              {/* Distinct inner gradient for depth */}
-              <div className={`absolute inset-0 opacity-15 ${isGrand ? 'bg-gradient-to-tr from-amber-300 via-white to-transparent' : 'bg-gradient-to-tr from-emerald-300 via-white to-transparent'}`}></div>
+            <div className="w-10 h-10 rounded-full bg-white shadow-xl border-2 border-white flex items-center justify-center overflow-hidden transform group-hover/logo:scale-110 group-hover/logo:rotate-3 transition-all duration-500 relative z-20">
+              <div className={`absolute inset-0 opacity-10 ${isGrand ? 'bg-gradient-to-tr from-orange-400 to-transparent' : 'bg-gradient-to-tr from-emerald-400 to-transparent'}`}></div>
               <img
-                src={catImage}
+                src={cardImage}
                 alt="Category"
                 onError={handleImageError}
-                className="w-full h-full object-contain p-3 relative z-10 drop-shadow-sm"
+                className="w-full h-full object-contain p-2 relative z-10"
               />
             </div>
           </div>
-
-          {/* Enrollment Pill - Super Elevated & Vibrant */}
-          <div className={`flex items-center gap-1.5 px-4 py-2 bg-white rounded-full shadow-[0_12px_28px_-6px_rgba(0,0,0,0.15),0_8px_15px_-4px_rgba(0,0,0,0.1)] ${theme.shadow} border border-white/90 relative overflow-hidden group/pill z-20 transform group-hover:-translate-y-0.5 transition-transform`}>
-            {/* Vibrant glow background inside pill */}
-            <div className={`absolute -left-2 -top-2 w-8 h-8 rounded-full blur-lg opacity-20 ${isGrand ? 'bg-amber-400' : 'bg-emerald-400'}`}></div>
-            
-            {isGrand ? (
-              <Trophy size={11} className="text-amber-500 animate-pulse relative z-10" />
-            ) : (
-              <span className="text-emerald-500 text-[11px] font-bold animate-bounce relative z-10">⚡</span>
-            )}
-            <span className="text-[11px] font-black text-slate-800 tracking-tight relative z-10">
-              {enrolledCount} <span className="text-slate-500 font-bold ml-0.5">Users</span>
-            </span>
-            {/* Extended Glossy shine on pill */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent -translate-x-full group-hover/pill:translate-x-full transition-transform duration-700"></div>
-          </div>
         </div>
-        
-        {/* Subtle decorative circle */}
-        <div className="absolute top-[-20%] right-[-10%] w-24 h-24 bg-white/40 rounded-full blur-2xl"></div>
+
+        {/* Mock/Grand Label */}
+        <div className="mt-2.5">
+          <span className={`px-2 py-0.5 rounded-md text-[7px] font-black uppercase tracking-widest ${theme.pillBg} ${theme.pillText}`}>
+            {isGrand ? "Grand Test Series" : "Mock Test"}
+          </span>
+        </div>
       </div>
 
-      {/* ── BODY (Info Section) ── */}
-      <div className="p-4 flex flex-col flex-grow">
-        {/* Top Badge for differentiation */}
-        <div className="mb-2">
-           <span className={`text-[8px] font-black uppercase tracking-[0.15em] px-2 py-0.5 rounded ${isGrand ? "bg-amber-100/70 text-amber-700" : "bg-emerald-100/70 text-emerald-700"}`}>
-             {isGrand ? "Grand Test" : "Mock Test"}
-           </span>
-        </div>
-
+      <div className="p-3 flex-grow">
         {/* Title */}
-        <h3 className={`text-[15px] font-black text-slate-800 leading-snug mb-2.5 ${theme.hoverText} transition-colors line-clamp-2 min-h-[2.4rem] tracking-tight`}>
+        <h3 className={`text-[13px] font-black text-slate-800 leading-tight mb-1.5 ${theme.hoverText} transition-colors tracking-tight uppercase`}>
           {test.title}
         </h3>
+        
+        {/* Subcategory */}
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 italic">
+          {subcategoryText}
+        </p>
 
-        {/* Subjects - Renamed from Languages */}
-        <div className={`flex items-start gap-2 mb-4 ${theme.accentText}`}>
-          <BookOpen size={14} strokeWidth={3} className="shrink-0 mt-0.5" />
-          <span className="text-[11px] font-black uppercase tracking-wider line-clamp-1">
+        {/* Subjects */}
+        <div className={`flex items-center gap-2 mb-3 ${theme.accentText} opacity-80`}>
+          <BookOpen size={11} strokeWidth={3} />
+          <span className="text-[9px] font-black uppercase tracking-[0.1em]">
             {languagesText}
           </span>
         </div>
 
-        {/* Test Spec Grid */}
-        <div className="grid grid-cols-2 gap-3 mb-5">
-           <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 flex flex-col gap-1">
-              <span className="text-[8px] font-black text-slate-400 tracking-[0.1em] uppercase">Duration</span>
-              <span className="text-[11px] font-black text-slate-800 flex items-center gap-1.5">
-                 <Clock size={11} className={theme.accentText} /> {test.durationMinutes || 0} Min
-              </span>
+        {/* Test Specifications - Vertical List (Testbook Style) */}
+        <div className="space-y-1.5 mb-1.5">
+           <div className="flex items-center justify-between group/item">
+              <div className="flex items-center gap-2">
+                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                    <Clock size={10} className={theme.accentText} />
+                 </div>
+                 <span className="text-[9px] font-black tracking-widest text-slate-500 uppercase">Duration</span>
+              </div>
+              <span className="text-[10px] font-black text-slate-800 uppercase">{test.durationMinutes || 0} MINUTES</span>
            </div>
-           <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 flex flex-col gap-1">
-              <span className="text-[8px] font-black text-slate-400 tracking-[0.1em] uppercase">Total Qs</span>
-              <span className="text-[11px] font-black text-slate-800 flex items-center gap-1.5">
-                 <FileText size={11} className={theme.accentText} /> {test.totalQuestions || 0} Qs
-              </span>
+
+           <div className="flex items-center justify-between group/item">
+              <div className="flex items-center gap-2">
+                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                    <FileText size={10} className={theme.accentText} />
+                 </div>
+                 <span className="text-[9px] font-black tracking-widest text-slate-500 uppercase">Total Questions</span>
+              </div>
+              <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalQuestions || 0} QUESTIONS</span>
            </div>
-           <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 flex flex-col gap-1">
-              <span className="text-[8px] font-black text-slate-400 tracking-[0.1em] uppercase">Total Marks</span>
-              <span className="text-[11px] font-black text-slate-800 flex items-center gap-1.5">
-                 <Trophy size={11} className={theme.accentText} /> {test.totalMarks || 0} Pts
-              </span>
+
+           <div className="flex items-center justify-between group/item">
+              <div className="flex items-center gap-2">
+                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                    <Trophy size={10} className={theme.accentText} />
+                 </div>
+                 <span className="text-[9px] font-black tracking-widest text-slate-500 uppercase">Total Marks</span>
+              </div>
+              <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalMarks || 0} MARKS</span>
            </div>
-           <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 flex flex-col gap-1">
-              <span className="text-[8px] font-black text-slate-400 tracking-[0.1em] uppercase">Access</span>
-              <span className={`text-[11px] font-black flex items-center gap-1.5 ${test.isFree ? 'text-emerald-600' : 'text-slate-800'}`}>
-                 {test.isFree ? 'FREE' : `₹${effectivePrice}`}
+
+           <div className="pt-1.5 border-t border-slate-50 flex items-center justify-between group/item">
+              <div className="flex items-center gap-2">
+                 <div className={`w-6 h-6 rounded-md ${isGrand ? 'bg-orange-50' : 'bg-emerald-50'} flex items-center justify-center`}>
+                    <span className="text-[10px]">💎</span>
+                 </div>
+                 <span className="text-[9px] font-black tracking-widest text-slate-500 uppercase">Access Type</span>
+              </div>
+              <span className={`text-[10px] font-black ${test.isFree ? 'text-emerald-600' : 'text-slate-800'}`}>
+                 {test.isFree ? 'FREE ACCESS' : `Rs. ${effectivePrice}`}
               </span>
            </div>
         </div>
       </div>
 
       {/* ── FOOTER (Action Button) ── */}
-      <div className="px-4 pb-4 mt-auto">
+      <div className="px-3 pb-3 mt-auto">
         <button
           onClick={handleAction}
-          className={`w-full py-2.5 ${theme.buttonBg} ${theme.buttonHover} text-white rounded-lg font-black text-[10px] uppercase tracking-[0.15em] shadow-lg ${theme.shadow}/50 transition-all active:scale-[0.97] transform hover:shadow-xl`}
+          className={`w-full py-2 ${theme.buttonBg} ${theme.buttonHover} text-white rounded-lg font-black text-[9px] uppercase tracking-[0.2em] shadow-xl transition-all active:scale-[0.97] flex items-center justify-center gap-2 group-hover:gap-3`}
         >
           {theme.btnLabel}
+          <motion.span animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+             →
+          </motion.span>
         </button>
       </div>
     </motion.div>

@@ -20,142 +20,155 @@ const StatItem = ({ icon: Icon, value, label, accentColorClass }) => (
 const MyTestCard = ({ test }) => {
     const navigate = useNavigate();
 
-  /* Image logic replaced with helper */
-  const imgSrc = getImageUrl(test.thumbnail);
+    const imgSrc = getImageUrl(test.thumbnail);
 
-    /* ⭐ FIX: Include 'ready_to_retry' status */
-    const isCompleted =
-        test.status === "completed" ||
-        test.status === "finished";
-    
-    // ⭐ NEW STATUS: Flag for when the test is completed but a new purchase allows a retry
+    const isCompleted = test.status === "completed" || test.status === "finished";
     const isReadyForNewAttempt = test.status === "ready_to_retry";
     const isInProgress = test.progress > 0 || test.status === "in-progress";
 
     const isGrandTest = test.isGrandTest === true;
-    const testTypeBadge = isGrandTest ? "GRAND TEST" : "MOCK TEST";
-    const badgeColor = isGrandTest ? "bg-indigo-600" : "bg-purple-600";
-    const hoverGlow = isGrandTest ? "hover:shadow-indigo-500/30" : "hover:shadow-cyan-500/30";
-
     const progress = isCompleted ? 100 : test.progress || 0;
 
-    // Adjust accent logic for the new status
-    const accent = isCompleted && !isReadyForNewAttempt
-        ? { bg: "from-green-500 to-emerald-400", text: "text-green-400" }
-        : isInProgress
-            ? { bg: "from-orange-500 to-amber-400", text: "text-orange-400" }
-            : { bg: isGrandTest ? "from-indigo-500 to-purple-400" : "from-cyan-500 to-teal-400", text: isGrandTest ? "text-indigo-400" : "text-cyan-400" };
+    const handleAction = (e) => {
+        if (e) e.stopPropagation();
+        const testId = String(test._id);
+        const attemptId = test.latestAttemptId ? String(test.latestAttemptId) : null;
 
-    const handleStart = () => {
-        // If completed and no re-attempt is ready, go straight to report
-        if (isCompleted && !isReadyForNewAttempt) {
-            navigate(`/student/report/${test.latestAttemptId}`);
+        console.log("MyTestCard: Action clicked", { testId, attemptId, status: test.status, isCompleted, isReadyForNewAttempt });
+
+        if (isCompleted && !isReadyForNewAttempt && attemptId) {
+            navigate(`/student/review/${attemptId}`);
             return;
         }
-        // Prioritize START/RESUME/RE-ATTEMPT
-        if (isReadyForNewAttempt || test.status === 'not_started' || test.status === 'in-progress') {
-            navigate(`/student/instructions/${test._id}`);
+        
+        if (isReadyForNewAttempt || test.status === 'not_started' || test.status === 'in-progress' || !test.status) {
+            navigate(`/student/instructions/${testId}`);
         }
     };
-    
-    // Determine the text for the button and the banner status
+
+    // Color Theme Logic based on Test Type (Consistent with All Tests)
+    const theme = isGrandTest ? {
+        primary: "orange-600",
+        bg: "bg-orange-50/40",
+        border: "border-orange-100",
+        hoverBorder: "group-hover:border-orange-300",
+        iconBg: "bg-orange-100/50",
+        text: "text-orange-600",
+        badge: "bg-gradient-to-r from-orange-500 to-amber-500",
+        progress: "bg-orange-500",
+        button: "bg-orange-600 hover:bg-orange-700 shadow-orange-200/50"
+    } : {
+        primary: "emerald-600",
+        bg: "bg-emerald-50/40",
+        border: "border-emerald-100",
+        hoverBorder: "group-hover:border-emerald-300",
+        iconBg: "bg-emerald-100/50",
+        text: "text-emerald-600",
+        badge: "bg-gradient-to-r from-emerald-500 to-green-500",
+        progress: "bg-emerald-500",
+        button: "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200/50"
+    };
+
     let buttonText = "Start Exam";
-    let bannerStatus = "READY";
+    let statusLabel = "Ready";
     
     if (isCompleted && !isReadyForNewAttempt) {
         buttonText = "View Report";
-        bannerStatus = "COMPLETED";
+        statusLabel = "Completed";
     } else if (isInProgress) {
         buttonText = "Resume Exam";
-        bannerStatus = "IN PROGRESS";
+        statusLabel = "In Progress";
     } else if (isReadyForNewAttempt) {
-        // Completed before, but new purchase allows restart
-        buttonText = "Start New Attempt";
-        bannerStatus = "RETRY READY"; 
+        buttonText = "Re-attempt";
+        statusLabel = "Needs Retry";
     }
 
     return (
-        <div
-            className={`
-                group flex flex-col bg-white rounded-xl border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.01)]
-                transition-all duration-500 w-full overflow-hidden
-                hover:shadow-[0_15px_30px_-8px_rgba(0,0,0,0.06)] hover:border-blue-400/30 hover:-translate-y-1
-            `}
+        <div 
+            onClick={handleAction}
+            className={`group cursor-pointer ${theme.bg} rounded-xl border ${theme.border} ${theme.hoverBorder} p-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4`}
         >
-            {/* ── MINI THUMBNAIL AREA ── */}
-            <div className="relative w-full h-36 overflow-hidden bg-slate-50">
-                <img
-                    src={imgSrc}
-                    alt={test.title}
-                    onError={handleImageError}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent opacity-40" />
+            {/* Header Section: Profile Style Image + Title */}
+            <div className="flex items-start gap-4">
+                <div className="relative flex-shrink-0">
+                    <img
+                        src={imgSrc}
+                        alt={test.title}
+                        onError={handleImageError}
+                        className={`w-14 h-14 rounded-full object-cover border-4 border-white shadow-sm transition-transform duration-500 group-hover:scale-105`}
+                    />
+                    {/* Status Indicator Dot - Theme Aware */}
+                    <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white flex items-center justify-center shadow-sm
+                        ${statusLabel === "Completed" ? "bg-emerald-500" : (statusLabel === "In Progress" ? theme.progress : "bg-blue-500")}
+                        ${statusLabel === "In Progress" ? `ring-2 ring-${theme.primary}/20` : ""}
+                    `}>
+                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                    </div>
+                </div>
                 
-                {/* Micro Badges */}
-                <div className="absolute top-2.5 left-2.5">
-                    <span className={`px-2 py-0.5 text-[8px] font-black text-white rounded-[4px] shadow-sm uppercase tracking-widest backdrop-blur-md border border-white/5 ${badgeColor}`}>
-                        {testTypeBadge?.split(" ")[0]}
-                    </span>
-                </div>
-
-                <div className="absolute bottom-2.5 left-2.5">
-                    <span className={`px-2 py-0.5 text-[9px] font-black text-white rounded-md shadow-sm uppercase tracking-tighter flex items-center gap-1 bg-slate-900/70 border border-white/10`}>
-                        <div className={`w-1 h-1 rounded-full animate-pulse bg-current ${accent.text}`}></div>
-                        {bannerStatus}
-                    </span>
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1.5">
+                        <span className={`text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-[2px] text-white shadow-sm ${theme.badge}`}>
+                            {isGrandTest ? "Grand Test" : "Mock Test"}
+                        </span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                            {statusLabel}
+                        </span>
+                    </div>
+                    <h3 className={`text-[14px] font-black leading-tight truncate transition-colors group-hover:${theme.text} text-slate-800 uppercase`}>
+                        {test.title}
+                    </h3>
+                    <p className="text-[10px] text-slate-500 mt-1 font-bold truncate opacity-70">
+                        {test.category?.name || test.category || "GENERAL EXAM"}
+                    </p>
                 </div>
             </div>
 
-            {/* ── ULTRA-LEAN CONTENT AREA ── */}
-            <div className="p-4 flex flex-grow flex-col">
-                <h3 className="text-[14px] font-black text-slate-800 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors mb-3 min-h-[36px]">
-                    {test.title}
-                </h3>
-
-                {/* Single-Line Micro Meta */}
-                <div className="flex items-center justify-between py-2 border-y border-slate-50/50 mb-3">
-                    <div className="flex items-center gap-2 overflow-hidden">
-                        <div className="flex items-center gap-1 min-w-fit">
-                            <Clock size={12} className="text-slate-300" />
-                            <span className="text-[10px] font-black text-slate-500">{test.durationMinutes || 30}m</span>
-                        </div>
-                        <div className="w-px h-3 bg-slate-100"></div>
-                        <div className="flex items-center gap-1 min-w-fit">
-                            <BookOpen size={12} className="text-slate-300" />
-                            <span className="text-[10px] font-black text-slate-500">{test.totalQuestions || 0}Q</span>
-                        </div>
-                    </div>
-                    <div className="text-[10px] font-black text-blue-500 uppercase tracking-tighter">
-                        {test.attemptsMade || 0} Attempts
-                    </div>
+            {/* Quick Stats Grid */}
+            <div className="grid grid-cols-4 gap-2 py-3 px-1 border-y border-white/50 bg-white/40 rounded-lg">
+                <div className="flex flex-col items-center border-r border-slate-200/50">
+                    <span className={`text-[11px] font-black ${theme.text}`}>{test.durationMinutes || 0}m</span>
+                    <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Time</span>
                 </div>
-
-                {/* Progress Mini-Bar */}
-                <div className="mt-auto">
-                    <div className="w-full bg-slate-50 rounded-full h-0.5 overflow-hidden mb-2">
-                        <div
-                            className={`h-full transition-all duration-1000 ease-out ${isCompleted && !isReadyForNewAttempt ? "bg-emerald-500" : (isGrandTest ? "bg-indigo-600" : "bg-blue-600")}`}
-                            style={{ width: `${progress}%` }}
-                        ></div>
-                    </div>
-
-                    {/* Elite Action Button */}
-                    <button
-                        onClick={handleStart}
-                        className={`
-                            w-full py-2.5 rounded-lg font-black text-[10px] uppercase tracking-[1.5px] text-white transition-all transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5
-                            ${isCompleted && !isReadyForNewAttempt 
-                                ? "bg-slate-800 hover:bg-slate-700" 
-                                : (isGrandTest ? "bg-indigo-600 hover:bg-indigo-500" : "bg-blue-600 hover:bg-blue-500")
-                            }
-                        `}
-                    >
-                        <Play size={10} fill="currentColor" />
-                        {buttonText?.split(" ")[0]} EXAM
-                    </button>
+                <div className="flex flex-col items-center border-r border-slate-200/50">
+                    <span className={`text-[11px] font-black ${theme.text}`}>{test.totalQuestions || 0}</span>
+                    <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Qs</span>
+                </div>
+                <div className="flex flex-col items-center border-r border-slate-200/50">
+                    <span className={`text-[11px] font-black ${theme.text}`}>{test.totalMarks || 100}</span>
+                    <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Marks</span>
+                </div>
+                <div className="flex flex-col items-center">
+                    <span className={`text-[11px] font-black ${theme.text}`}>{test.attemptsMade || 0}</span>
+                    <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Atts</span>
                 </div>
             </div>
+
+            {/* Progress Bar (Ultra Slim) */}
+            <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-[8px] font-black text-slate-400 uppercase tracking-[2px]">
+                    <span className="flex items-center gap-1">
+                        <div className={`w-1 h-1 rounded-full ${theme.progress}`}></div>
+                        Progress
+                    </span>
+                    <span className="text-slate-700">{progress}%</span>
+                </div>
+                <div className="h-1 w-full bg-white/50 rounded-full overflow-hidden shadow-inner">
+                    <div 
+                        className={`h-full transition-all duration-1000 ease-out ${theme.progress} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}
+                        style={{ width: `${progress}%` }}
+                    ></div>
+                </div>
+            </div>
+
+            {/* Action Button */}
+            <button
+                onClick={handleAction}
+                className={`w-full py-2.5 rounded-lg text-[11px] font-black uppercase tracking-[3px] text-white transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg ${theme.button}`}
+            >
+                {buttonText}
+                <Play size={10} fill="currentColor" className="ml-1" />
+            </button>
         </div>
     );
 };

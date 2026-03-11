@@ -30,8 +30,12 @@ const TestCard = ({ test }) => {
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.user);
 
-  /* Image logic replaced with helper */
-  const imageSource = getImageUrl(test.thumbnail);
+  /* Image logic prioritize thumbnail > category */
+  const imageSource = test.thumbnail 
+    ? getImageUrl(test.thumbnail)
+    : (test.category && (test.category.icon || test.category.image)) 
+      ? getImageUrl(test.category.icon || test.category.image) 
+      : "/logo.png";
 
   const isFree = test.isFree === true;
   const isGrand = test.isGrandTest === true;
@@ -91,24 +95,24 @@ const TestCard = ({ test }) => {
 
       <Link
         to={`/all-tests/${test._id}`}
-        className="p-6 flex flex-col flex-grow"
+        className="p-4 flex flex-col flex-grow"
       >
-        <div className="mb-4">
+        <div className="mb-2">
           {test.category?.name && (
-            <p className="text-[10px] font-black text-slate-400 mb-1 tracking-[0.2em]">
+            <p className="text-[9px] font-black text-slate-400 mb-1 tracking-[0.2em]">
               {test.category.name.toUpperCase()}
             </p>
           )}
-          <h3 className="text-xl font-black text-slate-900 leading-tight line-clamp-2 transition-colors group-hover:text-indigo-600 uppercase tracking-tighter">
+          <h3 className="text-[14px] font-black text-slate-900 leading-tight line-clamp-2 transition-colors group-hover:text-indigo-600 uppercase tracking-tighter">
             {test.title}
           </h3>
         </div>
 
-        <p className="text-slate-500 text-sm mb-5 line-clamp-2 flex-grow font-medium leading-relaxed">
+        <p className="text-slate-500 text-[11px] mb-3 line-clamp-2 flex-grow font-medium leading-relaxed">
           {test.description}
         </p>
 
-        <div className="grid grid-cols-3 gap-4 border-y border-slate-50 py-5 mb-6">
+        <div className="grid grid-cols-3 gap-2 border-y border-slate-50 py-3 mb-4">
           <StatItem
             icon={Clock}
             value={`${test.durationMinutes}`}
@@ -130,30 +134,27 @@ const TestCard = ({ test }) => {
         </div>
 
         <p
-          className={`text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r ${accentColor}`}
+          className={`text-xl font-black text-transparent bg-clip-text bg-gradient-to-r ${accentColor} uppercase`}
         >
-          {isFree ? "Free" : `₹${test.price}`}
+          {isFree ? "FREE" : `₹${test.price}`}
         </p>
       </Link>
 
-      <div className="p-6 pt-0 flex gap-3 w-full">
+      <div className="p-4 pt-0">
         {isFree ? (
           <button
             onClick={handleStartTest}
-            className="flex items-center justify-center gap-2 w-full text-white py-3.5 rounded-xl font-black transition bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-100 uppercase tracking-widest text-xs"
+            className="flex items-center justify-center gap-2 w-full text-white py-2.5 rounded-xl font-black transition bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-100 uppercase tracking-widest text-[9px]"
           >
-            <Play size={18} /> Start Now
+            <Play size={16} /> Start Now
           </button>
         ) : (
-          <>
-            <button
-              onClick={handleViewDetails}
-              className={`flex items-center justify-center gap-2 w-full text-white py-3.5 rounded-xl font-black transition bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 uppercase tracking-widest text-xs`}
-            >
-              <Wallet size={18} /> Buy Now
-            </button>
-
-          </>
+          <button
+            onClick={handleViewDetails}
+            className={`flex items-center justify-center gap-2 w-full text-white py-2.5 rounded-xl font-black transition bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 uppercase tracking-widest text-[9px]`}
+          >
+            <Wallet size={16} /> Buy Now
+          </button>
         )}
       </div>
     </div>
@@ -192,7 +193,7 @@ const FeaturedTestsSection = ({
               ? "bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800 drop-shadow-sm px-4 py-1" 
               : "text-slate-900"
           }`}>
-            {title}
+            {title.toUpperCase()}
           </h2>
         </div>
 
@@ -208,7 +209,7 @@ const FeaturedTestsSection = ({
           </p>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {!loading &&
             displayedTests.map((test) => (
               <div key={test._id} className="flex">

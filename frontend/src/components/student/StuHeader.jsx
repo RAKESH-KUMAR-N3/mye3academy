@@ -145,10 +145,10 @@ const StuHeader = ({ user, setActiveTab }) => {
     <header className="mb-4 relative">
       {/* ── ELITE RIBBON ── */}
       <div className="relative bg-gradient-to-r from-[#1a3a6b] via-[#1e4db7] to-[#1a3a9e] rounded-2xl px-3 py-2.5 shadow-xl border border-blue-400/20 flex items-center gap-3 flex-wrap xl:flex-nowrap">
-        {/* Glows — clipped separately so they don't overflow */}
+        {/* Glows — shrunk for better screen fit */}
         <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400 rounded-full blur-[90px] opacity-20 -mr-20 -mt-20" />
-          <div className="absolute bottom-0 left-1/3 w-40 h-40 bg-indigo-500 rounded-full blur-[70px] opacity-15" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-400 rounded-full blur-[60px] opacity-20 -mr-10 -mt-10" />
+          <div className="absolute bottom-0 left-1/3 w-24 h-24 bg-indigo-500 rounded-full blur-[50px] opacity-15" />
         </div>
 
 

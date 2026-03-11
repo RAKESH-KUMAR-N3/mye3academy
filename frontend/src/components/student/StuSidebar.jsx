@@ -87,29 +87,28 @@ const StuSidebar = ({ activeTab, setActiveTab }) => {
       transition={{ type: "spring", stiffness: 140, damping: 20, mass: 0.8 }}
       className="relative h-full bg-white border-r border-slate-200 flex flex-col z-[100]"
     >
-      {/* BRAND SECTION */}
-      <div className="px-6 py-8 flex items-center gap-4">
-        <Link
-          to="/"
-          className="shrink-0 w-11 h-11 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg cursor-pointer hover:rotate-6 transition-transform"
-        >
-          <GraduationCap size={24} strokeWidth={2.5} />
-        </Link>
+      <Link
+        to="/"
+        key="logo-desktop"
+        className="px-6 py-6 flex items-center gap-4 relative z-[110] group"
+      >
+        <div className="shrink-0 w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg cursor-pointer group-hover:scale-110 active:scale-95 transition-all duration-300">
+          <GraduationCap size={22} strokeWidth={2.5} />
+        </div>
         <AnimatePresence>
           {expandedSidebar && (
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="overflow-hidden whitespace-nowrap cursor-pointer"
-              onClick={() => navigate("/")}
+              className="overflow-hidden whitespace-nowrap"
             >
               <h2 className="text-xl font-black text-slate-800 tracking-tighter italic">Mye3</h2>
               <p className="text-[10px] font-bold text-blue-500 uppercase tracking-[0.2em] leading-none mt-0.5">Student Dashboard</p>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </Link>
 
       {/* NAVIGATION */}
       <nav className="px-3 space-y-1 flex-grow overflow-y-auto custom-scrollbar">
@@ -222,15 +221,15 @@ const StuSidebar = ({ activeTab, setActiveTab }) => {
                         className="h-full bg-white flex flex-col"
                     >
                          {/* Re-using same structure manually for mobile to avoid hover logic issues */}
-                         <div className="px-6 py-8 flex items-center gap-4">
-                            <div className="shrink-0 w-11 h-11 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg">
+                         <Link to="/" className="px-6 py-8 flex items-center gap-4 group">
+                            <div className="shrink-0 w-11 h-11 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg active:scale-95 transition-all">
                                 <GraduationCap size={24} strokeWidth={2.5} />
                             </div>
                             <div>
                                 <h2 className="text-xl font-black text-slate-800 tracking-tighter italic">Mye3</h2>
                                 <p className="text-[10px] font-bold text-blue-500 uppercase tracking-[0.2em] leading-none mt-0.5">Student Dashboard</p>
                             </div>
-                        </div>
+                        </Link>
                         <nav className="px-3 space-y-1 flex-grow overflow-y-auto">
                             {MENU.map((m, i) => {
                                 const Icon = m.icon;

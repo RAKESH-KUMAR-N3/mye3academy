@@ -2,6 +2,8 @@ import MockTest from "../../models/MockTest.js";
 import GrandTest from "../../models/GrandTest.js";
 import Category from "../../models/Category.js";
 import fs from "fs";
+import mongoose from "mongoose";
+import Attempt from "../../models/Attempt.js";
 
 // ✅ HELPER: Selects correct model based on isGrandTest flag
 const getModel = (isGrand) =>
@@ -24,14 +26,29 @@ const findTestById = async (id) => {
  */
 export const getAllAdminMocktests = async (req, res) => {
   try {
-    const [mockTests, grandTests] = await Promise.all([
-      MockTest.find({}).select("-questions -attempts").populate("category", "name slug image").sort({ createdAt: -1 }),
-      GrandTest.find({}).select("-questions -attempts").populate("category", "name slug image").sort({ createdAt: -1 }),
+    const mockTests = await MockTest.find({}).select("-questions -attempts").populate("category", "name slug image").sort({ createdAt: -1 }).lean();
+    const grandTests = await GrandTest.find({}).select("-questions -attempts").populate("category", "name slug image").sort({ createdAt: -1 }).lean();
+
+    const allTests = [...mockTests, ...grandTests];
+    
+    // Aggregate real attempt counts
+    const testIds = allTests.map(t => t._id);
+    const counts = await Attempt.aggregate([
+      { $match: { mocktestId: { $in: testIds } } },
+      { $group: { _id: "$mocktestId", count: { $sum: 1 } } }
     ]);
+
+    const countMap = {};
+    counts.forEach(c => countMap[c._id.toString()] = c.count);
+
+    const merged = allTests.map(t => ({
+      ...t,
+      attemptsCount: countMap[t._id.toString()] || 0
+    }));
 
     res.status(200).json({
       success: true,
-      mocktests: [...mockTests, ...grandTests],
+      mocktests: merged,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -52,9 +69,25 @@ export const getMocktestsByCategory = async (req, res) => {
     const tests = await Model.find({ categorySlug: category })
       .select("-questions -attempts")
       .populate("category", "name slug image")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
-    res.status(200).json({ success: true, mocktests: tests });
+    // Aggregate real counts
+    const testIds = tests.map(t => t._id);
+    const counts = await Attempt.aggregate([
+      { $match: { mocktestId: { $in: testIds } } },
+      { $group: { _id: "$mocktestId", count: { $sum: 1 } } }
+    ]);
+
+    const countMap = {};
+    counts.forEach(c => countMap[c._id.toString()] = c.count);
+
+    const merged = tests.map(t => ({
+      ...t,
+      attemptsCount: countMap[t._id.toString()] || 0
+    }));
+
+    res.status(200).json({ success: true, mocktests: merged });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -139,7 +172,9 @@ export const createMockTest = async (req, res) => {
       price: Number(req.body.price) || 0,
       isFree: isTestFree,
       isGrandTest: isTestGrand,
-      scheduledFor: finalScheduledFor,
+      languages: Array.isArray(JSON.parse(req.body.languages || "[]")) ? JSON.parse(req.body.languages) : ["English"],
+      baseEnrolledCount: Number(req.body.baseEnrolledCount) || 0,
+      featureCounts: typeof req.body.featureCounts === "string" ? JSON.parse(req.body.featureCounts) : (req.body.featureCounts || {}),
       category: foundCategory._id,
       categorySlug: foundCategory.slug,
       thumbnail: finalThumbnail,
@@ -188,11 +223,35 @@ export const updateMockTest = async (req, res) => {
       if (!req.body.totalQuestions) mockTest.totalQuestions = calcTotal;
     }
 
-    const fields = ["title", "description", "subcategory", "totalMarks", "totalQuestions", "marksPerQuestion", "negativeMarking", "price", "discountPrice"];
-    fields.forEach((field) => {
-      if (req.body[field] !== undefined) {
-        mockTest[field] = req.body[field];
+    // Explicit parse for JSON fields if they arrive as strings
+    if (req.body.languages) {
+      try {
+        const parsed = typeof req.body.languages === "string" ? JSON.parse(req.body.languages) : req.body.languages;
+        mockTest.languages = Array.isArray(parsed) ? parsed : [String(parsed)];
+      } catch (e) {
+        mockTest.languages = String(req.body.languages).split(",").map(l => l.trim()).filter(Boolean);
       }
+    }
+
+    if (req.body.featureCounts) {
+      try {
+        mockTest.featureCounts = typeof req.body.featureCounts === "string" ? JSON.parse(req.body.featureCounts) : req.body.featureCounts;
+      } catch (e) {
+        console.error("FeatureCounts parse error:", e.message);
+      }
+    }
+
+    // Handle single vs array values (multer artifacts)
+    const getSingle = (val) => Array.isArray(val) ? val[val.length - 1] : val;
+
+    const numericFields = ["totalMarks", "totalQuestions", "marksPerQuestion", "negativeMarking", "price", "discountPrice", "baseEnrolledCount"];
+    numericFields.forEach(f => {
+      if (req.body[f] !== undefined) mockTest[f] = Number(getSingle(req.body[f]));
+    });
+
+    const textFields = ["title", "description", "subcategory"];
+    textFields.forEach(f => {
+      if (req.body[f] !== undefined) mockTest[f] = String(getSingle(req.body[f])).trim();
     });
 
     // ✅ Sync existing questions if global marking scheme is updated
@@ -213,11 +272,15 @@ export const updateMockTest = async (req, res) => {
 
     // Duration: store null for auto-mode, or manual value if > 0
     if (req.body.durationMinutes !== undefined) {
-      const val = Number(req.body.durationMinutes);
+      const val = Number(getSingle(req.body.durationMinutes));
       mockTest.durationMinutes = val > 0 ? val : null;
     }
-    if (req.body.isFree !== undefined) mockTest.isFree = String(req.body.isFree) === "true";
-    if (req.body.isGrandTest !== undefined) mockTest.isGrandTest = String(req.body.isGrandTest) === "true";
+    if (req.body.isFree !== undefined) mockTest.isFree = String(getSingle(req.body.isFree)) === "true";
+    if (req.body.isGrandTest !== undefined) mockTest.isGrandTest = String(getSingle(req.body.isGrandTest)) === "true";
+
+    if (mockTest.isGrandTest && req.body.scheduledFor) {
+        mockTest.scheduledFor = new Date(getSingle(req.body.scheduledFor));
+    }
 
     mockTest.isPublished = false; // Force draft on edit
     const updated = await mockTest.save();
@@ -339,7 +402,25 @@ export const getFilteredMocktests = async (req, res) => {
       tests = [...m, ...g];
     }
 
-    res.status(200).json({ success: true, mocktests: tests });
+    // Aggregate real attempt counts
+    const testIds = tests.map(t => t._id);
+    const counts = await Attempt.aggregate([
+      { $match: { mocktestId: { $in: testIds } } },
+      { $group: { _id: "$mocktestId", count: { $sum: 1 } } }
+    ]);
+
+    const countMap = {};
+    counts.forEach(c => countMap[c._id.toString()] = c.count);
+
+    const merged = tests.map(t => {
+      const obj = t.toObject ? t.toObject() : t;
+      return {
+        ...obj,
+        attemptsCount: countMap[obj._id.toString()] || 0
+      };
+    });
+
+    res.status(200).json({ success: true, mocktests: merged });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -358,5 +439,27 @@ export const getPublishedMocktests = async (req, res) => {
     res.status(200).json([...mockTests, ...grandTests]);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * @desc    Get all attempts for a specific test (Admin View)
+ * @route   GET /api/admin/mocktests/:id/attempts
+ */
+export const getTestAttempts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const attempts = await Attempt.find({ mocktestId: id })
+      .populate("studentId", "firstname lastname email avatar")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      attempts
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

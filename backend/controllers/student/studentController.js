@@ -105,51 +105,48 @@ export const getMyPurchasedTests = async (req, res) => {
        }
     });
 
+    // 4. Optimize Re-attempt logic: Fetch all relevant "successful" orders for these tests once
+    const successfulOrders = await Order.find({
+        user: userId,
+        status: "successful",
+        attemptUsed: false,
+        items: { $in: validTests.map(t => t._id) }
+    }).lean();
+
+    const orderMap = new Set(successfulOrders.flatMap(o => o.items.map(i => i.toString())));
+
     // Inject status and metadata into each purchased test
-    const purchasedTestsWithStatus = await Promise.all(validTests.map(async (test) => {
+    const finalTests = validTests.map((test) => {
         try {
-            const testObj = { ...test }; 
             const testIdStr = test._id?.toString();
             if (!testIdStr) return null;
 
             const latestAttempt = attemptMap[testIdStr];
             const attemptsMade = countMap[testIdStr] || 0;
-            const maxAttempts = 1; // Base policy
-        
-            // Default status
+            const maxAttempts = 1;
+
             let status = 'not_started';
             let progress = 0;
             let latestAttemptId = null;
 
             if (latestAttempt) {
                 latestAttemptId = latestAttempt._id;
-                status = latestAttempt.status;
-                
-                if (status === 'finished') status = 'completed'; 
-                
+                status = latestAttempt.status === 'finished' ? 'completed' : latestAttempt.status;
                 if (status === 'started') progress = 10;
                 if (status === 'completed') progress = 100;
             }
 
-            // RE-ATTEMPT LOGIC: check for successful but unused order
             const isFree = test.isFree === true || test.price <= 0;
-            
-            const unusedOrder = isFree ? true : await Order.findOne({
-                user: userId,
-                items: test._id,
-                status: "successful",
-                attemptUsed: false,
-            }).lean();
+            const hasUnusedOrder = isFree || orderMap.has(testIdStr);
 
-            const isPurchaseRequired = (status === 'completed') && !unusedOrder && !isFree;
+            const isPurchaseRequired = (status === 'completed') && !hasUnusedOrder;
             
-            // If completed but we have a fresh order or it's free, let them retry
-            if (status === 'completed' && (unusedOrder || isFree)) {
+            if (status === 'completed' && hasUnusedOrder) {
                 status = 'ready_to_retry';
             }
 
             return {
-                ...testObj,
+                ...test,
                 status, 
                 progress,
                 attemptsMade,
@@ -158,12 +155,9 @@ export const getMyPurchasedTests = async (req, res) => {
                 isPurchaseRequired
             };
         } catch (e) {
-            console.error("Error processing final test object:", e);
             return null;
         }
-    }));
-
-    const finalTests = purchasedTestsWithStatus.filter(Boolean);
+    }).filter(Boolean);
 
     res.status(200).json({
       success: true,

@@ -19,8 +19,8 @@ const PremiumTestCard = ({ test, index = 0 }) => {
   const isGrand        = test.isGrandTest === true;
   const isFree         = test.isFree === true;
   
-  const hasPurchased   = purchasedTests.some((i) => i._id === test._id || i === test._id) || 
-                       myMockTests?.some((t) => t._id === test._id);
+  const hasPurchased   = purchasedTests.some((i) => String(i._id || i) === String(test._id)) || 
+                       myMockTests?.some((t) => String(t._id) === String(test._id));
 
   const effectivePrice =
     test.discountPrice > 0 && Number(test.discountPrice) < Number(test.price)
@@ -29,19 +29,31 @@ const PremiumTestCard = ({ test, index = 0 }) => {
 
   const canStart = isFree || effectivePrice <= 0 || hasPurchased;
 
-  const handleAction = (e) => {
-    if (e) e.stopPropagation();
+  const navigateToTest = (id) => {
+    const idStr = String(id);
+    console.log("PremiumTestCard: Navigating to test", { id: idStr, canStart, hasPurchased, userData: !!userData });
     if (!userData) {
       toast.error("Please login first!");
       navigate("/login");
       return;
     }
-    navigate(`/student/instructions/${test._id}`);
+    if (canStart) {
+      navigate(`/student/instructions/${idStr}`);
+    } else {
+      navigate(`/all-tests/${idStr}`);
+    }
   };
 
-  const catImage = (test.category && (test.category.icon || test.category.image)) 
-    ? getImageUrl(test.category.icon || test.category.image) 
-    : "/logo.png";
+  const handleAction = (e) => {
+    if (e) e.stopPropagation();
+    navigateToTest(test._id);
+  };
+
+  const cardImage = test.thumbnail 
+    ? getImageUrl(test.thumbnail)
+    : (test.category && (test.category.icon || test.category.image)) 
+      ? getImageUrl(test.category.icon || test.category.image) 
+      : "/logo.png";
 
   const enrolledCount = useMemo(() => {
     const total = (test.baseEnrolledCount || 0) + (test.attempts?.length || 0);
@@ -52,99 +64,123 @@ const PremiumTestCard = ({ test, index = 0 }) => {
     return total;
   }, [test.baseEnrolledCount, test.attempts]);
 
+  // Theme (Premium Grand)
+  const theme = {
+    headerBg: "bg-gradient-to-br from-orange-200 via-orange-100/60 to-white",
+    pillBg: "bg-orange-200",
+    pillText: "text-orange-800",
+    accentText: "text-orange-600",
+    hoverText: "group-hover:text-orange-800",
+    buttonBg: "bg-gradient-to-r from-orange-500 to-orange-600",
+    buttonHover: "hover:opacity-90",
+    shadow: "shadow-orange-200",
+    btnLabel: "View Grand Test"
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
       whileHover={{ y: -8 }}
-      onClick={() => navigate(`/all-tests/${test._id}`)}
-      className="flex flex-col bg-white rounded-2xl border-2 border-amber-100/50 shadow-md hover:shadow-2xl hover:border-amber-300 transition-all duration-500 overflow-hidden cursor-pointer group h-full relative"
+      onClick={() => navigateToTest(test._id)}
+      className={`flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:${theme.shadow}/60 transition-all duration-500 overflow-hidden cursor-pointer group h-full`}
     >
-      {/* ── PREMIUM GLOW ACCENT ── */}
-      <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400/10 rounded-full blur-[40px] -mr-12 -mt-12 pointer-events-none group-hover:bg-amber-400/20 transition-colors"></div>
-
-      {/* ── HEADER (Gold Section) ── */}
-      <div className="pt-4 px-5 pb-2.5 bg-amber-50/50 relative border-b border-amber-100/30">
+      {/* ── HEADER (Peach Theme) ── */}
+      <div className={`pt-3 px-3 pb-1 ${theme.headerBg} relative border-b border-slate-50`}>
         <div className="flex justify-between items-start relative z-10">
-          {/* Circular Logo - Elevated */}
-          <div className="w-11 h-11 rounded-full bg-white shadow-xl border-2 border-white p-2 flex items-center justify-center overflow-hidden transform group-hover:scale-110 transition-transform duration-500">
-            <img
-              src={catImage}
-              alt="Category"
-              onError={handleImageError}
-              className="w-full h-full object-contain"
-            />
+          {/* Circular Logo - Enhanced Elevation */}
+          <div className="relative group/logo">
+            <div className="absolute -inset-1 rounded-full blur-2xl opacity-30 group-hover/logo:opacity-50 transition-opacity duration-700 bg-orange-400"></div>
+            
+            <div className="w-10 h-10 rounded-full bg-white shadow-xl border-2 border-white flex items-center justify-center overflow-hidden transform group-hover/logo:scale-110 group-hover/logo:rotate-3 transition-all duration-500 relative z-20">
+              <div className="absolute inset-0 opacity-10 bg-gradient-to-tr from-orange-400 to-transparent"></div>
+              <img
+                src={cardImage}
+                alt="Category"
+                onError={handleImageError}
+                className="w-full h-full object-contain p-2 relative z-10"
+              />
+            </div>
           </div>
+        </div>
 
-          {/* Elite Pill - Enhanced Elevation */}
-          <div className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-amber-400 to-amber-600 text-white rounded-full shadow-[0_4px_15px_rgba(245,158,11,0.4)] border border-amber-300 relative overflow-hidden group/pill">
-            <Trophy size={11} className="animate-pulse relative z-10" />
-            <span className="text-[11px] font-black tracking-tight relative z-10 shadow-sm">{enrolledCount} Elite</span>
-            {/* Animated shine */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/pill:translate-x-full transition-transform duration-1000"></div>
-          </div>
+        {/* Label */}
+        <div className="mt-2.5">
+          <span className={`px-2 py-0.5 rounded-md text-[7px] font-black uppercase tracking-widest ${theme.pillBg} ${theme.pillText}`}>
+            Grand Test Series
+          </span>
         </div>
       </div>
 
-      {/* ── BODY (Info Section) ── */}
-      <div className="px-5 py-4 flex-grow flex flex-col">
-        <div className="mb-2">
-            <span className="text-[9px] font-black text-amber-600 uppercase tracking-[0.2em] bg-amber-100/50 px-2.5 py-1 rounded-md">GRAND TEST SERIES</span>
-        </div>
-        
-        <h3 className="text-[17px] font-black text-slate-800 leading-tight mb-3.5 group-hover:text-amber-600 transition-colors uppercase tracking-tight line-clamp-2 min-h-[2.6rem]">
+      <div className="p-3 flex-grow flex flex-col">
+        {/* Title */}
+        <h3 className={`text-[13px] font-black text-slate-800 leading-tight mb-1.5 ${theme.hoverText} transition-colors line-clamp-2 min-h-[2rem] tracking-tight uppercase`}>
           {test.title}
         </h3>
-        
-        <div className="flex items-center gap-3.5 mb-5 text-slate-500">
-          <div className="flex items-center gap-1.5">
-            <BookOpen size={14} className="text-amber-500" />
-            <span className="text-[12px] font-black tracking-tight">
-              {test.languages && test.languages.length > 0 ? test.languages[0].toUpperCase() : "ENGLISH"}
-            </span>
-          </div>
-          <span className="w-1 h-1 bg-slate-200 rounded-full"></span>
-          <div className="flex items-center gap-1.5">
-             <span className="text-[12px] font-black text-amber-600 tracking-tight">{test.totalTests || 0} Tests</span>
-          </div>
-          <span className="w-1 h-1 bg-slate-200 rounded-full"></span>
-          <div className="flex items-center gap-1.5">
-            <Trophy size={14} className="text-emerald-500" />
-            <span className="text-[12px] font-black tracking-tight">Ranked</span>
-          </div>
+
+        {/* Subjects */}
+        <div className={`flex items-center gap-2 mb-3 ${theme.accentText} opacity-80`}>
+          <BookOpen size={11} strokeWidth={3} />
+          <span className="text-[9px] font-black uppercase tracking-[0.1em]">
+            {test.languages && test.languages.length > 0 ? test.languages.join(", ") : "ENGLISH"}
+          </span>
         </div>
 
-        {/* ── FEATURES LIST (DYNAMIC) ── */}
-        <div className="space-y-2.5 mb-6">
-            <div className="flex items-start gap-2.5">
-              <CheckCircle2 size={16} className="text-amber-500 shrink-0 mt-0.5" />
-              <span className="text-[12px] font-bold text-slate-700 leading-tight tracking-tight">
-                {test.featureCounts?.liveTests || 0} Live Tests
+        {/* Specifications - Vertical List */}
+        <div className="space-y-1.5 mb-1.5">
+           <div className="flex items-center justify-between group/item">
+              <div className="flex items-center gap-2">
+                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                    <Clock size={10} className={theme.accentText} />
+                 </div>
+                 <span className="text-[9px] font-black tracking-widest text-slate-500">DURATION</span>
+              </div>
+              <span className="text-[10px] font-black text-slate-800 uppercase">{test.durationMinutes || 0} MINUTES</span>
+           </div>
+
+           <div className="flex items-center justify-between group/item">
+              <div className="flex items-center gap-2">
+                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                    <FileText size={10} className={theme.accentText} />
+                 </div>
+                 <span className="text-[9px] font-black tracking-widest text-slate-500">TOTAL QUESTIONS</span>
+              </div>
+              <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalQuestions || 0} QUESTIONS</span>
+           </div>
+
+           <div className="flex items-center justify-between group/item">
+              <div className="flex items-center gap-2">
+                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                    <Trophy size={10} className={theme.accentText} />
+                 </div>
+                 <span className="text-[9px] font-black tracking-widest text-slate-500">TOTAL MARKS</span>
+              </div>
+              <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalMarks || 0} MARKS</span>
+           </div>
+
+           <div className="pt-1.5 border-t border-slate-50 flex items-center justify-between group/item">
+              <div className="flex items-center gap-2">
+                 <div className="w-6 h-6 rounded-md bg-orange-50 flex items-center justify-center">
+                    <span className="text-[10px]">💎</span>
+                 </div>
+                 <span className="text-[9px] font-black tracking-widest text-slate-500">ACCESS TYPE</span>
+              </div>
+              <span className={`text-[10px] font-black ${test.isFree ? 'text-emerald-600' : 'text-slate-800'}`}>
+                 {test.isFree ? 'FREE ACCESS' : `Rs. ${effectivePrice}`}
               </span>
-            </div>
-            <div className="flex items-start gap-2.5">
-              <CheckCircle2 size={16} className="text-amber-500 shrink-0 mt-0.5" />
-              <span className="text-[12px] font-bold text-slate-700 leading-tight tracking-tight">
-                {test.featureCounts?.chapterTests || 0} Practice Modules
-              </span>
-            </div>
-            <div className="flex items-start gap-2.5">
-              <CheckCircle2 size={16} className="text-amber-500 shrink-0 mt-0.5" />
-              <span className="text-[12px] font-bold text-slate-700 leading-tight tracking-tight">
-                {test.featureCounts?.fullTests || 0} Selection Series
-              </span>
-            </div>
+           </div>
         </div>
       </div>
 
       {/* ── FOOTER / ACTION ── */}
-      <div className="p-5 pt-0">
+      <div className="p-3 pt-0 mt-auto">
         <button
           onClick={handleAction}
-          className="w-full py-3 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-amber-200 transition-all flex items-center justify-center gap-2 group/btn active:scale-[0.98]"
+          className={`w-full py-2 ${theme.buttonBg} ${theme.buttonHover} text-white rounded-lg font-black text-[9px] uppercase tracking-[0.2em] shadow-xl transition-all active:scale-[0.97] flex items-center justify-center gap-2 group/btn`}
         >
-          View Grand Test <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+          {theme.btnLabel}
+          <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
         </button>
       </div>
     </motion.div>

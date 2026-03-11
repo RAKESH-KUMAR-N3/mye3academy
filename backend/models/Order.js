@@ -14,6 +14,7 @@ const orderSchema = new Schema(
     items: [
       {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "MockTest",
       },
     ],
 

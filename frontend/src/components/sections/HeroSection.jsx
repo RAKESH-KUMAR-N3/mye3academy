@@ -7,13 +7,23 @@ import {
   FileText,
   Video,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 import heroBanner from "../../assets/home-banner.svg";
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { userData } = useSelector((state) => state.user);
 
   const handleGetStarted = () => {
-    navigate("/all-tests");
+    if (!userData) {
+      navigate("/all-tests");
+    } else {
+      const role = userData.role;
+      if (role === "admin") navigate("/admin");
+      else if (role === "institution") navigate("/institution-dashboard");
+      else if (role === "instructor") navigate("/instructor-dashboard");
+      else navigate("/student-dashboard");
+    }
   };
 
   return (
@@ -28,19 +38,19 @@ const HeroSection = () => {
 
             {/* LEFT CONTENT */}
             <div className="space-y-4 lg:pr-4">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#1e293b] leading-[1.2] tracking-tight">
-                Master Every <br /> Concept with <br />
-                <span className="text-blue-600">Specialized Test Series</span>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#1e293b] leading-[1.2] tracking-tighter uppercase">
+                MASTER EVERY <br /> CONCEPT WITH <br />
+                <span className="text-blue-600">SPECIALIZED TEST SERIES</span>
               </h1>
 
-              <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm font-semibold text-slate-500">
-                <span>Learn</span>
+              <div className="flex flex-wrap items-center gap-2 text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest">
+                <span>LEARN</span>
                 <ChevronRight className="w-4 h-4 text-emerald-500" />
-                <span>Practice</span>
+                <span>PRACTICE</span>
                 <ChevronRight className="w-4 h-4 text-emerald-500" />
-                <span>Improve</span>
+                <span>IMPROVE</span>
                 <ChevronRight className="w-4 h-4 text-emerald-500" />
-                <span className="text-blue-600">Succeed</span>
+                <span className="text-blue-600">SUCCEED</span>
               </div>
 
               <p className="text-sm md:text-base text-slate-600 max-w-md leading-relaxed">
@@ -51,9 +61,9 @@ const HeroSection = () => {
               <div className="pt-2">
                 <button
                   onClick={handleGetStarted}
-                  className="bg-[#1ec978] hover:bg-[#19af69] text-white px-6 py-3 font-bold text-base transition-all shadow-lg active:scale-95"
+                  className="bg-[#1ec978] hover:bg-[#19af69] text-white px-8 py-4 font-black text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
                 >
-                  Get Started For Free
+                  GET STARTED FOR FREE
                 </button>
               </div>
             </div>
@@ -80,8 +90,8 @@ const HeroSection = () => {
                 <ShieldCheck className="w-7 h-7" />
               </div>
               <div>
-                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Registered</p>
-                <p className="text-sm font-bold text-slate-800">50+ Lakhs</p>
+                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">REGISTERED</p>
+                <p className="text-sm font-black text-slate-800 uppercase">50+ LAKHS</p>
               </div>
             </div>
 
@@ -90,8 +100,8 @@ const HeroSection = () => {
                 <Trophy className="w-7 h-7" />
               </div>
               <div>
-                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Selections</p>
-                <p className="text-sm font-bold text-slate-800">4+ Lakhs</p>
+                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">SELECTIONS</p>
+                <p className="text-sm font-black text-slate-800 uppercase">4+ LAKHS</p>
               </div>
             </div>
 
@@ -100,8 +110,8 @@ const HeroSection = () => {
                 <FileText className="w-7 h-7" />
               </div>
               <div>
-                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Tests Taken</p>
-                <p className="text-sm font-bold text-slate-800">80+ Lakhs</p>
+                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">TESTS TAKEN</p>
+                <p className="text-sm font-black text-slate-800 uppercase">80+ LAKHS</p>
               </div>
             </div>
 
@@ -110,8 +120,8 @@ const HeroSection = () => {
                 <Video className="w-7 h-7" />
               </div>
               <div>
-                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Classes</p>
-                <p className="text-sm font-bold text-slate-800">25+ Lakhs</p>
+                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">CLASSES</p>
+                <p className="text-sm font-black text-slate-800 uppercase">25+ LAKHS</p>
               </div>
             </div>
 

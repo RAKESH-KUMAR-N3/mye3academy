@@ -14,6 +14,8 @@ import {
 import { fetchCategories } from "../redux/categorySlice";
 import MockTestCard from "../components/MockTestCard";
 import PremiumTestCard from "../components/PremiumTestCard";
+import UpcomingExamsGallery from "../components/sections/UpcomingExamsGallery";
+import { fetchUpcomingExams } from "../redux/studentSlice";
 
 const getCategoryTheme = (name = "") => {
   const n = name.toLowerCase();
@@ -78,7 +80,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
 
-  const { publicMocktests, publicStatus, filters } = useSelector(
+  const { publicMocktests, publicStatus, filters, upcomingExams, upcomingStatus } = useSelector(
     (state) => state.students
   );
   const { items: categories, loading: categoriesLoading } = useSelector(
@@ -121,6 +123,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
 
   useEffect(() => {
     dispatch(fetchCategories());
+    dispatch(fetchUpcomingExams());
   }, [dispatch]);
 
   const buildQuery = useCallback((filters) => {
@@ -482,9 +485,9 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
           {/* RIGHT GRID CONTENT */}
           <div className="flex-1 min-w-0 w-full">
             {publicStatus === "loading" ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="h-[400px] bg-white border border-slate-100 animate-pulse rounded-2xl" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <div key={i} className="h-[320px] bg-white border border-slate-100 animate-pulse rounded-2xl" />
                 ))}
               </div>
             ) : (
@@ -619,6 +622,14 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
           </div>
         </div>
       )}
+
+      {/* ── UPCOMING EXAMS SECTION ── */}
+      <div className="mt-12">
+        <UpcomingExamsGallery 
+          data={upcomingExams} 
+          loading={upcomingStatus === "loading"} 
+        />
+      </div>
     </div>
   );
 }

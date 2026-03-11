@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import api from "../../api/axios";
 import toast from "react-hot-toast";
@@ -77,22 +77,23 @@ const InstitutionSidebar = () => {
     >
       {/* BRAND SECTION */}
       <div className="px-6 py-8 flex items-center gap-4">
-        <div 
-            onClick={() => setIsPinned(!isPinned)}
-            className="shrink-0 w-11 h-11 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg cursor-pointer hover:rotate-6 transition-transform"
+        <Link 
+            to="/"
+            className="shrink-0 w-11 h-11 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100 cursor-pointer hover:rotate-6 transition-transform"
         >
-            <Building2 size={24} strokeWidth={2.5} />
-        </div>
+            <GraduationCap size={24} strokeWidth={2.5} />
+        </Link>
         <AnimatePresence>
             {expandedSidebar && (
                 <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
-                    className="overflow-hidden whitespace-nowrap"
+                    className="overflow-hidden whitespace-nowrap cursor-pointer"
+                    onClick={() => navigate('/')}
                 >
-                    <h2 className="text-xl font-black text-slate-800 tracking-tighter italic">Mye3</h2>
-                    <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em] leading-none mt-0.5">Institution Portal</p>
+                    <h2 className="text-lg font-black text-slate-800 tracking-tighter leading-none italic">Mye3</h2>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mt-1">Academy</p>
                 </motion.div>
             )}
         </AnimatePresence>

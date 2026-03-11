@@ -42,7 +42,8 @@ export const getAllInstructors = async (req, res) => {
 
 export const getAllStudents = async (req, res) => {
   try {
-    const students = await User.find({ role: "student" })
+    // Include students, admins, and instructors to track activity for all platform users
+    const students = await User.find({ role: { $in: ["student", "admin", "instructor"] } })
       .populate("addedBy", "firstname lastname")
       .lean();
 
@@ -566,7 +567,7 @@ export const downloadInstitutionReport = async (req, res) => {
 };
 export const downloadStudentReport = async (req, res) => {
   try {
-    const students = await User.find({ role: "student" })
+    const students = await User.find({ role: { $in: ["student", "admin"] } })
       .populate("addedBy", "firstname lastname")
       .lean();
 

@@ -95,103 +95,142 @@ const InstitutionStudents = () => {
   const totalPages = Math.ceil(filteredStudents.length / ITEMS_PER_PAGE);
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+    <div className="w-full relative">
+      {/* Visual background accents */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-50/30 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-50/20 rounded-full blur-[120px] -z-10 -translate-x-1/2 translate-y-1/2"></div>
+
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6 relative z-10">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Campus Students</h1>
-          <p className="text-slate-500 font-medium">Manage and track students registered by your institution.</p>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight uppercase italic leading-none">Campus Students</h1>
+          <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em] mt-2 opacity-80">
+            Precision Student Management & Performance Tracking
+          </p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-lg shadow-indigo-200"
+          className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 hover:bg-slate-900 transition-all shadow-xl shadow-indigo-100 active:scale-95"
         >
-          <Plus size={20} /> Add New Student
+          <Plus size={16} /> Add New Student
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 mb-8 max-w-md">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input
-            type="text"
-            placeholder="Search by name or email..."
-            className="w-full pl-12 pr-4 py-3 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-indigo-500 transition"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      <div className="flex flex-col md:flex-row gap-6 mb-10 relative z-10">
+        <div className="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 flex-grow max-w-xl flex items-center group transition-all hover:border-indigo-200">
+            <div className="w-12 h-12 flex items-center justify-center text-slate-300 group-hover:text-indigo-500 transition-colors">
+                <Search size={20} />
+            </div>
+            <input
+                type="text"
+                placeholder="Search by name, email or ID..."
+                className="flex-grow bg-transparent border-none focus:ring-0 text-sm font-bold text-slate-700 placeholder:text-slate-300 placeholder:uppercase placeholder:tracking-widest"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </div>
+        <div className="px-6 py-2 bg-white rounded-2xl border border-slate-100 flex items-center gap-4 shadow-sm">
+            <div className="text-right">
+                <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none">Total Directory</p>
+                <p className="text-lg font-black text-slate-800 leading-none mt-1">{filteredStudents.length}</p>
+            </div>
+            <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                <UserIcon size={18} />
+            </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-100 overflow-hidden relative z-10 font-sans">
         {loading ? (
-          <div className="p-20 flex flex-col items-center">
-            <ClipLoader color="#4f46e5" size={40} />
-            <p className="mt-4 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Refreshing Database...</p>
+          <div className="p-32 flex flex-col items-center">
+            <ClipLoader color="#4f46e5" size={50} />
+            <p className="mt-6 text-slate-400 font-black uppercase text-[10px] tracking-[0.3em] animate-pulse">Refreshing Campus Intel...</p>
           </div>
         ) : filteredStudents.length === 0 ? (
-          <div className="p-20 text-center">
-            <GraduationCap size={48} className="mx-auto text-slate-200 mb-4" />
-            <p className="text-slate-400 font-medium">No students found matching your search.</p>
+          <div className="p-32 text-center">
+            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-200">
+                <GraduationCap size={40} />
+            </div>
+            <p className="text-slate-400 font-bold uppercase text-[11px] tracking-widest">No matching student records found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="bg-slate-50/50 border-b border-slate-100 h-14">
-                  <th className="px-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Student Info</th>
-                  <th className="px-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Contact</th>
-                  <th className="px-6 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Activity</th>
-                  <th className="px-6 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Registration</th>
+                <tr className="bg-slate-50/30 border-b border-slate-100 h-16">
+                  <th className="px-8 text-[9px] font-black uppercase text-slate-400 tracking-[0.25em]">Registry Intel</th>
+                  <th className="px-8 text-[9px] font-black uppercase text-slate-400 tracking-[0.25em]">Communication</th>
+                  <th className="px-8 text-[9px] font-black uppercase text-slate-400 tracking-[0.25em] text-center">Purchases</th>
+                  <th className="px-8 text-[9px] font-black uppercase text-slate-400 tracking-[0.25em] text-center">Performance Stats</th>
+                  <th className="px-8 text-[9px] font-black uppercase text-slate-400 tracking-[0.25em] text-right">Access Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-50">
                 {paginatedStudents.map((s) => (
-                  <tr key={s._id} className="hover:bg-slate-50/50 transition duration-200 group">
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center border border-indigo-100 overflow-hidden shadow-sm group-hover:rotate-3 transition">
+                  <tr key={s._id} className="hover:bg-slate-50 transition-colors group">
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-5">
+                        <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center border-2 border-slate-100 overflow-hidden shadow-sm group-hover:border-indigo-200 transition-all p-0.5">
                           <img
-                            src={`https://ui-avatars.com/api/?background=6366f1&color=fff&bold=true&name=${encodeURIComponent(s.firstname + " " + s.lastname)}`}
+                            src={`https://ui-avatars.com/api/?background=f8fafc&color=4f46e5&bold=true&name=${encodeURIComponent(s.firstname + " " + s.lastname)}`}
                             alt="avatar"
+                            className="w-full h-full object-cover rounded-xl"
                           />
                         </div>
-                        <div>
-                          <h4 className="font-bold text-slate-800 capitalize leading-tight">{s.firstname} {s.lastname}</h4>
-                          <span className="text-xs text-slate-400 font-medium">{s.email}</span>
+                        <div className="min-w-0">
+                           <h4 className="font-black text-slate-800 uppercase tracking-tight text-sm truncate">{s.firstname} {s.lastname}</h4>
+                           <span className="text-[10px] text-indigo-500 font-bold uppercase tracking-wider block mt-1">{s.email}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-5">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2 text-slate-600">
-                             <Phone size={12} className="text-indigo-600" />
-                             <span className="text-xs font-bold tracking-tighter">{s.phoneNumber || "N/A"}</span>
+                    <td className="px-8 py-6">
+                      <div className="flex flex-col gap-1.5 min-w-[140px]">
+                        <div className="flex items-center gap-3 text-slate-600">
+                             <div className="w-7 h-7 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
+                                <Phone size={14} />
+                             </div>
+                             <span className="text-xs font-black text-slate-700 tracking-tight">{s.phoneNumber || "UNAVAILABLE"}</span>
                         </div>
-                         <span className="text-[10px] text-slate-300 font-black uppercase">Verified ID</span>
+                        <div className="flex items-center gap-2 mt-1">
+                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                            <span className="text-[8px] text-slate-400 font-black uppercase tracking-widest">VERIFIED CAMPUS ID</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-5">
+                    <td className="px-8 py-6">
+                        <div className="flex justify-center">
+                           <button 
+                             onClick={() => openActivityModal(s, 'purchased')}
+                             className="flex flex-col items-center bg-emerald-50/50 px-5 py-2.5 rounded-2xl border border-emerald-100 hover:bg-emerald-50 transition active:scale-95 min-w-[85px] group/btn"
+                           >
+                              <span className="text-sm font-black text-emerald-700 leading-none">₹{s.purchasedTestCount || 0}</span>
+                              <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest mt-1.5">Asset Log</span>
+                           </button>
+                        </div>
+                    </td>
+                    <td className="px-8 py-6">
                        <div className="flex justify-center items-center gap-4">
                           <button 
                             onClick={() => openActivityModal(s, 'attempts')}
-                            className="flex flex-col items-center bg-orange-50 px-3 py-2 rounded-xl border border-orange-100 hover:bg-orange-100 transition active:scale-95"
+                            className="flex flex-col items-center bg-orange-50/50 px-4 py-2.5 rounded-2xl border border-orange-100 hover:bg-orange-50 transition active:scale-95 min-w-[70px] group/btn"
                           >
-                             <span className="text-sm font-black text-orange-700">{s.attemptCount || 0}</span>
-                             <span className="text-[9px] font-black text-orange-400 uppercase tracking-tighter">Tests</span>
+                             <span className="text-sm font-black text-orange-700 leading-none">{s.attemptCount || 0}</span>
+                             <span className="text-[8px] font-black text-orange-400 uppercase tracking-widest mt-1.5">Mock Tests</span>
                           </button>
                           <button 
                              onClick={() => openActivityModal(s, 'doubts')}
-                             className="flex flex-col items-center bg-purple-50 px-3 py-2 rounded-xl border border-purple-100 hover:bg-purple-100 transition active:scale-95"
+                             className="flex flex-col items-center bg-purple-50/50 px-4 py-2.5 rounded-2xl border border-purple-100 hover:bg-purple-50 transition active:scale-95 min-w-[70px]"
                           >
-                             <span className="text-sm font-black text-purple-700">{s.doubtCount || 0}</span>
-                             <span className="text-[9px] font-black text-purple-400 uppercase tracking-tighter">Doubts</span>
+                             <span className="text-sm font-black text-purple-700 leading-none">{s.doubtCount || 0}</span>
+                             <span className="text-[8px] font-black text-purple-400 uppercase tracking-widest mt-1.5">Inquiries</span>
                           </button>
                        </div>
                     </td>
-                    <td className="px-6 py-5 text-center">
-                       <span className="text-[10px] text-slate-500 font-black uppercase tracking-widest">{new Date(s.createdAt).toLocaleDateString()}</span>
-                       <br/>
-                       <span className="text-[9px] text-slate-300 font-bold">Portal Registered</span>
+                    <td className="px-8 py-6 text-right min-w-[120px]">
+                       <span className="text-xs font-black text-slate-800 tracking-tight">{new Date(s.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                       <div className="flex items-center justify-end gap-1.5 mt-1.5">
+                            <Clock size={10} className="text-slate-300" />
+                            <span className="text-[8px] text-slate-300 font-black uppercase tracking-widest">ENTRY LOGGED</span>
+                       </div>
                     </td>
                   </tr>
                 ))}
@@ -327,14 +366,18 @@ const InstitutionStudents = () => {
                 </div>
 
                 {/* TAB SWITCHER WITHIN MODAL */}
-                <div className="flex bg-slate-100/50 p-2 mx-6 mt-6 rounded-2xl gap-2">
-                    {['attempts', 'purchased', 'doubts'].map((tab) => (
+                <div className="flex bg-slate-100/80 p-1.5 mx-8 mt-8 rounded-[1.25rem] gap-1.5 border border-slate-200/50">
+                    {[
+                        { id: 'attempts', label: 'Attempts', icon: <FaChartBar className="mb-0.5" /> },
+                        { id: 'purchased', label: 'Purchased', icon: <ShoppingBag size={14} className="mb-0.5" /> },
+                        { id: 'doubts', label: 'Doubts', icon: <FaQuestionCircle className="mb-0.5" /> }
+                    ].map((tab) => (
                         <button
-                          key={tab}
-                          onClick={() => setActivityType(tab)}
-                          className={`flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activityType === tab ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+                          key={tab.id}
+                          onClick={() => setActivityType(tab.id)}
+                          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${activityType === tab.id ? "bg-white text-indigo-600 shadow-[0_4px_20px_rgba(0,0,0,0.05)] scale-[1.02]" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"}`}
                         >
-                          {tab}
+                          {tab.icon} {tab.label}
                         </button>
                     ))}
                 </div>
@@ -350,43 +393,75 @@ const InstitutionStudents = () => {
                             {/* ATTEMPTS VIEW */}
                             {activityType === 'attempts' && (
                                 activityData?.attempts?.length > 0 ? (
-                                    activityData.attempts.map((att) => (
-                                        <div key={att._id} className="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm hover:border-indigo-100 transition group">
-                                            <div className="flex items-center justify-between gap-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 group-hover:rotate-6 transition">
-                                                        <Clock size={24} />
+                                    activityData.attempts.map((att) => {
+                                        const totalMarks = att.mocktestId?.totalMarks;
+                                        const scorePercentage = totalMarks ? (att.score / totalMarks) * 100 : 0;
+                                        return (
+                                            <div key={att._id} className="p-6 bg-white rounded-[2rem] border border-slate-200 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_15px_40px_rgba(79,70,229,0.08)] transition-all group relative overflow-hidden">
+                                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                                                    <div className="flex items-center gap-5">
+                                                        <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center text-indigo-700 group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                                                            <FaChartBar size={28} />
+                                                        </div>
+                                                        <div>
+                                                            <div className="flex items-center gap-3 mb-1.5">
+                                                                <span className="text-[11px] bg-indigo-100 text-indigo-700 font-extrabold px-3 py-1 rounded-lg uppercase tracking-wider">Exam Attempt</span>
+                                                                <span className="text-[11px] text-slate-500 font-extrabold uppercase tracking-widest">{new Date(att.createdAt).toLocaleDateString()}</span>
+                                                            </div>
+                                                            <h5 className="font-extrabold text-slate-900 text-xl uppercase tracking-tighter leading-tight">{att.mocktestId?.title || "Mock Test"}</h5>
+                                                            <div className="flex items-center gap-2 mt-2.5">
+                                                                <Clock size={14} className="text-slate-400" />
+                                                                <span className="text-[11px] text-slate-500 font-extrabold uppercase tracking-widest">{new Date(att.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <h5 className="font-bold text-slate-800 text-sm">{att.mocktestId?.title || "Mock Test"}</h5>
-                                                        <span className="text-[10px] text-slate-400 font-black uppercase">{new Date(att.createdAt).toLocaleDateString()} at {new Date(att.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    
+                                                    <div className="flex items-center gap-8 bg-slate-50 p-5 rounded-3xl border border-slate-200/60 shadow-sm">
+                                                        <div className="text-center px-6 border-r border-slate-200">
+                                                            <p className="text-[10px] text-slate-500 font-extrabold uppercase tracking-[0.2em] mb-1.5">Accuracy</p>
+                                                            <p className="text-2xl font-black text-indigo-700 leading-none">{att.correctCount || 0}</p>
+                                                            <p className="text-[10px] text-slate-500 font-extrabold uppercase mt-1.5">Correct</p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="text-[10px] text-slate-500 font-extrabold uppercase tracking-[0.2em] mb-1.5">Final Score</p>
+                                                            <div className="flex items-baseline justify-end gap-1">
+                                                                <span className="text-4xl font-black text-slate-900 leading-none">{att.score}</span>
+                                                                <span className="text-base font-black text-slate-400">/ {totalMarks || 'N/A'}</span>
+                                                            </div>
+                                                            <div className="mt-3 w-28 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                                                <div 
+                                                                    className="h-full bg-indigo-600 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(79,70,229,0.3)]" 
+                                                                    style={{ width: `${Math.min(scorePercentage, 100)}%` }}
+                                                                ></div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="text-right">
-                                                    <div className="flex items-baseline justify-end gap-0.5">
-                                                        <span className="text-2xl font-black text-slate-900 leading-none">{att.score}</span>
-                                                        <span className="text-xs font-black text-slate-300">/ {att.mocktestId?.totalMarks || 0}</span>
+                                                
+                                                <div className="mt-6 pt-6 border-t border-dashed border-slate-200 flex flex-wrap justify-between items-center gap-4">
+                                                    <div className="flex gap-4">
+                                                        <div className="flex items-center gap-2.5 text-emerald-700 bg-emerald-100/50 px-5 py-2.5 rounded-2xl border border-emerald-200">
+                                                            <CheckCircle size={16} />
+                                                            <span className="text-[11px] font-extrabold uppercase tracking-widest">Passed Verification</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2.5 text-slate-600 bg-slate-100 px-5 py-2.5 rounded-2xl border border-slate-200">
+                                                            <Info size={16} />
+                                                            <span className="text-[11px] font-extrabold uppercase tracking-widest">System Logged</span>
+                                                        </div>
                                                     </div>
-                                                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Final Result</p>
+                                                    <Link
+                                                        to={`/student/review/${att._id}`}
+                                                        target="_blank"
+                                                        className="bg-slate-900 text-white px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.25em] hover:bg-indigo-700 transition-all flex items-center gap-3 shadow-xl hover:-translate-y-1 active:scale-95"
+                                                    >
+                                                        Review Analysis <ExternalLink size={14} />
+                                                    </Link>
                                                 </div>
+                                                {/* Decorative element */}
+                                                <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-50/20 rounded-full blur-3xl -z-0"></div>
                                             </div>
-                                            <div className="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
-                                                <div className="flex gap-4">
-                                                    <div className="flex items-center gap-1.5 text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg">
-                                                        <CheckCircle size={12} />
-                                                        <span className="text-[10px] font-black">{att.correctCount || 0} Correct</span>
-                                                    </div>
-                                                </div>
-                                                <Link
-                                                  to={`/student/review/${att._id}`}
-                                                  target="_blank"
-                                                  className="bg-indigo-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 transition-colors flex items-center gap-2 shadow-lg shadow-indigo-100"
-                                                >
-                                                  Review Result <ExternalLink size={12} />
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    ))
+                                        );
+                                    })
                                 ) : (
                                     <EmptyActivityState icon={<FaClipboardList size={40} />} message="NO EXAM ATTEMPTS FOUND" />
                                 )
@@ -396,19 +471,45 @@ const InstitutionStudents = () => {
                             {activityType === 'purchased' && (
                                 activityData?.purchasedTests?.length > 0 ? (
                                     activityData.purchasedTests.map((test, idx) => (
-                                        <div key={idx} className="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between group">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                                                    <ShoppingBag size={24} />
+                                        <div key={idx} className="p-6 bg-white rounded-[2rem] border border-slate-200 shadow-[0_8px_30px_rgba(0,0,0,0.03)] flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-indigo-400 transition-all overflow-hidden relative">
+                                            <div className="absolute top-0 left-0 w-2.5 h-full bg-slate-100 group-hover:bg-indigo-600 transition-colors"></div>
+                                            <div className="flex items-center gap-7 flex-1 pr-4">
+                                                <div className="w-20 h-20 rounded-[1.8rem] bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center text-indigo-700 group-hover:scale-105 transition-transform duration-500 shadow-inner flex-shrink-0">
+                                                    <ShoppingBag size={32} />
                                                 </div>
-                                                <div>
-                                                    <h5 className="font-bold text-slate-800 text-sm">{test.title}</h5>
-                                                    <p className="text-[10px] text-slate-400 font-black uppercase">Order ID: {test.orderId}</p>
+                                                <div className="min-w-0">
+                                                    <div className="flex items-center gap-3 mb-2">
+                                                        <span className="text-[11px] bg-indigo-100 text-indigo-700 font-black px-3 py-1 rounded-lg uppercase tracking-wider">Course Enrollment</span>
+                                                        <span className="text-[11px] text-emerald-600 font-extrabold uppercase tracking-widest flex items-center gap-1.5"><CheckCircle size={12} /> Verified Asset</span>
+                                                    </div>
+                                                    <h5 className="font-black text-slate-900 text-2xl uppercase tracking-tighter leading-tight truncate">{test.title}</h5>
+                                                    <div className="mt-4 flex items-center gap-6 flex-wrap">
+                                                        <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200/60 shadow-sm">
+                                                            <span className="text-[10px] text-slate-500 font-black uppercase tracking-wider">Order No:</span>
+                                                            <span className="text-[11px] text-slate-900 font-black">{test.orderId}</span>
+                                                        </div>
+                                                        {test.paymentId && test.paymentId !== 'N/A' && (
+                                                            <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200/60 shadow-sm">
+                                                                <span className="text-[10px] text-slate-500 font-black uppercase tracking-wider">Payment Ref:</span>
+                                                                <span className="text-[11px] text-slate-800 font-black">{test.paymentId}</span>
+                                                            </div>
+                                                        )}
+                                                        <div className="flex items-center gap-2.5 group/date">
+                                                            <Calendar size={16} className="text-indigo-400 group-hover/date:scale-110 transition-transform" />
+                                                            <span className="text-[11px] text-slate-600 font-black uppercase tracking-widest">{new Date(test.date).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <span className="text-[10px] text-slate-500 font-black tracking-widest uppercase">{new Date(test.date).toLocaleDateString()}</span>
-                                                <p className="text-[9px] text-emerald-600 font-black uppercase tracking-tighter mt-1 bg-emerald-50 px-2 py-0.5 rounded-full inline-block">Lifetime Access</p>
+                                            <div className="flex flex-col items-end gap-3 min-w-[190px] bg-slate-50 p-6 rounded-[2rem] border border-slate-200 shadow-sm">
+                                                <div className="text-right">
+                                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.25em] mb-2">Purchase Value</p>
+                                                    <p className="text-4xl font-black text-slate-900 leading-none tracking-tighter">₹{test.amount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                                </div>
+                                                <div className="mt-2 flex items-center gap-2.5 bg-white px-5 py-2.5 rounded-2xl border border-emerald-100 shadow-sm">
+                                                    <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.6)]"></span>
+                                                    <span className="text-[11px] font-black text-emerald-700 tracking-[0.15em] uppercase">Permanent Access</span>
+                                                </div>
                                             </div>
                                         </div>
                                     ))
@@ -421,23 +522,64 @@ const InstitutionStudents = () => {
                             {activityType === 'doubts' && (
                                 activityData?.doubts?.length > 0 ? (
                                     activityData.doubts.map((d) => (
-                                        <div key={d._id} className="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                                            <div className="absolute top-0 right-0 w-1 h-full bg-purple-100 group-hover:bg-purple-600 transition-all"></div>
-                                            <div className="flex justify-between items-start mb-3">
-                                                <span className={`text-[9px] font-black uppercase px-3 py-1 rounded-lg tracking-widest ${d.status === 'answered' ? 'bg-emerald-100 text-emerald-600' : 'bg-indigo-100 text-indigo-600'}`}>
-                                                    {d.status}
-                                                </span>
-                                                <span className="text-[10px] text-slate-300 font-black tracking-widest uppercase">{new Date(d.createdAt).toLocaleDateString()}</span>
-                                            </div>
-                                            <p className="text-sm font-bold text-slate-700 leading-relaxed italic pr-4">" {d.text} "</p>
-                                            <div className="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between">
-                                                <span className="text-[9px] text-slate-400 font-bold uppercase">Topic: {d.mocktestId?.title || "General"}</span>
-                                                {d.assignedInstructor && (
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className="text-[9px] text-slate-300 font-black uppercase">Expert:</span>
-                                                        <span className="text-[9px] font-black text-indigo-600 uppercase">{d.assignedInstructor.firstname}</span>
+                                        <div key={d._id} className="p-0 bg-white rounded-[2rem] border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] relative overflow-hidden group">
+                                            <div className="flex items-stretch">
+                                                <div className={`w-3 ${d.status === 'answered' ? 'bg-emerald-500' : 'bg-amber-500'} group-hover:w-4 transition-all duration-300`}></div>
+                                                <div className="p-7 flex-1">
+                                                    <div className="flex justify-between items-start mb-6">
+                                                        <div className="flex items-center gap-3">
+                                                            <span className={`text-[10px] font-black uppercase px-4 py-1.5 rounded-2xl tracking-[0.15em] border ${d.status === 'answered' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-amber-50 border-amber-100 text-amber-700'}`}>
+                                                                {d.status} Status
+                                                            </span>
+                                                            <div className="w-1.5 h-1.5 bg-slate-200 rounded-full"></div>
+                                                            <span className="text-[10px] text-slate-400 font-black tracking-widest uppercase">{new Date(d.createdAt).toLocaleDateString()}</span>
+                                                        </div>
+                                                        <div className="flex -space-x-2">
+                                                            {[1, 2, 3].map(i => (
+                                                                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center overflow-hidden">
+                                                                    <img src={`https://ui-avatars.com/api/?name=Expert+${i}&background=random`} alt="expert" className="w-full h-full opacity-60" />
+                                                                </div>
+                                                            ))}
+                                                        </div>
                                                     </div>
-                                                )}
+                                                    
+                                                    <div className="relative mb-6">
+                                                        <span className="absolute -left-4 -top-2 text-4xl text-slate-100 font-serif leading-none">“</span>
+                                                        <p className="text-lg font-bold text-slate-700 leading-relaxed italic pr-6 pl-2 relative z-10">
+                                                            {d.text}
+                                                        </p>
+                                                        <span className="absolute -right-2 -bottom-4 text-4xl text-slate-100 font-serif leading-none">”</span>
+                                                    </div>
+
+                                                    <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-dashed border-slate-100">
+                                                        <div className="flex items-center gap-2.5">
+                                                            <div className="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                                                                <FaQuestionCircle size={14} />
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest leading-none mb-1">Context / Topic</p>
+                                                                <p className="text-[10px] font-black text-slate-800 uppercase tracking-tight">{d.mocktestId?.title || "General Inquiry"}</p>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        {d.assignedInstructor ? (
+                                                            <div className="flex items-center gap-3 bg-indigo-50/50 px-4 py-2 rounded-2xl border border-indigo-100/50">
+                                                                <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[10px] font-black">
+                                                                    {d.assignedInstructor.firstname?.charAt(0)}
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-[8px] text-indigo-400 font-black uppercase tracking-widest leading-none mb-0.5">Assigned Expert</p>
+                                                                    <p className="text-[10px] font-black text-indigo-700 uppercase tracking-tight">{d.assignedInstructor.firstname}</p>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex items-center gap-2 text-slate-400 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100/30">
+                                                                <div className="w-2 h-2 bg-slate-300 rounded-full animate-pulse"></div>
+                                                                <span className="text-[9px] font-black uppercase tracking-widest">Awaiting Expert Assignment</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     ))

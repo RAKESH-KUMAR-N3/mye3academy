@@ -2,6 +2,8 @@ import User from "../../models/Usermodel.js";
 import Attempt from "../../models/Attempt.js";
 import Doubt from "../../models/Doubt.js";
 import Order from "../../models/Order.js";
+import MockTest from "../../models/MockTest.js";
+import GrandTest from "../../models/GrandTest.js";
 import bcrypt from "bcryptjs";
 import sendEmail from "../../utils/sendEmail.js";
 
@@ -132,22 +134,63 @@ export const getStudentActivityForInstitution = async (req, res) => {
     const student = await User.findOne({ _id: studentId, addedBy: institutionId });
     if (!student) return res.status(403).json({ message: "Access denied" });
 
-    const [orders, attempts, doubts] = await Promise.all([
-      Order.find({ user: studentId, status: "successful" }).populate("items", "title").lean(),
-      Attempt.find({ studentId: studentId }).populate("mocktestId", "title").sort({ createdAt: -1 }).lean(),
-      Doubt.find({ student: studentId }).populate("assignedInstructor", "firstname lastname").populate("mocktestId", "title").sort({ createdAt: -1 }).lean(),
+    const [orders, rawAttempts, doubts] = await Promise.all([
+      Order.find({ user: studentId, status: "successful" }).sort({ createdAt: -1 }).lean(),
+      Attempt.find({ studentId: studentId }).sort({ createdAt: -1 }).lean(),
+      Doubt.find({ student: studentId }).populate("assignedInstructor", "firstname lastname").sort({ createdAt: -1 }).lean(),
     ]);
 
-    const purchasedTests = orders.flatMap(o => o.items.map(i => ({
-      title: i.title,
-      date: o.createdAt,
-      orderId: o.razorpay?.order_id || "N/A"
-    })));
+    // Manually populate doubts to handle both test collections
+    const enrichedDoubts = await Promise.all(doubts.map(async (d) => {
+        let test = await MockTest.findById(d.mocktestId).select("title").lean();
+        if (!test) {
+            test = await GrandTest.findById(d.mocktestId).select("title").lean();
+        }
+        return {
+            ...d,
+            mocktestId: test || { title: "Test Information Unavailable" }
+        };
+    }));
+
+    // Manually populate attempts to handle both MockTest and GrandTest collections
+    const attempts = await Promise.all(rawAttempts.map(async (att) => {
+        let test = await MockTest.findById(att.mocktestId).select("title totalMarks").lean();
+        if (!test) {
+            test = await GrandTest.findById(att.mocktestId).select("title totalMarks").lean();
+        }
+        return {
+            ...att,
+            mocktestId: test || { title: "Deleted Test", totalMarks: 0 }
+        };
+    }));
+
+    // Manually populate order items to handle both MockTest and GrandTest collections
+    const purchasedTests = (await Promise.all(orders.map(async (o) => {
+        if (!o.items || !Array.isArray(o.items)) return [];
+        
+        const enrichedItems = await Promise.all(o.items.map(async (itemId) => {
+            // Attempt to find in MockTest
+            let item = await MockTest.findById(itemId).select("title").lean();
+            if (!item) {
+                // Attempt to find in GrandTest
+                item = await GrandTest.findById(itemId).select("title").lean();
+            }
+            return item || { title: "Archived/Deleted Material" };
+        }));
+
+        return enrichedItems.map(i => ({
+            title: i.title,
+            date: o.createdAt,
+            orderId: o.razorpay?.order_id || "N/A",
+            paymentId: o.razorpay?.payment_id || "N/A",
+            amount: (o.amount || 0)
+        }));
+    }))).flat();
 
     res.status(200).json({
       purchasedTests,
       attempts,
-      doubts
+      doubts: enrichedDoubts
     });
   } catch (error) {
     console.error("Institution Get Activity Error:", error);

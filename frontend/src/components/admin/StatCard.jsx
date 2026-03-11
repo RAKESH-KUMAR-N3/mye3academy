@@ -3,29 +3,35 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-const StatCard = ({ title, value, icon, bgColor, progress, link }) => {
+const StatCard = ({ title, value, icon, bgColor, progress, link, iconColor, compact }) => {
   const navigate = useNavigate();
+
+  // Determine if we should use solid color style or class
+  const isSolidColor = bgColor && (bgColor.startsWith('#') || bgColor.startsWith('rgb'));
+  
+  // High-end UI: If it's a white/light card, use dark text. If it's a solid brand color, use white text.
+  const isLightCard = bgColor === 'bg-white' || (isSolidColor && (bgColor.toLowerCase() === '#ffffff' || bgColor.toLowerCase() === 'white'));
 
   return (
     <motion.div 
-        whileHover={link ? { y: -8, scale: 1.02, transition: { duration: 0.2 } } : { y: -5, transition: { duration: 0.2 } }}
+        whileHover={link ? { y: -5, scale: 1.01, transition: { duration: 0.2 } } : { y: -3, transition: { duration: 0.2 } }}
         whileTap={link ? { scale: 0.98 } : {}}
         onClick={() => link && navigate(link)}
-        className={`relative p-6 rounded-[10px] border-none shadow-[0_15px_45px_rgba(0,0,0,0.15)] overflow-hidden group text-white ${link ? 'cursor-pointer' : ''}`}
-        style={{ backgroundColor: bgColor }}
+        style={isSolidColor ? { backgroundColor: bgColor } : {}}
+        className={`relative ${compact ? 'p-4' : 'p-6'} rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] overflow-hidden group border border-slate-100 ${!isSolidColor ? bgColor : ''} ${link ? 'cursor-pointer' : ''}`}
     >
-        <div className="flex items-center gap-4">
-            {/* WHITE ICON CIRCLE */}
-            <div className="shrink-0 w-14 h-14 rounded-full flex items-center justify-center bg-white text-[#3e4954] shadow-md">
-                {React.cloneElement(icon, { size: 24, strokeWidth: 2.5 })}
+        <div className="flex items-center gap-3 relative z-10">
+            {/* ICON CIRCLE */}
+            <div className={`shrink-0 ${compact ? 'w-10 h-10' : 'w-12 h-12'} rounded-2xl flex items-center justify-center shadow-sm transition-transform group-hover:scale-110 ${iconColor || 'bg-white/20 text-white'}`}>
+                {React.cloneElement(icon, { size: compact ? 18 : 22, strokeWidth: 2.5 })}
             </div>
 
             <div className="flex-grow">
-                <p className="text-[11px] font-bold text-white/90 uppercase tracking-widest mb-1 font-poppins">
+                <p className={`${compact ? 'text-[8px]' : 'text-[10px]'} font-black uppercase tracking-widest mb-0.5 ${isLightCard ? 'text-slate-400' : 'text-white/80'}`}>
                     {title}
                 </p>
                 <div className="flex items-baseline gap-2">
-                    <h3 className="text-2xl font-black text-white tracking-tight leading-none font-poppins">
+                    <h3 className={`${compact ? 'text-lg' : 'text-2xl'} font-black tracking-tight leading-none ${isLightCard ? 'text-slate-800' : 'text-white'}`}>
                         {value}
                     </h3>
                 </div>
@@ -33,21 +39,26 @@ const StatCard = ({ title, value, icon, bgColor, progress, link }) => {
         </div>
 
         {/* PROGRESS BAR SECTION */}
-        <div className="mt-5 flex flex-col gap-2">
-            <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+        <div className={`${compact ? 'mt-3' : 'mt-6'} flex flex-col gap-1.5 relative z-10`}>
+            <div className={`h-1.5 w-full rounded-full overflow-hidden ${isLightCard ? 'bg-slate-100' : 'bg-white/20'}`}>
                 <motion.div 
                     initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
+                    animate={{ width: `${progress || 0}%` }}
                     transition={{ duration: 1, ease: "easeOut" }}
-                    className="h-full rounded-full bg-white"
+                    className={`h-full rounded-full ${isLightCard ? 'bg-indigo-600' : 'bg-white'}`}
                 />
             </div>
-            <div className="flex items-center justify-between">
-                <span className="text-[9px] font-black text-white/80 uppercase tracking-widest font-poppins">
-                    {progress}% Increase in 20 Days
-                </span>
-            </div>
+            {!compact && (
+                <div className="flex items-center justify-between">
+                    <span className={`text-[9px] font-black uppercase tracking-widest ${isLightCard ? 'text-slate-400' : 'text-white/70'}`}>
+                        {progress || 0}% Increase in 20 Days
+                    </span>
+                </div>
+            )}
         </div>
+        
+        {/* Subtle background decoration */}
+        <div className={`absolute -right-4 -bottom-4 ${compact ? 'w-16 h-16' : 'w-24 h-24'} rounded-full blur-2xl opacity-10 ${isLightCard ? 'bg-indigo-500' : 'bg-white'}`}></div>
     </motion.div>
   );
 };

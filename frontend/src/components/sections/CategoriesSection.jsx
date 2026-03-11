@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { getImageUrl, handleImageError } from "../../utils/imageHelper";
 import MockTestCard from "../MockTestCard";
 
@@ -9,6 +10,7 @@ const toTitleCase = (str = "") =>
 
 const CategoriesSection = ({ categories = [], loading }) => {
   const navigate = useNavigate();
+  const { userData, myMockTests } = useSelector((state) => state.user);
   const scrollRef = useRef(null);
 
   /* ── 1. Build category tabs ── */
@@ -21,8 +23,8 @@ const CategoriesSection = ({ categories = [], loading }) => {
       if (!map.has(slug.toLowerCase())) map.set(slug.toLowerCase(), name);
     });
     return Array.from(map).map(([id, label]) => {
-      const base = toTitleCase(label);
-      return { id, label: base.toLowerCase().includes("exam") ? base : `${base} Exams` };
+      const base = label.toUpperCase();
+      return { id, label: base.includes("EXAM") ? base : `${base} EXAMS` };
     });
   }, [categories]);
 
@@ -105,17 +107,36 @@ const CategoriesSection = ({ categories = [], loading }) => {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
               {filteredExams.slice(0, 9).map((item) => {
-                const testIcon = getImageUrl(item.thumbnail || item.image || (item.category && (item.category.icon || item.category.image)));
-                const rawLabel = item.title || item.subcategory || item.name || "Test";
-                const testLabel = toTitleCase(rawLabel);
+                const testIcon = item.thumbnail 
+                  ? getImageUrl(item.thumbnail)
+                  : (item.category && (item.category.icon || item.category.image)) 
+                    ? getImageUrl(item.category.icon || item.category.image) 
+                    : null;
+                const testLabel = (item.title || item.subcategory || item.name || "Test").toUpperCase();
 
                 const handleClick = () => {
+                  const idStr = String(item._id);
+                  if (!userData) {
+                    return navigate(`/all-tests/${idStr}`);
+                  }
+                  
+                  const isPurchased =
+                    userData?.purchasedTests?.some((pid) => String(pid._id || pid) === idStr) ||
+                    myMockTests?.some((t) => String(t._id) === idStr);
+
                   const effective =
                     item.discountPrice > 0 && Number(item.discountPrice) < Number(item.price)
                       ? Number(item.discountPrice)
-                      : Number(item.price);
-                  const isFree = item.isFree === true || effective <= 0;
-                  navigate(isFree ? `/student/instructions/${item._id}` : `/all-tests/${item._id}`);
+                      : Number(item.price || 0);
+                  const isFree = item.isFree === true || String(item.isFree) === "true" || effective <= 0;
+                  
+                  console.log("CategoriesSection: Clicked test", { name: testLabel, id: idStr, isPurchased, isFree });
+
+                  if (isFree || isPurchased) {
+                    navigate(`/student/instructions/${idStr}`);
+                  } else {
+                    navigate(`/all-tests/${idStr}`);
+                  }
                 };
 
                 return (
@@ -125,12 +146,12 @@ const CategoriesSection = ({ categories = [], loading }) => {
                     className="group flex items-center gap-4 px-5 py-3.5 bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-pointer"
                   >
                     {/* Circular icon container - optimized size for 3-column layout */}
-                    <div className="w-12 h-12 flex-none rounded-full bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 border border-slate-50">
+                    <div className="w-12 h-12 flex-none rounded-full bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 border border-slate-100">
                       {testIcon ? (
                         <img
                           src={testIcon}
                           alt={testLabel}
-                          className="w-10 h-10 object-contain rounded-full"
+                          className="w-full h-full object-contain p-2"
                           onError={handleImageError}
                         />
                       ) : (
@@ -141,7 +162,7 @@ const CategoriesSection = ({ categories = [], loading }) => {
                     </div>
 
                     {/* Name - Clean, bold, and vertical aligned */}
-                    <span className="flex-1 text-[15px] font-bold text-slate-700 group-hover:text-cyan-600 transition-colors leading-tight truncate">
+                    <span className="flex-1 text-[13px] font-black text-slate-700 group-hover:text-cyan-600 transition-colors leading-tight truncate">
                       {testLabel}
                     </span>
 

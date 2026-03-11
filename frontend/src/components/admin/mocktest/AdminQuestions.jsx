@@ -230,25 +230,37 @@ export default function AdminQuestions() {
 
     setIsSubmitting(true);
     const fd = new FormData();
-    Object.keys(configForm).forEach(key => fd.append(key, configForm[key]));
+    
+    // Core fields from form
+    const coreFields = ["title", "description", "subcategory", "durationMinutes", "marksPerQuestion", "negativeMarking", "price", "baseEnrolledCount"];
+    coreFields.forEach(key => {
+        if (configForm[key] !== undefined && configForm[key] !== null) {
+            fd.append(key, configForm[key]);
+        }
+    });
+
+    // Computed/Override fields
     fd.append("totalMarks", totalMarks);
-    fd.append("isFree", isFree);
-    fd.append("isGrandTest", isGrandTest);
+    fd.append("totalQuestions", actualQuestionCount);
+    fd.append("isFree", String(isFree));
+    fd.append("isGrandTest", String(isGrandTest));
     
     // Process languages
-    const langArray = configForm.languages.split(",").map(l => l.trim()).filter(Boolean);
+    const langArray = String(configForm.languages).split(",").map(l => l.trim()).filter(Boolean);
     fd.append("languages", JSON.stringify(langArray));
-    fd.append("totalQuestions", actualQuestionCount);
-    fd.append("baseEnrolledCount", Number(configForm.baseEnrolledCount) || 0);
     
+    // Feature Counts
     fd.append("featureCounts", JSON.stringify({
       liveTests: Number(configForm.liveTests) || 0,
       chapterTests: Number(configForm.chapterTests) || 0,
       fullTests: Number(configForm.fullTests) || 0,
     }));
+
     fd.append("category", isEditMode ? (testData?.category?._id || categorySlug) : categorySlug);
     fd.append("subjects", JSON.stringify(testSubjects.map(s => ({ name: s.name, easy: Number(s.limit) || 0, medium: 0, hard: 0 }))));
+    
     if (thumbnail) fd.append("thumbnail", thumbnail);
+    if (isGrandTest && configForm.scheduledFor) fd.append("scheduledFor", configForm.scheduledFor);
 
     try {
       if (isEditMode) {
@@ -315,7 +327,6 @@ export default function AdminQuestions() {
       toast.success("Question Added to Bank");
       // Only reset transient fields — keep sticky defaults (category, marks, negative, difficulty)
       setQForm(f => ({ ...f, title: "", options: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }], correct: [], correctManualAnswer: "" }));
-      setThumbnailPreview(null);
       setQPage(1);
       if (document.getElementById("qFileInput")) document.getElementById("qFileInput").value = "";
     } catch (err) {
@@ -398,7 +409,7 @@ export default function AdminQuestions() {
             <ChevronRight size={12} className="text-slate-300" />
             <Link to={`/admin/mocktests/${categorySlug}`} className="hover:text-[#21b731] transition-colors">{categorySlug}</Link>
             <ChevronRight size={12} className="text-slate-300" />
-            <span className="text-[#21b731]">{isEditMode ? "Mock Test" : "New"}</span>
+            <span className="text-[#21b731]">{isEditMode ? (isGrandTest ? "Grand Test" : "Mock Test") : `New ${isGrandTest ? "Grand" : "Mock"} Test`}</span>
           </div>
 
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-2 pb-2 border-b border-slate-200">
@@ -456,7 +467,7 @@ export default function AdminQuestions() {
             onClick={() => setActiveTab("settings")}
             className={`px-4 py-2 text-[9px] font-black uppercase tracking-[0.2em] flex items-center gap-2.5 transition-all relative ${activeTab === 'settings' ? 'text-[#3e4954]' : 'text-[#7e7e7e] hover:text-[#3e4954]'}`}
           >
-            <Settings size={13} /> Mock test
+            <Settings size={13} /> {isGrandTest ? "Grand Test" : "Mock Test"}
             {activeTab === 'settings' && <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#21b731]" />}
           </button>
           <button
@@ -576,7 +587,7 @@ export default function AdminQuestions() {
                 {/* ACTION SECTION */}
                 <div className="pt-4 border-t border-slate-100 flex justify-end">
                   <button type="submit" disabled={isSubmitting} className="px-10 py-3.5 bg-[#21b731] text-white text-[12px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-[#1a9227] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3">
-                    <Save size={18} /> {isEditMode ? "Save Changes" : "Create Mock Test"}
+                    <Save size={18} /> {isEditMode ? "Save Changes" : `Create ${isGrandTest ? "Grand" : "Mock"} Test`}
                   </button>
                 </div>
               </div>

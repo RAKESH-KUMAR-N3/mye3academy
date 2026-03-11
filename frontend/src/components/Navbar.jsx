@@ -191,34 +191,34 @@ const Navbar = () => {
                 <div className="bg-indigo-600 p-1.5 shadow-lg shadow-indigo-100">
                   <GraduationCap className="text-white w-5 h-5" />
                 </div>
-                MYE 3 Academy
+                MYE 3 ACADEMY
               </Link>
 
               {/* === CENTER: Nav Links (evenly spaced) === */}
               <div className="flex items-center gap-8 font-bold text-sm text-slate-600 mx-auto">
                 <Link
                   to="/"
-                  className={location.pathname === "/" ? "text-indigo-600" : "hover:text-indigo-600 transition-colors"}
+                  className={location.pathname === "/" ? "text-indigo-600" : "hover:text-indigo-600 transition-colors uppercase tracking-widest"}
                 >
-                  Home
+                  HOME
                 </Link>
                 <Link
                   to="/all-tests"
-                  className={location.pathname === "/all-tests" && !location.search.includes("type=") ? "text-indigo-600" : "hover:text-indigo-600 transition-colors"}
+                  className={location.pathname === "/all-tests" && !location.search.includes("type=") ? "text-indigo-600" : "hover:text-indigo-600 transition-colors uppercase tracking-widest"}
                 >
-                  All Tests
+                  ALL TESTS
                 </Link>
                 <Link
                   to="/mock-tests"
-                  className={location.pathname === "/mock-tests" ? "text-indigo-600" : "hover:text-indigo-600 transition-colors"}
+                  className={location.pathname === "/mock-tests" ? "text-indigo-600" : "hover:text-indigo-600 transition-colors uppercase tracking-widest"}
                 >
-                  Mock Tests
+                  MOCK TESTS
                 </Link>
                 <Link
                   to="/grand-tests"
-                  className={location.pathname === "/grand-tests" ? "text-indigo-600" : "hover:text-indigo-600 transition-colors"}
+                  className={location.pathname === "/grand-tests" ? "text-indigo-600" : "hover:text-indigo-600 transition-colors uppercase tracking-widest"}
                 >
-                  Grand Tests
+                  GRAND TESTS
                 </Link>
 
               </div>
@@ -256,7 +256,7 @@ const Navbar = () => {
                             userData.firstname?.charAt(0).toUpperCase()
                           )}
                         </div>
-                        <span className="text-sm font-bold text-slate-700">
+                        <span className="text-sm font-black text-slate-700 uppercase tracking-tight">
                           {userData.firstname}
                         </span>
                         <ChevronDown
@@ -268,16 +268,16 @@ const Navbar = () => {
                         <div className="absolute right-0 mt-3 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl py-2 z-50">
                           <Link
                             to={dashboardPath}
-                            className="flex items-center px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors"
+                            className="flex items-center px-4 py-3 text-sm font-black text-slate-700 hover:bg-slate-50 transition-colors uppercase tracking-widest"
                           >
                             <LayoutDashboard size={16} className="mr-2" />{" "}
-                            {dashboardLabel}
+                            {dashboardLabel.toUpperCase()}
                           </Link>
                           <button
                             onClick={handleLogout}
-                            className="w-full flex items-center px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 transition-colors"
+                            className="w-full flex items-center px-4 py-3 text-sm font-black text-red-500 hover:bg-red-50 transition-colors uppercase tracking-widest"
                           >
-                            <LogOut size={16} className="mr-2" /> Logout
+                            <LogOut size={16} className="mr-2" /> LOGOUT
                           </button>
                         </div>
                       )}

@@ -7,7 +7,7 @@ import {
   Lock,
   Loader2,
   ArrowLeft,
-  Trophy,
+  GraduationCap,
 } from "lucide-react";
 
 import { useDispatch } from "react-redux";
@@ -85,7 +85,12 @@ const Login = () => {
       const res = await api.post("/api/auth/google", googleData);
       dispatch(setUserData(res.data));
       toast.success("Signed in successfully!");
-      navigate("/");
+      
+      const role = res.data.role;
+      if (role === 'admin') navigate('/admin');
+      else if (role === 'institution') navigate('/institution-dashboard');
+      else if (role === 'instructor') navigate('/instructor-dashboard');
+      else navigate('/');
     } catch (err) {
       toast.error("Google connection failed");
     } finally {
@@ -101,7 +106,12 @@ const Login = () => {
       const result = await api.post("/api/auth/login", { email, password });
       dispatch(setUserData(result.data));
       toast.success("Welcome back!");
-      navigate("/");
+      
+      const role = result.data.role;
+      if (role === 'admin') navigate('/admin');
+      else if (role === 'institution') navigate('/institution-dashboard');
+      else if (role === 'instructor') navigate('/instructor-dashboard');
+      else navigate('/');
     } catch (error) {
       if (error.response?.status === 403) {
         toast("Verification needed. Check email.");
@@ -155,8 +165,8 @@ const Login = () => {
           <div className="w-full max-w-[400px] flex flex-col">
             {/* Logo */}
             <div className="mb-4 flex items-center gap-3 group cursor-pointer" onClick={() => navigate("/")}>
-               <div className="w-11 h-11 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-                  <Trophy size={22} className="text-white" />
+                <div className="w-11 h-11 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
+                  <GraduationCap size={22} className="text-white" />
                </div>
                <div className="flex flex-col">
                   <span className="text-lg font-black text-slate-800 tracking-tight leading-none">Mye3</span>

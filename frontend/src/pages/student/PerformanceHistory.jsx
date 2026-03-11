@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { fetchPerformanceHistory } from "../../redux/studentSlice";
 import {
   ResponsiveContainer,
@@ -92,9 +92,18 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
 
   useEffect(() => { dispatch(fetchPerformanceHistory()); }, [dispatch]);
 
-  /* ── Analytics ── */
+  /* ── Filtered data Source — Source for analytics and table ── */
+  const filteredAttempts = useMemo(() => {
+    const all = attemptsHistory || [];
+    if (activeFilter === "all") return all;
+    if (activeFilter === "grand")
+      return all.filter((a) => a.mocktestId?.isGrandTest === true || a.mocktestId?.title?.toLowerCase().includes("grand"));
+    return all.filter((a) => !(a.mocktestId?.isGrandTest === true || a.mocktestId?.title?.toLowerCase().includes("grand")));
+  }, [attemptsHistory, activeFilter]);
+
+  /* ── Analytics ── Derived from filteredAttempts ── */
   const { totalAttempts, mockCount, grandCount, avgPct, barData, donutData } = useMemo(() => {
-    const attempts = attemptsHistory || [];
+    const attempts = filteredAttempts;
 
     const grand = attempts.filter(
       (a) => a.mocktestId?.isGrandTest === true || a.mocktestId?.title?.toLowerCase().includes("grand")
@@ -110,16 +119,15 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
       ? (percentages.reduce((s, v) => s + v, 0) / percentages.length).toFixed(1)
       : null;
 
-    /* Donut: Mock vs Grand */
-    const donut =
-      attempts.length > 0
-        ? [
-            { name: `Mock Tests`, value: mock.length, color: "#6366f1" },
-            { name: `Grand Tests`, value: grand.length, color: "#f59e0b" },
-          ].filter((d) => d.value > 0)
-        : [{ name: "No Data", value: 1, color: "#e2e8f0" }];
+    /* Donut: Mock vs Grand distribution in the current view */
+    let donut = [
+      { name: `Mock Tests`, value: mock.length, color: "#6366f1" },
+      { name: `Grand Tests`, value: grand.length, color: "#f59e0b" },
+    ].filter((d) => d.value > 0);
 
-    /* Bar: last 10, oldest → newest */
+    if (donut.length === 0) donut = [{ name: "No Data", value: 1, color: "#e2e8f0" }];
+
+    /* Bar: last 10, oldest → newest of the FILTERED list */
     const bar = [...attempts]
       .filter((a) => (a.mocktestId?.totalMarks || 0) > 0)
       .reverse()
@@ -138,16 +146,7 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
       barData: bar,
       donutData: donut,
     };
-  }, [attemptsHistory]);
-
-  /* ── Filtered table ── */
-  const filteredAttempts = useMemo(() => {
-    const all = attemptsHistory || [];
-    if (activeFilter === "all") return all;
-    if (activeFilter === "grand")
-      return all.filter((a) => a.mocktestId?.isGrandTest === true || a.mocktestId?.title?.toLowerCase().includes("grand"));
-    return all.filter((a) => !(a.mocktestId?.isGrandTest === true || a.mocktestId?.title?.toLowerCase().includes("grand")));
-  }, [attemptsHistory, activeFilter]);
+  }, [filteredAttempts]);
 
   const noData = totalAttempts === 0;
   const avgNum = avgPct !== null ? Number(avgPct) : null;
@@ -156,13 +155,33 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
     <div className="space-y-4 animate-in fade-in duration-500 pb-6">
 
       {/* ── Header ── */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-indigo-200">
-          <TrendingUp size={20} className="text-white" strokeWidth={2.5} />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-indigo-200">
+            <TrendingUp size={20} className="text-white" strokeWidth={2.5} />
+          </div>
+          <div>
+            <h2 className="text-xl font-black text-slate-800 tracking-tight">My Performance</h2>
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[2px]">Your complete exam analytics</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-black text-slate-800 tracking-tight">My Performance</h2>
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[2px]">Your complete exam analytics</p>
+
+        {/* Global Filter Tabs moved to top right */}
+        <div className="flex items-center gap-2 bg-white/50 p-1.5 rounded-2xl border border-slate-100/50 backdrop-blur-sm shadow-sm self-start sm:self-auto">
+          {FILTER_TABS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveFilter(key)}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-200 ${
+                activeFilter === key
+                  ? "bg-slate-900 text-white shadow-lg shadow-slate-200"
+                  : "text-slate-500 hover:bg-slate-100"
+              }`}
+            >
+              <Icon size={12} strokeWidth={3} />
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -341,30 +360,11 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
 
       {/* ── Attempt History Table ── */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-b border-slate-50">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-slate-900 rounded-xl">
-              <BarChart2 size={16} className="text-white" strokeWidth={2.5} />
-            </div>
-            <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Attempt History</h3>
+        <div className="flex items-center gap-3 p-5 border-b border-slate-50">
+          <div className="p-2 bg-slate-900 rounded-xl">
+            <BarChart2 size={16} className="text-white" strokeWidth={2.5} />
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <Filter size={13} className="text-slate-400" />
-            {FILTER_TABS.map(({ key, label, icon: Icon }) => (
-              <button
-                key={key}
-                onClick={() => setActiveFilter(key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-200 ${
-                  activeFilter === key
-                    ? "bg-slate-900 text-white shadow-md"
-                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                }`}
-              >
-                <Icon size={10} strokeWidth={3} />
-                {label}
-              </button>
-            ))}
-          </div>
+          <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Attempt History</h3>
         </div>
 
         {loading ? (
@@ -435,13 +435,13 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <button
-                          onClick={() => navigate(`/student/review/${att._id}`)}
-                          className="inline-flex items-center gap-1.5 text-[10px] font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-all"
+                        <Link
+                          to={`/student/review/${att._id}`}
+                          className="group inline-flex items-center gap-2 text-[10px] font-black text-blue-600 hover:text-blue-800 uppercase tracking-[0.2em] px-4 py-2 rounded-full bg-blue-50/50 hover:bg-blue-100 border border-blue-100 transition-all duration-300 hover:shadow-sm"
                         >
                           Review
-                          <ChevronRight size={12} strokeWidth={3} />
-                        </button>
+                          <ChevronRight size={12} strokeWidth={3} className="transition-transform group-hover:translate-x-0.5" />
+                        </Link>
                       </td>
                     </tr>
                   );
