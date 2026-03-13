@@ -53,7 +53,7 @@ const PremiumTestCard = ({ test, index = 0 }) => {
     ? getImageUrl(test.thumbnail)
     : (test.category && (test.category.icon || test.category.image)) 
       ? getImageUrl(test.category.icon || test.category.image) 
-      : "/logo.png";
+      : `${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`;
 
   const enrolledCount = useMemo(() => {
     const total = (test.baseEnrolledCount || 0) + (test.attempts?.length || 0);
@@ -130,46 +130,56 @@ const PremiumTestCard = ({ test, index = 0 }) => {
         {/* Specifications - Vertical List */}
         <div className="space-y-1.5 mb-1.5">
            <div className="flex items-center justify-between group/item">
-              <div className="flex items-center gap-2">
-                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
-                    <Clock size={10} className={theme.accentText} />
-                 </div>
-                 <span className="text-[9px] font-black tracking-widest text-slate-500">DURATION</span>
-              </div>
-              <span className="text-[10px] font-black text-slate-800 uppercase">{test.durationMinutes || 0} MINUTES</span>
-           </div>
+               <div className="flex items-center gap-2">
+                  <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                     <Clock size={10} className={theme.accentText} />
+                  </div>
+                  <span className="text-[9px] font-black tracking-widest text-slate-500 md:block hidden">DURATION</span>
+                  <span className="text-[9px] font-black tracking-widest text-slate-500 block md:hidden">TIME</span>
+               </div>
+               <span className="text-[10px] font-black text-slate-800 uppercase md:block hidden">{test.durationMinutes || 0} MINUTES</span>
+               <span className="text-[10px] font-black text-slate-800 uppercase block md:hidden">{test.durationMinutes || 0} MIN</span>
+            </div>
 
            <div className="flex items-center justify-between group/item">
-              <div className="flex items-center gap-2">
-                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
-                    <FileText size={10} className={theme.accentText} />
-                 </div>
-                 <span className="text-[9px] font-black tracking-widest text-slate-500">TOTAL QUESTIONS</span>
-              </div>
-              <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalQuestions || 0} QUESTIONS</span>
-           </div>
+               <div className="flex items-center gap-2">
+                  <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                     <FileText size={10} className={theme.accentText} />
+                  </div>
+                  <span className="text-[9px] font-black tracking-widest text-slate-500 md:block hidden">TOTAL QUESTIONS</span>
+                  <span className="text-[9px] font-black tracking-widest text-slate-500 block md:hidden">QUESTIONS</span>
+               </div>
+               <span className="text-[10px] font-black text-slate-800 uppercase md:block hidden">{test.totalQuestions || 0} QUESTIONS</span>
+               <span className="text-[10px] font-black text-slate-800 uppercase block md:hidden">{test.totalQuestions || 0} Qs</span>
+            </div>
 
            <div className="flex items-center justify-between group/item">
-              <div className="flex items-center gap-2">
-                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
-                    <Trophy size={10} className={theme.accentText} />
-                 </div>
-                 <span className="text-[9px] font-black tracking-widest text-slate-500">TOTAL MARKS</span>
-              </div>
-              <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalMarks || 0} MARKS</span>
-           </div>
+               <div className="flex items-center gap-2">
+                  <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                     <Trophy size={10} className={theme.accentText} />
+                  </div>
+                  <span className="text-[9px] font-black tracking-widest text-slate-500 md:block hidden">TOTAL MARKS</span>
+                  <span className="text-[9px] font-black tracking-widest text-slate-500 block md:hidden">MARKS</span>
+               </div>
+               <span className="text-[10px] font-black text-slate-800 uppercase md:block hidden">{test.totalMarks || 0} MARKS</span>
+               <span className="text-[10px] font-black text-slate-800 uppercase block md:hidden">{test.totalMarks || 0} Pts</span>
+            </div>
 
            <div className="pt-1.5 border-t border-slate-50 flex items-center justify-between group/item">
-              <div className="flex items-center gap-2">
-                 <div className="w-6 h-6 rounded-md bg-orange-50 flex items-center justify-center">
-                    <span className="text-[10px]">💎</span>
-                 </div>
-                 <span className="text-[9px] font-black tracking-widest text-slate-500">ACCESS TYPE</span>
-              </div>
-              <span className={`text-[10px] font-black ${test.isFree ? 'text-emerald-600' : 'text-slate-800'}`}>
-                 {test.isFree ? 'FREE ACCESS' : `Rs. ${effectivePrice}`}
-              </span>
-           </div>
+               <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md bg-orange-50 flex items-center justify-center">
+                     <span className="text-[10px]">💎</span>
+                  </div>
+                  <span className="text-[9px] font-black tracking-widest text-slate-500 md:block hidden">ACCESS TYPE</span>
+                  <span className="text-[9px] font-black tracking-widest text-slate-500 block md:hidden">ACCESS</span>
+               </div>
+               <span className={`text-[10px] font-black ${test.isFree ? 'text-emerald-600' : 'text-slate-800'} md:block hidden`}>
+                  {test.isFree ? 'FREE ACCESS' : `Rs. ${effectivePrice}`}
+               </span>
+               <span className={`text-[10px] font-black ${test.isFree ? 'text-emerald-600' : 'text-slate-800'} block md:hidden`}>
+                  {test.isFree ? 'FREE' : `Rs. ${effectivePrice}`}
+               </span>
+            </div>
         </div>
       </div>
 

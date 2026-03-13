@@ -10,12 +10,11 @@ const Footer = () => (
         {/* BRAND COLUMN */}
         <div className="col-span-2 md:col-span-1 space-y-4">
           <Link to="/" className="flex items-center gap-2 group transition-opacity hover:opacity-80">
-            <div className="bg-indigo-600 p-1.5 rounded-lg">
-              <GraduationCap className="text-white w-5 h-5" />
-            </div>
-            <h3 className="text-xl font-bold text-white tracking-tight">
-              <span className="text-indigo-400">MYE 3 Academy</span>
-            </h3>
+            <img 
+              src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+              alt="Mye3 Logo" 
+              className="h-10 w-auto object-contain brightness-0 invert"
+            />
           </Link>
           <p className="text-xs leading-relaxed text-slate-400">
             The nation's most trusted AI-powered test series platform. Your

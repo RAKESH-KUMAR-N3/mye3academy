@@ -164,14 +164,12 @@ const Login = () => {
         >
           <div className="w-full max-w-[400px] flex flex-col">
             {/* Logo */}
-            <div className="mb-4 flex items-center gap-3 group cursor-pointer" onClick={() => navigate("/")}>
-                <div className="w-11 h-11 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-                  <GraduationCap size={22} className="text-white" />
-               </div>
-               <div className="flex flex-col">
-                  <span className="text-lg font-black text-slate-800 tracking-tight leading-none">Mye3</span>
-                  <span className="text-xs font-bold text-slate-400 tracking-widest uppercase">Academy</span>
-               </div>
+            <div className="mb-4 flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
+                <img 
+                  src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+                  alt="Mye3 Logo" 
+                  className="h-11 w-auto object-contain"
+                />
             </div>
 
             <div className="animate-in fade-in slide-in-from-left-4 duration-700">

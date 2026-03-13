@@ -53,7 +53,7 @@ const InstructorDashboardPage = () => {
         Teaching performance overview
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6">
         <StatCard
           title="Total Students"
           value={stats.students || 0}
@@ -104,7 +104,7 @@ const InstructorDashboardPage = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
-        <div className="p-6 bg-white shadow rounded-xl">
+        <div className="hidden md:block p-6 bg-white shadow rounded-xl">
           <h2 className="text-xl font-bold mb-4">Tests by Category</h2>
           <CategorySalesChart data={stats.categoryBreakdown || []} />
         </div>

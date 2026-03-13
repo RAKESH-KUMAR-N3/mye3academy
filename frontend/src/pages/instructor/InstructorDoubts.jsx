@@ -62,22 +62,22 @@ const InstructorDoubts = () => {
   const answeredDoubts = instructorDoubts.filter((d) => d.status === "answered");
 
   return (
-    <div className="p-4 md:p-8 bg-slate-50 min-h-[calc(100vh-90px)]">
+    <div className="p-3 md:p-8 bg-slate-50 min-h-[calc(100vh-90px)]">
       <div className="max-w-6xl mx-auto">
-        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
+        <header className="mb-6 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-black text-slate-800 tracking-tight uppercase italic leading-none">
               Doubt Portal
             </h1>
-            <p className="text-indigo-500 font-bold uppercase text-[10px] tracking-[0.3em] mt-3 opacity-60">
+            <p className="text-indigo-500 font-bold uppercase text-[9px] md:text-[10px] tracking-[0.3em] mt-3 opacity-60">
               Assigned Resolution Center
             </p>
           </div>
 
-          <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
+          <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100 mx-auto md:mx-0">
             <button
               onClick={() => setView("pending")}
-              className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition ${
+              className={`px-4 md:px-6 py-2.5 rounded-xl font-black text-[9px] md:text-[10px] uppercase tracking-widest transition ${
                 view === "pending"
                   ? "bg-indigo-600 text-white shadow-lg"
                   : "text-slate-400 hover:text-slate-600"
@@ -87,7 +87,7 @@ const InstructorDoubts = () => {
             </button>
             <button
               onClick={() => setView("history")}
-              className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition ${
+              className={`px-4 md:px-6 py-2.5 rounded-xl font-black text-[9px] md:text-[10px] uppercase tracking-widest transition ${
                 view === "history"
                   ? "bg-indigo-600 text-white shadow-lg"
                   : "text-slate-400 hover:text-slate-600"
@@ -106,28 +106,28 @@ const InstructorDoubts = () => {
                 className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden flex flex-col lg:flex-row animate-in slide-in-from-bottom duration-500"
               >
                 {/* CONTEXT AREA */}
-                <div className="lg:w-3/5 p-8 md:p-10">
-                  <div className="flex justify-between items-center mb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full font-black text-[9px] uppercase tracking-widest border border-indigo-100">
+                <div className="lg:w-3/5 p-5 md:p-10">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full font-black text-[8px] uppercase tracking-widest border border-indigo-100">
                         {d.subject}
                       </div>
-                      <div className="flex items-center gap-1.5 text-slate-300 font-black text-[9px] uppercase tracking-widest bg-slate-50 px-3 py-1.5 rounded-full">
-                        <Clock size={12} className="text-orange-400" /> Received{" "}
+                      <div className="flex items-center gap-1.5 text-slate-400 font-black text-[8px] uppercase tracking-widest bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
+                        <Clock size={10} className="text-orange-400" /> 
                         {new Date(d.createdAt).toLocaleDateString()}
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 ml-auto sm:ml-0">
                       <div className="text-right">
-                        <p className="text-[10px] font-black text-slate-800 uppercase tracking-tight">
+                        <p className="text-[9px] font-black text-slate-800 uppercase tracking-tight">
                           {d.student?.firstname} {d.student?.lastname}
                         </p>
-                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
-                          Student Origin
+                        <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest">
+                          Identified Student
                         </p>
                       </div>
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
-                        <User size={18} />
+                      <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300">
+                        <User size={14} />
                       </div>
                     </div>
                   </div>
@@ -154,13 +154,13 @@ const InstructorDoubts = () => {
 
                   <div className="relative">
                     <MessageCircle
-                      size={40}
-                      className="absolute -top-6 -left-6 text-indigo-50 opacity-50"
+                      size={32}
+                      className="absolute -top-4 -left-4 text-indigo-100/50 -z-10"
                     />
-                    <h4 className="text-[9px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-3">
+                    <h4 className="text-[8px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-2">
                       Student Inquiry
                     </h4>
-                    <p className="text-slate-900 text-xl md:text-2xl font-black leading-tight">
+                    <p className="text-slate-900 text-lg md:text-2xl font-black leading-tight tracking-tight">
                       {d.text}
                     </p>
                   </div>

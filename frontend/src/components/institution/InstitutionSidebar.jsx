@@ -38,7 +38,7 @@ const InstitutionSidebar = () => {
   const hoverTimer = useRef(null);
   const leaveTimer = useRef(null);
 
-  const expandedSidebar = isPinned || isHovering;
+  const expandedSidebar = isPinned || isHovering || isMobileOpen;
 
   const handleEnter = () => {
     clearTimeout(leaveTimer.current);
@@ -77,25 +77,28 @@ const InstitutionSidebar = () => {
     >
       {/* BRAND SECTION */}
       <div className="px-6 py-8 flex items-center gap-4">
-        <Link 
-            to="/"
-            className="shrink-0 w-11 h-11 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100 cursor-pointer hover:rotate-6 transition-transform"
+        <Link
+          to="/"
+          className="shrink-0 cursor-pointer hover:rotate-3 transition-transform"
         >
-            <GraduationCap size={24} strokeWidth={2.5} />
+          <img 
+            src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+            alt="Mye3 Logo" 
+            className={`${expandedSidebar ? 'h-11' : 'h-10'} w-auto object-contain`}
+          />
         </Link>
         <AnimatePresence>
-            {expandedSidebar && (
-                <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    className="overflow-hidden whitespace-nowrap cursor-pointer"
-                    onClick={() => navigate('/')}
-                >
-                    <h2 className="text-lg font-black text-slate-800 tracking-tighter leading-none italic">Mye3</h2>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mt-1">Academy</p>
-                </motion.div>
-            )}
+          {expandedSidebar && (
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="overflow-hidden whitespace-nowrap cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              <p className="text-[10px] font-bold text-cyan-600 uppercase tracking-[0.2em] leading-none mt-0.5">Campus Dashboard</p>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
@@ -167,8 +170,13 @@ const InstitutionSidebar = () => {
 
   return (
     <>
-      <div className="md:hidden fixed top-0 left-0 w-full p-4 bg-white/95 backdrop-blur-md z-50 flex justify-between items-center shadow-sm border-b border-slate-100">
-        <h1 className="text-xl font-black text-indigo-600 italic">Mye3</h1>
+      <div className="md:hidden fixed top-0 left-0 w-full p-4 bg-white/95 backdrop-blur-md z-[60] flex justify-between items-center shadow-sm border-b border-slate-100">
+        <img 
+          src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+          alt="Mye3 Logo" 
+          className="h-8 w-auto object-contain"
+          onClick={() => navigate("/")}
+        />
         <Menu
           className="text-slate-600 cursor-pointer"
           onClick={() => setIsMobileOpen(true)}

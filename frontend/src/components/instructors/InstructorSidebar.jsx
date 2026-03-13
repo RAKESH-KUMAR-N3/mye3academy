@@ -44,7 +44,7 @@ const InstructorSidebar = () => {
     if (!instructorProfile) dispatch(fetchInstructorProfile());
   }, [dispatch, instructorProfile]);
 
-  const expandedSidebar = isPinned || isHovering;
+  const expandedSidebar = isPinned || isHovering || isMobileOpen;
 
   const handleEnter = () => {
     clearTimeout(leaveTimer.current);
@@ -85,9 +85,13 @@ const InstructorSidebar = () => {
       <div className="px-6 py-8 flex items-center gap-4">
         <Link 
             to="/"
-            className="shrink-0 w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg cursor-pointer hover:rotate-6 transition-transform"
+            className="shrink-0 cursor-pointer hover:rotate-3 transition-transform"
         >
-            <GraduationCap size={24} strokeWidth={2.5} />
+          <img 
+            src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+            alt="Mye3 Logo" 
+            className={`${expandedSidebar ? 'h-11' : 'h-10'} w-auto object-contain`}
+          />
         </Link>
         <AnimatePresence>
             {expandedSidebar && (
@@ -98,7 +102,6 @@ const InstructorSidebar = () => {
                     className="overflow-hidden whitespace-nowrap cursor-pointer"
                     onClick={() => navigate("/")}
                 >
-                    <h2 className="text-xl font-black text-slate-800 tracking-tighter italic">Mye3</h2>
                     <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em] leading-none mt-0.5">Instructor Portal</p>
                 </motion.div>
             )}
@@ -174,7 +177,12 @@ const InstructorSidebar = () => {
   return (
     <>
       <div className="md:hidden fixed top-0 left-0 w-full p-4 bg-white/95 backdrop-blur-md z-50 flex justify-between items-center shadow-sm border-b border-slate-100">
-        <h1 className="text-xl font-black text-indigo-600 italic">Mye3</h1>
+        <img 
+          src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+          alt="Mye3 Logo" 
+          className="h-8 w-auto object-contain"
+          onClick={() => navigate("/")}
+        />
         <Menu
           className="text-slate-600 cursor-pointer"
           onClick={() => setIsMobileOpen(true)}

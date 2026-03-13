@@ -131,7 +131,7 @@ export default function MockTestDetail() {
                 currency: orderData.currency,
                 name: "Mye3 Academy",
                 description: `Payment for ${test.title}`,
-                image: "/logo.png",
+                image: `${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`,
                 order_id: orderData.id,
                 handler: async (response) => {
                     try {
@@ -231,7 +231,7 @@ export default function MockTestDetail() {
         ? getImageUrl(test.thumbnail)
         : test.category?.image
         ? getImageUrl(test.category.image)
-        : "/logo.png";
+        : `${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`;
 
 
 

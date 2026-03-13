@@ -183,10 +183,11 @@ const InstructionsPage = () => {
             to="/"
             className="flex items-center gap-1.5 font-black text-sm italic tracking-tighter text-slate-700 hover:text-blue-600 transition-colors"
           >
-            <div className="bg-blue-600 p-1">
-              <GraduationCap className="text-white w-3 h-3" strokeWidth={3} />
-            </div>
-            Mye3 Academy
+            <img 
+              src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+              alt="Mye3 Logo" 
+              className="h-6 w-auto object-contain"
+            />
           </Link>
         </div>
 

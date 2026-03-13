@@ -138,9 +138,13 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
       <div className="px-6 py-8 flex items-center gap-4">
         <Link
           to="/"
-          className="shrink-0 w-11 h-11 rounded-2xl bg-[#5654F7] flex items-center justify-center text-white shadow-lg cursor-pointer hover:rotate-6 transition-transform"
+          className="shrink-0 cursor-pointer hover:rotate-2 transition-transform"
         >
-          <GraduationCap size={24} strokeWidth={2.5} />
+          <img 
+            src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+            alt="Mye3 Logo" 
+            className={`${expandedSidebar ? 'h-11' : 'h-10'} w-auto object-contain`}
+          />
         </Link>
         <AnimatePresence>
           {expandedSidebar && (
@@ -151,8 +155,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
               className="overflow-hidden whitespace-nowrap cursor-pointer"
               onClick={() => navigate("/")}
             >
-              <h2 className="text-xl font-black text-slate-800 tracking-tighter italic">Mye3</h2>
-              <p className="text-[10px] font-bold text-[#5654F7] uppercase tracking-[0.2em] leading-none mt-0.5">Academy Admin</p>
+              <p className="text-[10px] font-bold text-[#5654F7] uppercase tracking-[0.2em] leading-none mt-0.5">Admin Panel</p>
             </motion.div>
           )}
         </AnimatePresence>

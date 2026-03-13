@@ -50,16 +50,45 @@ export const getAllStudentsForInstitution = async (req, res) => {
 
     const enrichedStudents = await Promise.all(
       students.map(async (stu) => {
-        const [orderCount, attemptCount, doubtCount] = await Promise.all([
+        const [orderCount, attempts, doubtCount] = await Promise.all([
           Order.countDocuments({ user: stu._id, status: "successful" }),
-          Attempt.countDocuments({ studentId: stu._id }),
+          Attempt.find({ studentId: stu._id }).lean(), // Fetch all attempts to calculate avg
           Doubt.countDocuments({ student: stu._id }),
         ]);
+
+        let avgScore = 0;
+        const validAttempts = attempts.filter(a => (a.status === 'completed' || a.status === 'finished') && a.score !== undefined);
+        
+        if (validAttempts.length > 0) {
+            // Need to get total marks for each test to calculate percentage
+            let totalPossibleMarks = 0;
+            let totalEarnedMarks = 0;
+
+            const attemptsWithMarks = await Promise.all(validAttempts.map(async (att) => {
+                let test = await MockTest.findById(att.mocktestId).select("totalMarks").lean();
+                if (!test) {
+                    test = await GrandTest.findById(att.mocktestId).select("totalMarks").lean();
+                }
+                return { ...att, totalMarks: test?.totalMarks || 0 };
+            }));
+
+            attemptsWithMarks.forEach(att => {
+                if (att.totalMarks > 0) {
+                    totalEarnedMarks += att.score;
+                    totalPossibleMarks += att.totalMarks;
+                }
+            });
+
+            if (totalPossibleMarks > 0) {
+                avgScore = Math.round((totalEarnedMarks / totalPossibleMarks) * 100);
+            }
+        }
 
         return {
           ...stu,
           purchasedTestCount: orderCount,
-          attemptCount: attemptCount,
+          attemptCount: attempts.length,
+          avgScore: avgScore,
           doubtCount: doubtCount,
         };
       })

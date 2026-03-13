@@ -130,12 +130,13 @@ const Navbar = () => {
             <div className="flex md:hidden items-center justify-between w-full">
               <Link
                 to="/"
-                className="flex items-center gap-1.5 group font-black text-[13px] italic tracking-tight flex-shrink-0"
+                className="flex items-center gap-1.5 flex-shrink-0"
               >
-                <div className="bg-indigo-600 p-1 shadow-md shadow-indigo-100">
-                  <GraduationCap className="text-white w-4 h-4" />
-                </div>
-                MYE 3
+                <img 
+                  src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+                  alt="Mye3 Logo" 
+                  className="h-8 w-auto object-contain"
+                />
               </Link>
               <div
                 className="relative flex-1 max-w-[140px] mx-1"
@@ -189,12 +190,13 @@ const Navbar = () => {
               {/* === LEFT: Logo === */}
               <Link
                 to="/"
-                className="flex items-center gap-2 group font-black text-xl italic tracking-tighter flex-shrink-0"
+                className="flex items-center gap-2 flex-shrink-0"
               >
-                <div className="bg-indigo-600 p-1.5 shadow-lg shadow-indigo-100">
-                  <GraduationCap className="text-white w-5 h-5" />
-                </div>
-                MYE 3 ACADEMY
+                <img 
+                  src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
+                  alt="Mye3 Logo" 
+                  className="h-10 w-auto object-contain"
+                />
               </Link>
 
               {/* === CENTER: Nav Links (evenly spaced) === */}
