@@ -64,7 +64,7 @@ const TopStudentsBoard = ({ students = [] }) => {
     };
 
     return (
-        <div className="relative group/board bg-white p-6 rounded-none border border-slate-100 shadow-[0_30px_70px_rgba(0,0,0,0.15)] flex flex-col h-full overflow-hidden transition-all duration-500 hover:shadow-[0_40px_80px_rgba(245,158,11,0.15)]">
+        <div className="relative group/board bg-white p-3 sm:p-6 rounded-none border border-slate-100 shadow-[0_30px_70px_rgba(0,0,0,0.15)] flex flex-col h-full overflow-hidden transition-all duration-500 hover:shadow-[0_40px_80px_rgba(245,158,11,0.15)]">
             {/* Background Accent */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/5 blur-[60px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
@@ -134,14 +134,14 @@ const TopStudentsBoard = ({ students = [] }) => {
                         <Trophy size={24} className="text-white drop-shadow-sm" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black text-[#3e4954] tracking-tight flex items-center gap-2">
+                        <h3 className="text-lg sm:text-2xl font-black text-[#3e4954] tracking-tight flex items-center gap-2">
                             Top Rankers
                         </h3>
-                        <p className="text-[12px] font-bold text-[#7e7e7e] uppercase tracking-[0.2em] mt-0.5">Performance Elite Board</p>
+                        <p className="text-[10px] sm:text-[12px] font-bold text-[#7e7e7e] uppercase tracking-[0.2em] mt-0.5">Performance Elite Board</p>
                     </div>
                 </div>
                 <div className="flex flex-col items-end gap-1">
-                    <div className="px-4 py-1.5 bg-emerald-500 text-white rounded-none text-[11px] font-black uppercase tracking-widest shadow-sm">
+                    <div className="px-3 py-1 bg-emerald-500 text-white rounded-none text-[9px] sm:text-[11px] font-black uppercase tracking-widest shadow-sm">
                         Live updates
                     </div>
                     <div className="text-[10px] font-bold text-slate-300 italic">2026 Season</div>
@@ -166,7 +166,7 @@ const TopStudentsBoard = ({ students = [] }) => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.1, type: "spring", stiffness: 100 }}
                                 className={`
-                                    flex items-center gap-5 p-4 bg-white/80 backdrop-blur-sm
+                                    flex items-center gap-2 sm:gap-5 p-3 sm:p-4 bg-white/80 backdrop-blur-sm
                                     border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.04)]
                                     group relative overflow-hidden transition-all duration-400
                                     hover:translate-y--1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]
@@ -181,30 +181,30 @@ const TopStudentsBoard = ({ students = [] }) => {
 
                                 {/* Champion Badge for #1 */}
                                 {isFirst && (
-                                    <div className="absolute top-0 right-0 z-20 overflow-hidden w-32 h-32 pointer-events-none">
-                                        <div className="absolute top-6 -right-12 w-44 bg-gradient-to-r from-amber-600 via-amber-200 to-amber-600 text-amber-950 text-[11px] font-black py-1.5 transform rotate-45 text-center shadow-xl border-y border-amber-400/50 uppercase tracking-[0.2em] drop-shadow-md">
+                                    <div className="absolute top-0 right-0 z-20 overflow-hidden w-20 sm:w-32 h-20 sm:h-32 pointer-events-none">
+                                        <div className="absolute top-3 sm:top-6 -right-10 sm:-right-12 w-28 sm:w-44 bg-gradient-to-r from-amber-600 via-amber-200 to-amber-600 text-amber-950 text-[7px] sm:text-[11px] font-black py-0.5 sm:py-1.5 transform rotate-45 text-center shadow-xl border-y border-amber-400/50 uppercase tracking-[0.2em] drop-shadow-md">
                                             TOP 1
                                         </div>
                                     </div>
                                 )}
 
                                 {/* Rank Icon */}
-                                <div className={`flex items-center justify-center flex-shrink-0 ${style.text} scale-110`}>
+                                <div className={`flex items-center justify-center flex-shrink-0 ${style.text} scale-90 sm:scale-110`}>
                                     {style.icon}
                                 </div>
 
                                 {/* Avatar wrapper with halo/frame */}
-                                <div className="relative flex-shrink-0 mx-2">
+                                <div className="relative flex-shrink-0 mx-1 sm:mx-2">
                                     {isFirst && (
                                         <>
                                             <div className="profile-halo"></div>
                                             <div className="profile-frame"></div>
-                                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 text-amber-500 drop-shadow-sm">
-                                                <Crown size={16} fill="currentColor" strokeWidth={3} />
+                                            <div className="absolute -top-2 sm:-top-3 left-1/2 -translate-x-1/2 z-10 text-amber-500 drop-shadow-sm">
+                                                <Crown size={12} fill="currentColor" strokeWidth={3} className="sm:w-4 sm:h-4" />
                                             </div>
                                         </>
                                     )}
-                                    <div className={`w-14 h-14 rounded-full border-2 shadow-lg overflow-hidden bg-white relative transition-transform duration-500 group-hover:scale-105 ${isFirst ? 'border-amber-400' : 'border-white'}`}>
+                                    <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 shadow-lg overflow-hidden bg-white relative transition-transform duration-500 group-hover:scale-105 ${isFirst ? 'border-amber-400' : 'border-white'}`}>
                                         {student.avatar ? (
                                             <img 
                                                 src={getImageUrl(student.avatar)} 
@@ -214,7 +214,7 @@ const TopStudentsBoard = ({ students = [] }) => {
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-300">
-                                                <User size={24} />
+                                                <User size={18} className="sm:w-6 sm:h-6" />
                                             </div>
                                         )}
                                         {isFirst && (
@@ -224,24 +224,24 @@ const TopStudentsBoard = ({ students = [] }) => {
                                 </div>
 
                                 {/* Info */}
-                                <div className="flex-1 min-w-0">
-                                    <h4 className={`text-[16px] font-black text-[#3e4954] truncate transition-colors duration-300 group-hover:text-amber-600 ${isFirst ? 'text-amber-950 drop-shadow-sm' : ''}`}>
+                                <div className="flex-1 min-w-0 pr-1 sm:pr-0">
+                                    <h4 className={`text-[13px] sm:text-[16px] font-black text-[#3e4954] truncate transition-colors duration-300 group-hover:text-amber-600 ${isFirst ? 'text-amber-950 drop-shadow-sm' : ''}`}>
                                         {student.fullName}
                                     </h4>
-                                    <div className="flex items-center gap-2 mt-0.5">
+                                    <div className="flex items-center gap-1.5 mt-0.5">
                                         <div className={`h-1 w-1 rounded-full ${isFirst ? 'bg-amber-400' : 'bg-emerald-400'}`}></div>
-                                        <span className={`text-[10px] font-bold uppercase tracking-[0.1em] ${isFirst ? 'text-amber-700/80 font-black' : 'text-slate-400'}`}>
+                                        <span className={`text-[8.5px] sm:text-[10px] font-bold uppercase tracking-[0.1em] ${isFirst ? 'text-amber-700/80 font-black' : 'text-slate-400'}`}>
                                             {student.totalAttempts} Assessments
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* Score */}
-                                <div className={`text-right transition-all duration-500 ${isFirst ? 'pr-16 transform -translate-x-2' : 'pr-4'}`}>
-                                    <div className={`text-[20px] font-black leading-none tracking-tight ${isFirst ? 'text-amber-600 drop-shadow-sm scale-125 origin-right' : 'text-[#3e4954]'}`}>
+                                <div className={`text-right transition-all duration-500 ${isFirst ? 'pr-4 sm:pr-16 transform sm:-translate-x-2' : 'pr-1 sm:pr-4'}`}>
+                                    <div className={`text-[13px] sm:text-[20px] font-black leading-none tracking-tight ${isFirst ? 'text-amber-600 drop-shadow-sm scale-110 sm:scale-125 origin-right' : 'text-[#3e4954]'}`}>
                                         {student.totalScore}
                                     </div>
-                                    <div className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${isFirst ? 'text-amber-700/60' : 'text-slate-400'}`}>
+                                    <div className={`text-[8px] sm:text-[10px] font-bold uppercase tracking-widest mt-1 ${isFirst ? 'text-amber-700/60' : 'text-slate-400'}`}>
                                         Points
                                     </div>
                                 </div>

@@ -153,8 +153,8 @@ const StuHeader = ({ user, setActiveTab }) => {
 
 
 
-        <div className="flex flex-col min-w-fit pl-2 flex-1">
-          <h1 className="text-base font-black text-white tracking-tight leading-none">
+        <div className="flex flex-col min-w-0 pr-2 flex-1 shrink-0">
+          <h1 className="text-sm sm:text-base font-black text-white tracking-tight leading-none truncate">
             Hi,{' '}
             <button
               onClick={handleProfileClick}
@@ -167,9 +167,9 @@ const StuHeader = ({ user, setActiveTab }) => {
         </div>
 
         {/* ── ACTIONS (SEARCH, ENROLL, NOTIFICATIONS, PROFILE) ── */}
-        <div className="flex items-center gap-2 sm:gap-6 ml-auto h-10">
-          {/* SEARCH BAR */}
-          <div className="relative flex items-center group w-full max-w-[40px] sm:max-w-[180px] transition-all duration-300">
+        <div className="flex items-center gap-1 sm:gap-6 ml-auto h-10 shrink-0">
+          {/* SEARCH */}
+          <div className="hidden sm:flex relative items-center group w-full max-w-[180px] transition-all duration-300">
             <Search className="absolute left-3 text-slate-400 group-focus-within:text-blue-400 transition-colors" size={14} />
             <input 
               type="text"
@@ -179,9 +179,17 @@ const StuHeader = ({ user, setActiveTab }) => {
             />
           </div>
 
+          {/* MOBILE SEARCH ICON */}
+          <button 
+            onClick={() => setShowSearch(true)}
+            className="sm:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-slate-300"
+          >
+            <Search size={16} />
+          </button>
+
           <button
             onClick={() => setActiveTab('my-tests')}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-wider shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+            className="flex items-center gap-2 px-2.5 sm:px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-wider shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
           >
             <BookOpen size={14} />
             <span className="hidden sm:inline">My Enrolls</span>
@@ -194,7 +202,7 @@ const StuHeader = ({ user, setActiveTab }) => {
                 setShowNotifications((p) => !p);
                 setShowSearch(false);
               }}
-              className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl border transition-all backdrop-blur-md 
+              className={`flex items-center gap-2 px-2.5 sm:px-4 py-2 rounded-xl border transition-all backdrop-blur-md 
                 ${hasNotification ? 'bg-rose-500/20 border-rose-400/30' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}
               title="Notifications"
             >

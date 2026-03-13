@@ -107,13 +107,15 @@ const MyTestCard = ({ test }) => {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1.5">
-                        <span className={`text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-[2px] text-white shadow-sm ${theme.badge}`}>
-                            {isGrandTest ? "Grand Test" : "Mock Test"}
+                    <div className="flex items-center justify-between mb-1.5 gap-2">
+                        <span className={`text-[7px] sm:text-[8px] font-black px-1.5 sm:px-2 py-0.5 rounded uppercase tracking-wider sm:tracking-[2px] text-white shadow-sm flex-shrink-0 ${theme.badge}`}>
+                            {isGrandTest ? "Grand" : "Mock"}
                         </span>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                            {statusLabel}
-                        </span>
+                        <div className="flex-1 min-w-0 text-right">
+                            <span className="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-tight sm:tracking-wider truncate block">
+                                {statusLabel}
+                            </span>
+                        </div>
                     </div>
                     <h3 className={`text-[12px] sm:text-[14px] font-black leading-tight line-clamp-2 sm:truncate transition-colors group-hover:${theme.text} text-slate-800 uppercase`}>
                         {test.title}
@@ -164,10 +166,12 @@ const MyTestCard = ({ test }) => {
             {/* Action Button */}
             <button
                 onClick={handleAction}
-                className={`w-full py-2.5 rounded-lg text-[11px] font-black uppercase tracking-[3px] text-white transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg ${theme.button}`}
+                className={`w-full py-2 px-1 sm:py-2.5 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-white transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg ${theme.button}`}
             >
-                {buttonText}
-                <Play size={10} fill="currentColor" className="ml-1" />
+                <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="truncate">{buttonText}</span>
+                    <Play size={10} fill="currentColor" className="shrink-0" />
+                </div>
             </button>
         </div>
     );

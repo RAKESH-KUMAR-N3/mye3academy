@@ -69,17 +69,17 @@ const AdminDoubts = () => {
 
   return (
     <div className="px-6 py-2 bg-gray-50 min-h-screen font-sans">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-xl font-black text-gray-800 flex items-center gap-2">
-           <BookOpen className="text-blue-600" size={20}/> Doubt Management
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+        <h2 className="text-xl sm:text-2xl font-black text-gray-800 flex items-center gap-2">
+           <BookOpen className="text-blue-600" size={24}/> Doubt Management
         </h2>
-        <span className="bg-white px-2 py-0.5 rounded-none border-2 border-slate-100 text-[10px] font-black text-gray-500 shadow-sm uppercase tracking-widest">
-          Total: {adminDoubts.length}
+        <span className="bg-white px-3 py-1 rounded-lg border border-slate-200 text-[10px] font-black text-gray-500 shadow-sm uppercase tracking-widest shrink-0">
+          Total Doubts: {adminDoubts.length}
         </span>
       </div>
-
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* DESKTOP TABLE VIEW */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-600">
             <thead className="bg-[#fdfdfd] text-[#3e4954] uppercase font-black text-[10px] tracking-widest border-b border-slate-200">
               <tr>
@@ -159,6 +159,71 @@ const AdminDoubts = () => {
             </tbody>
           </table>
         </div>
+
+        {/* MOBILE CARD VIEW */}
+        <div className="lg:hidden divide-y divide-slate-100">
+          {paginatedDoubts.map((d) => (
+            <div key={d._id} className="p-4 space-y-3 bg-white hover:bg-slate-50 transition-colors">
+              <div className="flex justify-between items-start">
+                <div className="min-w-0">
+                  <div className="font-extrabold text-gray-900 flex items-center gap-2 text-[11px] truncate uppercase tracking-tight">
+                    <User size={12} className="text-slate-400 shrink-0"/> 
+                    {d.student?.firstname} {d.student?.lastname}
+                  </div>
+                  <div className="text-[9px] text-[#21b731] font-black uppercase tracking-wider mt-0.5">
+                    {d.subject}
+                  </div>
+                </div>
+                <span className={`shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[8px] font-black uppercase tracking-widest border
+                  ${d.status === 'pending' ? 'bg-rose-50 text-rose-600 border-rose-100' : ''}
+                  ${d.status === 'assigned' ? 'bg-blue-50 text-blue-600 border-blue-100' : ''}
+                  ${d.status === 'answered' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : ''}
+                `}>
+                  {d.status}
+                </span>
+              </div>
+
+              <div className="bg-slate-50/50 p-3 rounded-lg border border-slate-100/50">
+                <p className="text-[11px] font-bold text-gray-700 leading-relaxed line-clamp-3">
+                  {d.text}
+                </p>
+                {d.mocktestId && (
+                  <span className="text-[8px] text-blue-600 font-black uppercase tracking-widest mt-2 block">
+                    Test Related
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block mb-1">Assign Expert</span>
+                  <select
+                    className="border border-slate-200 px-2 py-1.5 text-[10px] font-bold text-gray-700 outline-none w-full bg-white rounded-lg cursor-pointer"
+                    value={d.assignedInstructor?._id || ""}
+                    onChange={(e) => handleAssign(d._id, e.target.value)}
+                    disabled={d.status === 'answered'}
+                  >
+                    <option value="">Select Instructor</option>
+                    {instructors?.map((i) => (
+                      <option key={i._id} value={i._id}>
+                        {i.firstname} {i.lastname}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="shrink-0 self-end mb-1">
+                  <button 
+                    onClick={() => openDoubtDetails(d)}
+                    className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest shadow-sm shadow-blue-200"
+                  >
+                    <Eye size={12} /> View
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* We removed the extra closing div here to keep pagination inside the white box */}
 
         {/* PAGINATION CONTROLS */}
         {adminDoubts.length > 0 && (

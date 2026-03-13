@@ -105,14 +105,11 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
       dispatch(setPublicSearch(searchFromUrl));
       setSearchTerm(searchFromUrl);
     }
-    if (typeFromUrl && !overrideType) setTestType(typeFromUrl);
   }, [dispatch, searchParams, overrideType]);
 
   useEffect(() => {
-    if (overrideType) {
-      setTestType(overrideType);
-    }
-  }, [overrideType]);
+    setTestType(overrideType || searchParams.get("type") || "all");
+  }, [overrideType, searchParams]);
 
   useEffect(() => {
     if (debouncedSearchTerm !== filters.q) {
@@ -197,7 +194,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
 
         {/* ── TYPE HERO BANNER ── */}
         {testType === "mock" && (
-          <div className="mt-2 mb-6 border-l-4 border-[#21b731] bg-white shadow-sm px-5 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="mt-2 mb-6 border-l-4 border-[#21b731] bg-white shadow-sm px-5 py-4 hidden md:flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 w-full md:w-auto">
               <div className="w-11 h-11 bg-[#21b731]/10 flex items-center justify-center text-[#21b731] flex-shrink-0">
                 <IoDocumentText size={22} />
@@ -256,7 +253,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
         )}
 
         {testType === "grand" && (
-          <div className="mt-2 mb-6 border-l-4 border-amber-500 bg-white shadow-sm px-5 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="mt-2 mb-6 border-l-4 border-amber-500 bg-white shadow-sm px-5 py-4 hidden md:flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 w-full md:w-auto">
               <div className="w-11 h-11 bg-amber-50 flex items-center justify-center text-amber-500 flex-shrink-0">
                 <IoTrophy size={22} />
@@ -315,7 +312,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
         )}
 
         {!["mock", "grand"].includes(testType) && (
-          <div className="mt-2 mb-6 border-l-4 border-indigo-600 bg-white shadow-sm px-5 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="mt-2 mb-6 border-l-4 border-indigo-600 bg-white shadow-sm px-5 py-4 hidden md:flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 w-full md:w-auto">
               <div className="w-11 h-11 bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
                 <IoDocumentText size={22} />
@@ -372,13 +369,27 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
           </div>
         )}
 
-        <div className="flex items-center justify-between mb-6 lg:hidden">
-          <button
-            onClick={() => setIsFilterPanelOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-[13px] font-semibold text-slate-700 w-full justify-center shadow-sm"
-          >
-             Select Category ({selectedCategoryName || "All"}) <IoFunnel size={14} className="ml-1" />
-          </button>
+        {/* MOBILE SIMPLIFIED HEADER */}
+        <div className="md:hidden flex flex-col gap-4 mb-6 mt-2">
+            <TypeTabs activeType={testType} onTypeChange={setTestType} isEmbedded={isEmbedded} />
+            <div className="flex gap-2">
+                <button 
+                  onClick={() => setIsFilterPanelOpen(true)}
+                  className="flex-1 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-[11px] font-black text-slate-700 shadow-sm flex items-center justify-between uppercase tracking-tighter"
+                >
+                  <span className="truncate">{selectedCategoryName || "Category"}</span>
+                  <IoChevronDown className="shrink-0" size={14} />
+                </button>
+                <div className="flex-[1.5] relative">
+                    <input 
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      placeholder="Search..."
+                      className="w-full pl-8 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-[11px] font-black outline-none focus:border-indigo-600 shadow-sm uppercase tracking-tighter"
+                    />
+                    <IoSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                </div>
+            </div>
         </div>
 
         {/* MAIN LAYOUT WRAPPER */}
@@ -493,8 +504,8 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
             ) : (
           <div className="animate-in fade-in slide-in-from-bottom-3 duration-500">
 
-            {/* Count label */}
-            <div className="mb-4 flex items-center gap-2">
+            {/* Count label - HIDDEN ON MOBILE */}
+            <div className="mb-4 hidden md:flex items-center gap-2">
               <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">
                 {allTests.length} Tests
               </span>

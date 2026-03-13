@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 
 const Footer = () => (
   <footer className="bg-slate-900 text-slate-300 border-t border-slate-800">
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-28 md:pb-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-4">
         {/* BRAND COLUMN */}
-        <div className="space-y-4">
+        <div className="col-span-2 md:col-span-1 space-y-4">
           <Link to="/" className="flex items-center gap-2 group transition-opacity hover:opacity-80">
             <div className="bg-indigo-600 p-1.5 rounded-lg">
               <GraduationCap className="text-white w-5 h-5" />
@@ -88,7 +88,7 @@ const Footer = () => (
         </div>
 
         {/* LEGAL */}
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <h3 className="text-[10px] font-black text-white uppercase tracking-[0.2em] mb-4">
             Legal
           </h3>

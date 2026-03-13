@@ -80,7 +80,7 @@ const DashboardPage = () => {
         >
 
             {/* KPI STATS GRID - ALIGNED TO EDUMIN SCREENSHOT */}
-            <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6">
                 <StatCard
                     title="Total Students"
                     value={stats.students || "3,280"}
@@ -118,7 +118,7 @@ const DashboardPage = () => {
             {/* CHARTS SECTION */}
             <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* TEST DISTRIBUTION */}
-                <div className="bg-white p-5 rounded-none border border-slate-100 shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
+                <div className="bg-white p-4 sm:p-5 rounded-none border border-slate-100 shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h3 className="text-xl font-black text-[#3e4954] tracking-tight">Mock & Grand Test Reports</h3>
@@ -128,7 +128,7 @@ const DashboardPage = () => {
                             Global
                         </div>
                     </div>
-                    <div className="h-[450px]">
+                    <div className="h-[350px] sm:h-[450px]">
                         <TestTypeBreakdown 
                             data={stats.testTypeSales} 
                             monthlyData={stats.monthlyTestSales} 

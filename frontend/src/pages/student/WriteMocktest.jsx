@@ -788,16 +788,27 @@ const WriteMocktest = () => {
                   {current?.questionType === "passage" ? "READING CONTEXT" : "LIVE EXAMINATION"}
                 </span>
               </div>
-              <h2 className="text-lg font-black text-slate-800 uppercase tracking-tight">
-                {current?.questionType === "passage" ? (
-                  "Reading Passage"
-                ) : (
-                  <>Question {currentActionableIndex + 1} of {actionableQuestions.length}</>
-                )}
-                <span className="text-slate-400 ml-4 font-bold text-sm">
-                  ({totalAnswered} Answered)
-                </span>
-              </h2>
+              <div className="flex items-center justify-between w-full sm:w-auto">
+                <h2 className="text-lg font-black text-slate-800 uppercase tracking-tight">
+                  {current?.questionType === "passage" ? (
+                    "Reading Passage"
+                  ) : (
+                    <>Question {currentActionableIndex + 1} of {actionableQuestions.length}</>
+                  )}
+                  <span className="text-slate-400 ml-4 hidden sm:inline-block font-bold text-sm">
+                    ({totalAnswered} Answered)
+                  </span>
+                </h2>
+                <button 
+                  onClick={() => setIsNavOpen(true)}
+                  className="lg:hidden p-2 bg-slate-100 rounded-lg text-slate-600 hover:bg-slate-200 transition-colors"
+                >
+                  <Menu size={20} />
+                </button>
+              </div>
+              <div className="sm:hidden text-slate-400 font-bold text-[10px] mt-1 uppercase tracking-widest">
+                {totalAnswered} Questions Answered
+              </div>
             </div>
             <div className="relative w-full sm:w-auto mt-2 sm:mt-0">
               <select
@@ -851,23 +862,33 @@ const WriteMocktest = () => {
           </div>
 
           {/* ── BOTTOM NAV BAR ── */}
-          <div className="sticky bottom-0 z-10 bg-white px-4 py-3 border-t border-slate-200 flex justify-center items-center gap-3">
+          <div className="sticky bottom-0 z-10 bg-white px-2 sm:px-4 py-2 sm:py-3 border-t border-slate-200 flex justify-between items-center gap-2">
             <button
               disabled={currentIndex === 0 || filteredQuestions.length === 0}
               onClick={() => setCurrentIndex((i) => i - 1)}
-              className="px-6 py-3 flex items-center bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-30 disabled:grayscale transition-colors font-black uppercase text-[10px] tracking-widest"
+              className="px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-center bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 disabled:opacity-30 disabled:grayscale transition-all font-black uppercase text-[9px] sm:text-[10px] tracking-widest shrink-0"
             >
-              <ChevronLeft className="h-4 w-4 mr-2" /> Previous
+              <ChevronLeft size={14} className="mr-1 sm:mr-2" /> <span className="hidden xs:inline">Prev</span>
             </button>
+            
+            {/* Mobile Submit Button - Enhanced visibility */}
+            <button
+              onClick={() => handleSubmit(false)}
+              disabled={isSubmitting}
+              className="flex-1 lg:hidden px-3 py-2.5 sm:py-3 bg-emerald-600 text-white rounded-lg font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg hover:bg-emerald-700"
+            >
+              <CheckCircle size={16} /> <span>Submit Exam</span>
+            </button>
+
             <button
               disabled={
                 currentIndex === filteredQuestions.length - 1 ||
                 filteredQuestions.length === 0
               }
               onClick={() => setCurrentIndex((i) => i + 1)}
-              className="px-6 py-3 flex items-center bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-30 disabled:grayscale transition-colors font-black uppercase text-[10px] tracking-widest"
+              className="px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-center bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 disabled:opacity-30 disabled:grayscale transition-all font-black uppercase text-[9px] sm:text-[10px] tracking-widest shrink-0"
             >
-              Next <ChevronRight className="h-4 w-4 ml-2" />
+              <span className="hidden xs:inline">Next</span> <ChevronRight size={14} className="ml-1 sm:ml-2" />
             </button>
           </div>
         </div>
@@ -906,17 +927,39 @@ const WriteMocktest = () => {
 
       {isNavOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex lg:hidden">
-          <div className="w-full h-full bg-white max-w-sm absolute right-0 shadow-2xl">
-            <QuestionNavigationPanel
-              questions={navigationQuestions}
-              currentIndex={currentIndex}
-              setCurrentIndex={setCurrentIndex}
-              answers={answers}
-              isMobile={true}
-              onClose={() => setIsNavOpen(false)}
-              expiryTimestamp={new Date(endsAt).getTime()}
-              onTimeUp={handleTimeUp}
-            />
+          <div className="w-full h-full bg-white max-w-sm absolute right-0 shadow-2xl flex flex-col">
+            <div className="flex-1 overflow-y-auto">
+              <QuestionNavigationPanel
+                questions={navigationQuestions}
+                currentIndex={currentIndex}
+                setCurrentIndex={setCurrentIndex}
+                answers={answers}
+                isMobile={true}
+                onClose={() => setIsNavOpen(false)}
+                expiryTimestamp={new Date(endsAt).getTime()}
+                onTimeUp={handleTimeUp}
+              />
+            </div>
+            <div className="p-4 border-t border-slate-100 bg-white">
+              <button
+                onClick={() => {
+                  setIsNavOpen(false);
+                  handleSubmit(false);
+                }}
+                disabled={isSubmitting}
+                className={`w-full py-4 flex items-center justify-center gap-2 font-black uppercase text-xs tracking-widest transition-all active:scale-95 shadow-lg ${
+                  isSubmitting
+                    ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                    : "bg-green-600 text-white hover:bg-green-700"
+                }`}
+              >
+                {isSubmitting ? (
+                  <><SimpleSpinner size={18} color="#fff" /> PROCESSING...</>
+                ) : (
+                  <><CheckCircle size={18} /> Submit Exam</>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

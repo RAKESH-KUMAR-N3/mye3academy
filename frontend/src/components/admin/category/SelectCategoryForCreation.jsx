@@ -66,15 +66,15 @@ const SelectCategoryForCreation = () => {
   return (
     <div className="bg-[#EDF0FF] min-h-screen font-poppins">
       {/* WHITE HEADER STRIP */}
-      <div className="bg-white border-b border-slate-200 shadow-[0_2px_15px_rgba(0,0,0,0.02)] mb-8">
-        <div className="max-w-[1700px] mx-auto px-4 md:px-6 py-8 animate-in fade-in slide-in-from-top-1 duration-700">
+      <div className="bg-white border-b border-slate-200 shadow-[0_2px_15px_rgba(0,0,0,0.02)] mb-4 md:mb-8">
+        <div className="max-w-[1700px] mx-auto px-4 md:px-6 py-4 md:py-8 animate-in fade-in slide-in-from-top-1 duration-700">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-3">
+            <div className="hidden md:block space-y-3">
               <button
                 onClick={() => navigate('/admin')}
                 className="flex items-center gap-1.5 text-[10px] font-bold text-[#7e7e7e] hover:text-[#21b731] transition-all uppercase tracking-[0.2em]"
               >
-                <ArrowLeft size={12} /> Back
+                <ArrowLeft size={12} /> Back to Dashboard
               </button>
               <div>
                 <h1 className="text-2xl font-black text-[#3e4954] tracking-tight uppercase">
@@ -84,7 +84,26 @@ const SelectCategoryForCreation = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Mobile Actions - Image 2 Style */}
+            <div className="flex md:hidden flex-col w-full gap-2 px-1">
+               <Link
+                  to="/admin"
+                  className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-[#7e7e7e]"
+                >
+                  <ArrowLeft size={8} /> Back to Dashboard
+                </Link>
+                
+               <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => setShowAddForm(true)}
+                    className="flex-1 flex items-center justify-center gap-2 bg-[#21b731] text-white py-2.5 text-[10px] font-black uppercase tracking-wider rounded-lg shadow-sm shadow-green-100"
+                  >
+                    <Plus size={14} /> Add New
+                  </button>
+               </div>
+            </div>
+
+            <div className="hidden md:flex items-center gap-3">
                <div className="relative group">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#21b731] transition-colors" size={14} />
                   <input
@@ -119,7 +138,7 @@ const SelectCategoryForCreation = () => {
                     className="group relative bg-white border border-slate-200 hover:border-slate-300 transition-all duration-300 cursor-pointer overflow-hidden p-4 flex items-center gap-4 rounded-3xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)]"
                 >
                     {/* Logo Hub - Compact & Filling */}
-                    <div className="relative shrink-0 w-16 h-16 bg-white border border-slate-100 rounded-2xl flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300 shadow-sm">
+                    <div className="relative shrink-0 w-12 h-12 md:w-16 md:h-16 bg-white border border-slate-100 rounded-2xl flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300 shadow-sm">
                         <img 
                             src={getImageUrl(cat.image)} 
                             alt={cat.name}
@@ -131,33 +150,33 @@ const SelectCategoryForCreation = () => {
                     {/* Content Section */}
                     <div className="flex-grow min-w-0">
                         <div className="flex flex-col">
-                            <h3 className="text-[15px] font-bold text-slate-800 leading-tight uppercase group-hover:text-blue-600 transition-colors line-clamp-2">
+                            <h3 className="text-[13px] md:text-[15px] font-bold text-slate-800 leading-tight uppercase group-hover:text-[#21b731] transition-colors line-clamp-2">
                                 {cat.name}
                             </h3>
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <span className="text-[8px] md:text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">
                                 {cat.slug} Series
                             </span>
                         </div>
                     </div>
 
                     {/* Management Actions */}
-                    <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="flex items-center gap-0.5 md:gap-1 shrink-0 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <button 
                             onClick={(e) => handleEdit(e, cat)}
                             className="w-8 h-8 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-blue-600 transition-all flex items-center justify-center active:scale-95"
                         >
-                            <Edit size={13} strokeWidth={2.5} />
+                            <Edit size={12} md:size={13} strokeWidth={2.5} />
                         </button>
                         <button 
                             onClick={(e) => handleDelete(e, cat._id)}
                             className="w-8 h-8 rounded-xl hover:bg-rose-50 text-slate-400 hover:text-rose-500 transition-all flex items-center justify-center active:scale-95"
                         >
-                            <Trash2 size={13} strokeWidth={2.5} />
+                            <Trash2 size={12} md:size={13} strokeWidth={2.5} />
                         </button>
                     </div>
 
-                    {/* Neat Side Accent */}
-                    <div className="absolute left-0 top-6 bottom-6 w-[4px] bg-slate-100 rounded-r-full transition-all group-hover:bg-blue-600" />
+                    {/* Vertical Side Accent - Hidden on Mobile */}
+                    <div className="hidden md:block absolute left-0 top-6 bottom-6 w-[4px] bg-slate-100 rounded-r-full transition-all group-hover:bg-[#21b731]" />
                 </div>
             ))}
         </div>

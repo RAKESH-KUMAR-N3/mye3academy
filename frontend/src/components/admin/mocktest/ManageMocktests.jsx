@@ -278,102 +278,127 @@ const ManageMocktests = () => {
 
   /* ---------------------- MAIN RENDER ---------------------- */
   return (
-    <div className="p-4 pt-2 bg-[#EDF0FF] min-h-screen">
-      {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-3 mb-4">
-        <div className="space-y-1">
-          <Link to="/admin" className="inline-flex items-center gap-2 text-[10px] font-black text-[#7e7e7e] hover:text-[#21b731] uppercase tracking-[0.2em] transition-all font-poppins">
-            <ArrowLeft size={12} /> Back
-          </Link>
-          <div className="flex items-center gap-3">
-               <div className="w-1.5 h-7 bg-[#21b731]" />
-               <div>
-                  <h2 className="text-xl lg:text-2xl font-black text-[#3e4954] uppercase tracking-tighter font-poppins">All Tests</h2>
-                  <p className="text-[#7e7e7e] text-[9px] font-bold uppercase tracking-[0.2em] font-poppins mt-0.5">
-                    Showing <span className="text-[#21b731]">{filteredData.length}</span> active tests
-                  </p>
+    <div className="p-0 md:p-4 pt-2 bg-[#EDF0FF] min-h-screen">
+      {/* HEADER SECTION - Refined for Image 2 style */}
+      <div className="bg-white border-b border-slate-200 shadow-sm mb-4">
+        <div className="max-w-[1700px] mx-auto px-4 py-3">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-4">
+              <div className="hidden md:block w-1.5 h-10 bg-[#21b731] shadow-[0_0_10px_rgba(33,183,49,0.2)]" />
+              <div className="hidden md:block">
+                <Link to="/admin" className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#7e7e7e] hover:text-[#21b731] transition">
+                  <ArrowLeft size={12} /> Back to Dashboard
+                </Link>
+                <h2 className="text-xl lg:text-2xl font-black text-[#3e4954] uppercase tracking-tight font-poppins mt-2">Exam Manager</h2>
+                <p className="text-[10px] font-bold text-[#7e7e7e] mt-1 uppercase tracking-widest">
+                  Active tests in catalog: <span className="text-[#21b731]">{filteredData.length}</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Mobile Actions - Image 2 Style */}
+            <div className="flex md:hidden flex-col w-full gap-2">
+               <Link
+                  to="/admin"
+                  className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-[#7e7e7e] ml-1"
+                >
+                  <ArrowLeft size={8} /> Back to Dashboard
+                </Link>
+                
+               <div className="flex items-center gap-2 px-1">
+                  <button 
+                    onClick={() => navigate("/admin/tests/add-new-test")}
+                    className="flex-1 flex items-center justify-center gap-2 bg-[#21b731] text-white py-2.5 text-[10px] font-black uppercase tracking-wider rounded-lg shadow-sm shadow-green-100"
+                  >
+                    <Plus size={14} /> Add new test
+                  </button>
                </div>
+            </div>
+
+            <div className="hidden md:block">
+              <button 
+                onClick={() => navigate("/admin/tests/add-new-test")} 
+                className="flex items-center justify-center gap-2.5 bg-[#21b731] text-white px-5 py-3 rounded-none shadow-lg shadow-green-100 hover:bg-[#1a9227] hover:-translate-y-0.5 transition-all duration-300 font-black text-[10px] tracking-widest active:scale-95"
+              >
+                <Plus size={16} strokeWidth={3} /> Add new test
+              </button>
+            </div>
           </div>
         </div>
-
-        <button 
-          onClick={() => navigate("/admin/tests/add-new-test")} 
-          className="flex items-center justify-center gap-2.5 bg-[#21b731] text-white px-5 py-3 rounded-none shadow-lg shadow-green-100 hover:bg-[#1a9227] hover:-translate-y-0.5 transition-all duration-300 font-black text-[10px] tracking-widest active:scale-95"
-        >
-          <Plus size={16} strokeWidth={3} /> Add new test
-        </button>
       </div>
 
-      {/* FILTER CONTROLS */}
-      <div className="flex flex-col lg:flex-row gap-4 mb-6 items-stretch lg:items-end">
-        {/* Type Filter Tabs */}
-        <div className="space-y-2 flex-1 lg:max-w-md">
-           <label className="text-[9px] font-black text-[#7e7e7e] uppercase tracking-[0.2em] font-poppins flex items-center gap-2">
-              <Filter size={10} className="text-[#21b731]" /> Filter by Type
-           </label>
-           <div className="flex h-[42px] gap-2 bg-slate-100/50 p-1 border border-slate-200 rounded-none items-stretch">
-              <button 
-                  onClick={() => setFilterType("ALL")}
-                  className={`flex-1 flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all rounded-none border ${
-                    filterType === 'ALL' 
-                      ? 'bg-white text-[#3e4954] shadow-sm border-slate-300' 
-                      : 'text-[#7e7e7e] border-transparent hover:bg-slate-200/50'
-                  }`}
-              >
-                  <List size={14} strokeWidth={2.5} /> All
-              </button>
+      {/* FILTER CONTROLS - Simplified for Mobile */}
+      <div className="px-4 md:px-0">
+        <div className="flex flex-col lg:flex-row gap-4 mb-6 items-stretch lg:items-end">
+          {/* Type Filter Tabs */}
+          <div className="space-y-2 flex-1 lg:max-w-md">
+            <label className="hidden md:flex text-[9px] font-black text-[#7e7e7e] uppercase tracking-[0.2em] font-poppins items-center gap-2">
+                <Filter size={10} className="text-[#21b731]" /> Filter by Type
+            </label>
+            <div className="flex h-[38px] md:h-[42px] gap-2 bg-slate-100/50 p-1 border border-slate-200 rounded-none items-stretch">
+                <button 
+                    onClick={() => setFilterType("ALL")}
+                    className={`flex-1 flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all rounded-none border ${
+                      filterType === 'ALL' 
+                        ? 'bg-white text-[#3e4954] shadow-sm border-slate-300' 
+                        : 'text-[#7e7e7e] border-transparent hover:bg-slate-200/50'
+                    }`}
+                >
+                    <List size={12} md:size={14} strokeWidth={2.5} /> <span className="text-[8px] md:text-[9px]">All</span>
+                </button>
 
-              <FilterTabWithDropdown 
-                id="MOCK"
-                label="Mock"
-                icon={<Layers size={11} />}
-                activeFilter={filterType}
-                setFilter={setFilterType}
-                counts={{
-                  all: mocktests.filter(t => !t.isGrandTest).length,
-                  paid: mocktests.filter(t => !t.isGrandTest && !t.isFree).length,
-                  free: mocktests.filter(t => !t.isGrandTest && t.isFree).length,
-                }}
-                activeColor="bg-[#21b731] text-white shadow-md"
-              />
+                <FilterTabWithDropdown 
+                  id="MOCK"
+                  label="Mock"
+                  icon={<Layers size={11} />}
+                  activeFilter={filterType}
+                  setFilter={setFilterType}
+                  counts={{
+                    all: mocktests.filter(t => !t.isGrandTest).length,
+                    paid: mocktests.filter(t => !t.isGrandTest && !t.isFree).length,
+                    free: mocktests.filter(t => !t.isGrandTest && t.isFree).length,
+                  }}
+                  activeColor="bg-[#21b731] text-white shadow-md"
+                />
 
-              <FilterTabWithDropdown 
-                id="GRAND"
-                label="Grand"
-                icon={<Trophy size={11} />}
-                activeFilter={filterType}
-                setFilter={setFilterType}
-                counts={{
-                  all: mocktests.filter(t => t.isGrandTest).length,
-                  paid: mocktests.filter(t => t.isGrandTest && !t.isFree).length,
-                  free: mocktests.filter(t => t.isGrandTest && t.isFree).length,
-                }}
-                activeColor="bg-amber-500 text-white shadow-md"
-              />
-           </div>
-        </div>
+                <FilterTabWithDropdown 
+                  id="GRAND"
+                  label="Grand"
+                  icon={<Trophy size={11} />}
+                  activeFilter={filterType}
+                  setFilter={setFilterType}
+                  counts={{
+                    all: mocktests.filter(t => t.isGrandTest).length,
+                    paid: mocktests.filter(t => t.isGrandTest && !t.isFree).length,
+                    free: mocktests.filter(t => t.isGrandTest && t.isFree).length,
+                  }}
+                  activeColor="bg-amber-500 text-white shadow-md"
+                />
+            </div>
+          </div>
 
-        {/* Category Dropdown */}
-        <div className="space-y-2 w-full lg:w-64">
-           <label className="text-[9px] font-black text-[#7e7e7e] uppercase tracking-[0.2em] font-poppins flex items-center gap-2">
-              <Search size={10} className="text-[#21b731]" /> Search Category
-           </label>
-           <div className="relative">
-              <select 
-                  value={selectedCategory} 
-                  onChange={handleCategoryChange} 
-                  disabled={categoriesLoading}
-                  className="w-full bg-white border border-slate-200 px-3 py-2 text-[10px] font-bold text-[#3e4954] uppercase tracking-widest outline-none focus:border-[#21b731] transition-colors appearance-none font-poppins cursor-pointer"
-              >
-                  <option value="">All Categories</option>
-                  {categories.map((cat) => (
-                    <option key={cat.slug} value={cat.slug}>{cat.name}</option>
-                  ))}
-              </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                 <ChevronRight size={14} className="rotate-90" />
-              </div>
-           </div>
+          {/* Category Dropdown */}
+          <div className="space-y-2 w-full lg:w-64">
+            <label className="hidden md:flex text-[9px] font-black text-[#7e7e7e] uppercase tracking-[0.2em] font-poppins items-center gap-2">
+                <Search size={10} className="text-[#21b731]" /> Search Category
+            </label>
+            <div className="relative">
+                <select 
+                    value={selectedCategory} 
+                    onChange={handleCategoryChange} 
+                    disabled={categoriesLoading}
+                    className="w-full bg-white border border-slate-200 px-3 py-2.5 text-[9px] md:text-[10px] font-bold text-[#3e4954] uppercase tracking-widest outline-none focus:border-[#21b731] transition-colors appearance-none font-poppins cursor-pointer"
+                >
+                    <option value="">All Categories</option>
+                    {categories.map((cat) => (
+                      <option key={cat.slug} value={cat.slug}>{cat.name}</option>
+                    ))}
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <ChevronRight size={14} className="rotate-90" />
+                </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -396,11 +421,95 @@ const ManageMocktests = () => {
 
         {!isLoading && !hasError && filteredData.length > 0 && (
           <>
-            <MockTestTable tests={paginatedData} />
+            <div className="px-4 md:px-0">
+            <div className="hidden md:block">
+              <MockTestTable tests={paginatedData} />
+            </div>
+
+            {/* MOBILE CARD VIEW */}
+            <div className="md:hidden space-y-3">
+              {paginatedData.map((test) => {
+                const catName = test.category?.name || "N/A";
+                return (
+                  <div key={test._id} className="bg-white p-3.5 border border-slate-100 shadow-sm space-y-3 transition-all hover:border-[#21b731]/30">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 flex-shrink-0 flex items-center justify-center border ${test.isGrandTest ? 'bg-amber-50 border-amber-100 text-amber-600' : 'bg-[#21b731]/5 border-[#21b731]/10 text-[#21b731]'}`}>
+                          {test.isGrandTest ? <Trophy size={14} /> : <Layers size={14} />}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-extrabold text-slate-900 text-[13px] uppercase truncate tracking-tight mb-0.5">{test.title}</p>
+                          <div className="flex items-center gap-2">
+                             <span className={`px-1.5 py-0.5 text-[7px] font-black uppercase tracking-widest border ${getCategoryTagClass(catName)}`}>
+                                {catName}
+                             </span>
+                             <span className={`px-1.5 py-0.5 text-[7px] font-black uppercase tracking-widest border ${
+                                test.isGrandTest ? "bg-amber-50 text-amber-600 border-amber-100" : "bg-emerald-50 text-emerald-600 border-emerald-100"
+                             }`}>
+                                {test.isGrandTest ? "Grand" : "Mock"}
+                             </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1.5">
+                         <span className={`text-[9.5px] font-black px-2 py-0.5 border uppercase tracking-widest ${
+                            test.isFree ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-indigo-50 text-indigo-600 border-indigo-100'
+                         }`}>
+                           {test.isFree ? "FREE" : `₹${test.price}`}
+                         </span>
+                         <button
+                            onClick={() => handleTogglePublish(test._id)}
+                            className={`h-4 w-8 rounded-full border relative transition-colors ${test.isPublished ? 'bg-emerald-500 border-emerald-600' : 'bg-slate-200 border-slate-300'}`}
+                         >
+                            <span className={`absolute top-0.5 h-2.5 w-2.5 rounded-full bg-white transition-all ${test.isPublished ? 'right-0.5' : 'left-0.5'}`} />
+                         </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 bg-slate-50/50 p-2 border border-slate-100">
+                       <div className="flex flex-col items-center">
+                          <span className="text-[11px] font-black text-slate-700">{test.totalMarks || 0}</span>
+                          <span className="text-[7px] text-slate-400 font-bold uppercase tracking-tighter">Marks</span>
+                       </div>
+                       <div className="flex flex-col items-center">
+                          <span className="text-[11px] font-black text-slate-700">{test.totalQuestions || 0}</span>
+                          <span className="text-[7px] text-slate-400 font-bold uppercase tracking-tighter">MCQs</span>
+                       </div>
+                       <div className="flex flex-col items-center">
+                          <span className="text-[11px] font-black text-slate-700">{test.durationMinutes || 0}m</span>
+                          <span className="text-[7px] text-slate-400 font-bold uppercase tracking-tighter">Time</span>
+                       </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                       <button 
+                          onClick={() => navigate(`/admin/tests/manage-tests/${test._id}/attempts`)}
+                          className="flex-1 bg-white border border-slate-200 text-slate-600 py-1.5 rounded-none font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-1.5"
+                       >
+                          <Eye size={12} /> {test.attemptsCount || 0} Attempts
+                       </button>
+                       <Link
+                          to={`/admin/mocktests/${test.category?.slug || 'default'}/edit/${test._id}`}
+                          className="flex-1 bg-slate-900 text-white py-1.5 rounded-none font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-1.5"
+                       >
+                          Edit
+                       </Link>
+                       <button
+                          onClick={() => handleDelete(test._id)}
+                          className="px-3 py-1.5 bg-rose-50 text-rose-500 border border-rose-100 hover:bg-rose-100 transition-all rounded-none"
+                       >
+                          <Trash2 size={12} />
+                       </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
             
             {/* PAGINATION CONTROLS */}
             {filteredData.length > 0 && (
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 bg-white border border-slate-200 p-4">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 bg-white border border-slate-200 p-4 mx-4 md:mx-0 mb-12">
                 <div className="text-[10px] font-black text-[#7e7e7e] uppercase tracking-widest font-poppins">
                   Showing <span className="text-[#3e4954]">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="text-[#3e4954]">{Math.min(currentPage * itemsPerPage, filteredData.length)}</span> of <span className="text-[#21b731]">{filteredData.length}</span> results
                 </div>

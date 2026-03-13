@@ -23,36 +23,36 @@ const TestTypeBreakdown = ({ data = [], monthlyData = [] }) => {
     <div className="flex flex-col h-full space-y-8">
         <div className="space-y-4">
             {/* Regular Tests Row */}
-            <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-none border border-slate-100/50 group hover:bg-white hover:shadow-sm transition-all duration-300">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-indigo-50 text-[#6a73fa] flex items-center justify-center transition-transform group-hover:scale-110">
-                        <ClipboardList size={20} />
+            <div className="flex items-center justify-between p-2 sm:p-4 bg-slate-50/50 rounded-none border border-slate-100/50 group hover:bg-white hover:shadow-sm transition-all duration-300">
+                <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl bg-indigo-50 text-[#6a73fa] flex items-center justify-center shrink-0 transition-transform group-hover:scale-110">
+                        <ClipboardList size={14} className="sm:w-5 sm:h-5" />
                     </div>
-                    <div>
-                        <h4 className="text-[14px] font-bold text-[#3e4954]">Mock Tests</h4>
-                        <p className="text-[12px] font-medium text-[#7e7e7e]">Fixed Tier Assessments</p>
+                    <div className="min-w-0">
+                        <h4 className="text-[10px] sm:text-[14px] font-bold text-[#3e4954] truncate">Mock Tests</h4>
+                        <p className="text-[8px] sm:text-[12px] font-medium text-[#7e7e7e] truncate">Fixed Tier</p>
                     </div>
                 </div>
-                <div className="text-right">
-                    <p className="text-[14px] font-black text-[#3e4954]">{regular.salesCount} Sales</p>
-                    <p className="text-[12px] font-bold text-emerald-500">{formatRevenue(regular.totalRevenue)}</p>
+                <div className="text-right shrink-0 ml-1">
+                    <p className="text-[10px] sm:text-[14px] font-black text-[#3e4954]">{regular.salesCount} Sales</p>
+                    <p className="text-[8px] sm:text-[12px] font-bold text-emerald-500">{formatRevenue(regular.totalRevenue)}</p>
                 </div>
             </div>
 
             {/* Grand Tests Row */}
-            <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-none border border-slate-100/50 group hover:bg-white hover:shadow-sm transition-all duration-300">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-purple-50 text-[#b472fb] flex items-center justify-center transition-transform group-hover:scale-110">
-                        <Trophy size={20} />
+            <div className="flex items-center justify-between p-2 sm:p-4 bg-slate-50/50 rounded-none border border-slate-100/50 group hover:bg-white hover:shadow-sm transition-all duration-300">
+                <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl bg-purple-50 text-[#b472fb] flex items-center justify-center shrink-0 transition-transform group-hover:scale-110">
+                        <Trophy size={14} className="sm:w-5 sm:h-5" />
                     </div>
-                    <div>
-                        <h4 className="text-[14px] font-bold text-[#3e4954]">Grand Test Report</h4>
-                        <p className="text-[12px] font-medium text-[#7e7e7e]">Institutional Analytics</p>
+                    <div className="min-w-0">
+                        <h4 className="text-[10px] sm:text-[14px] font-bold text-[#3e4954] truncate">Grand Test</h4>
+                        <p className="text-[8px] sm:text-[12px] font-medium text-[#7e7e7e] truncate">Analytics</p>
                     </div>
                 </div>
-                <div className="text-right">
-                    <p className="text-[14px] font-black text-[#3e4954]">{grand.salesCount} Sales</p>
-                    <p className="text-[12px] font-bold text-amber-500">{formatRevenue(grand.totalRevenue)}</p>
+                <div className="text-right shrink-0 ml-1">
+                    <p className="text-[10px] sm:text-[14px] font-black text-[#3e4954]">{grand.salesCount} Sales</p>
+                    <p className="text-[8px] sm:text-[12px] font-bold text-amber-500">{formatRevenue(grand.totalRevenue)}</p>
                 </div>
             </div>
         </div>

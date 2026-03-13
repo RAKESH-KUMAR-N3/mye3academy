@@ -31,7 +31,7 @@ import { fetchPublicMockTests, fetchUpcomingExams } from "../redux/studentSlice"
 ========================================= */
 const RoleSelectionSection = ({ onNavigate }) => {
   return (
-    <section className="py-24 relative bg-slate-200/30 overflow-hidden">
+    <section className="py-12 md:py-24 relative bg-slate-200/30 overflow-hidden">
       {/* Soft Background Accents */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-50/50 rounded-full blur-[100px] -z-10"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-50/50 rounded-full blur-[100px] -z-10"></div>
@@ -39,20 +39,20 @@ const RoleSelectionSection = ({ onNavigate }) => {
       <div className="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* === STUDENT CARD === */}
-          <div className="group relative p-6 rounded-[32px] bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-100/30 transition-all duration-500 hover:-translate-y-2">
-            <div className="w-14 h-14 mb-6 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500 shadow-inner">
-              <GraduationCap size={28} />
+          <div className="group relative p-4 md:p-6 rounded-[32px] bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-100/30 transition-all duration-500 hover:-translate-y-2">
+            <div className="w-12 h-12 md:w-14 md:h-14 mb-4 md:mb-6 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500 shadow-inner">
+              <GraduationCap className="w-6 h-6 md:w-7 md:h-7" />
             </div>
 
-            <h3 className="text-xl font-black text-slate-800 mb-3 tracking-tighter uppercase">
+            <h3 className="text-lg md:text-xl font-black text-slate-800 mb-2 md:mb-3 tracking-tighter uppercase">
               For Students
             </h3>
-            <p className="text-slate-500 mb-6 leading-relaxed font-medium text-sm">
+            <p className="text-slate-500 mb-4 md:mb-6 leading-relaxed font-medium text-[13px] md:text-sm">
               Unlock unlimited mock tests, get detailed performance analytics,
               and compete with peers nationwide.
             </p>
 
-            <div className="space-y-3 mb-8">
+            <div className="space-y-2 md:space-y-3 mb-6 md:mb-8">
               {[
                 "Real-time Rankings",
                 "Detailed Solutions",
@@ -69,27 +69,27 @@ const RoleSelectionSection = ({ onNavigate }) => {
 
             <button
               onClick={onNavigate}
-              className="w-full py-3.5 px-8 rounded-xl bg-indigo-600 text-white font-black uppercase tracking-widest text-[10px] hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 group/btn"
+              className="w-full py-3 md:py-3.5 px-8 rounded-xl bg-indigo-600 text-white font-black uppercase tracking-widest text-[9px] md:text-[10px] hover:bg-indigo-700 transition-all duration-300 shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 group/btn"
             >
               Start Your Preparation <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
             </button>
           </div>
 
           {/* === INSTRUCTOR CARD === */}
-          <div className="group relative p-6 rounded-[32px] bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-purple-100/30 transition-all duration-500 hover:-translate-y-2">
-            <div className="w-14 h-14 mb-6 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-all duration-500 shadow-inner">
-              <Presentation size={28} />
+          <div className="group relative p-4 md:p-6 rounded-[32px] bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-purple-100/30 transition-all duration-500 hover:-translate-y-2">
+            <div className="w-12 h-12 md:w-14 md:h-14 mb-4 md:mb-6 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-all duration-500 shadow-inner">
+              <Presentation className="w-6 h-6 md:w-7 md:h-7" />
             </div>
 
-            <h3 className="text-xl font-black text-slate-800 mb-3 tracking-tighter uppercase">
+            <h3 className="text-lg md:text-xl font-black text-slate-800 mb-2 md:mb-3 tracking-tighter uppercase">
               For Instructors
             </h3>
-            <p className="text-slate-500 mb-6 leading-relaxed font-medium text-sm">
+            <p className="text-slate-500 mb-4 md:mb-6 leading-relaxed font-medium text-[13px] md:text-sm">
               Create high-quality test series, reach thousands of students,
               and generate revenue from your expertise.
             </p>
 
-            <div className="space-y-3 mb-8">
+            <div className="space-y-2 md:space-y-3 mb-6 md:mb-8">
               {[
                 "Easy Test Creation",
                 "Student Analytics",
@@ -106,7 +106,7 @@ const RoleSelectionSection = ({ onNavigate }) => {
 
             <button
               onClick={onNavigate}
-              className="w-full py-3.5 px-8 rounded-xl bg-purple-600 text-white font-black uppercase tracking-widest text-[10px] hover:bg-purple-700 transition-all duration-300 shadow-lg shadow-purple-100 flex items-center justify-center gap-2 group/btn"
+              className="w-full py-3 md:py-3.5 px-8 rounded-xl bg-purple-600 text-white font-black uppercase tracking-widest text-[9px] md:text-[10px] hover:bg-purple-700 transition-all duration-300 shadow-lg shadow-purple-100 flex items-center justify-center gap-2 group/btn"
             >
               Join As Instructor <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
             </button>

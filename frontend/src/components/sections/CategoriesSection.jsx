@@ -63,14 +63,14 @@ const CategoriesSection = ({ categories = [], loading }) => {
         <div className="relative mb-5">
           <button
             onClick={() => scroll("left")}
-            className="absolute left-[-18px] top-1/2 -translate-y-1/2 z-20 w-7 h-7 bg-white border border-slate-200 rounded-full shadow flex items-center justify-center text-slate-400 hover:text-cyan-500 transition hidden md:flex"
+            className="absolute -left-2 md:-left-[18px] top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-7 md:h-7 bg-white border border-slate-200 rounded-full shadow-md flex items-center justify-center text-slate-500 hover:text-cyan-500 transition-all active:scale-90 flex"
           >
-            <ChevronLeft size={14} />
+            <ChevronLeft size={16} md={14} />
           </button>
 
           <div
             ref={scrollRef}
-            className="flex items-center gap-2 overflow-x-auto pb-1"
+            className="flex items-center gap-2 overflow-x-auto pb-1 px-4 md:px-0"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             <style>{`#categories .scroll-tabs::-webkit-scrollbar{display:none}`}</style>
@@ -91,9 +91,9 @@ const CategoriesSection = ({ categories = [], loading }) => {
 
           <button
             onClick={() => scroll("right")}
-            className="absolute right-[-18px] top-1/2 -translate-y-1/2 z-20 w-7 h-7 bg-white border border-slate-200 rounded-full shadow flex items-center justify-center text-slate-400 hover:text-cyan-500 transition hidden md:flex"
+            className="absolute -right-2 md:-right-[18px] top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-7 md:h-7 bg-white border border-slate-200 rounded-full shadow-md flex items-center justify-center text-slate-500 hover:text-cyan-500 transition-all active:scale-90 flex"
           >
-            <ChevronRight size={14} />
+            <ChevronRight size={16} md={14} />
           </button>
         </div>
 

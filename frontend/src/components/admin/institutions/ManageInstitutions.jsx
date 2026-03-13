@@ -137,20 +137,20 @@ const ManageInstitutions = () => {
     <div className="min-h-screen bg-[#EDF0FF] font-poppins">
       {/* WHITE HEADER STRIP */}
       <div className="bg-white border-b border-slate-200 shadow-[0_2px_15px_rgba(0,0,0,0.02)] mb-8">
-        <div className="max-w-[1700px] mx-auto px-4 md:px-6 py-8 animate-in fade-in slide-in-from-top-1 duration-700">
-          <div className="space-y-3 mb-6">
-            <Link
-              to="/admin"
-              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#7e7e7e] hover:text-indigo-600 transition"
-            >
-              <ArrowLeft size={12} /> Back to Dashboard
-            </Link>
-          </div>
+        <div className="max-w-[1700px] mx-auto px-4 md:px-6 py-4 md:py-8 animate-in fade-in slide-in-from-top-1 duration-700">
+            <div className="hidden md:block space-y-3 mb-6">
+              <Link
+                to="/admin"
+                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#7e7e7e] hover:text-indigo-600 transition"
+              >
+                <ArrowLeft size={12} /> Back to Dashboard
+              </Link>
+            </div>
 
           <div className="flex flex-col md:flex-row justify-between items-end gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-1.5 h-10 bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.2)]" />
-              <div>
+              <div className="hidden md:block w-1.5 h-10 bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.2)]" />
+              <div className="hidden md:block">
                 <h1 className="text-2xl font-black text-[#3e4954] tracking-tight uppercase flex items-center gap-3">
                   <Building2 className="text-indigo-600" size={24} />
                   Manage Institutions
@@ -161,7 +161,32 @@ const ManageInstitutions = () => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4">
+            {/* Mobile-only Top Controls - Image 2 Style */}
+            <div className="flex md:hidden flex-col w-full gap-2 px-1">
+               <Link
+                  to="/admin"
+                  className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-[#7e7e7e]"
+                >
+                  <ArrowLeft size={8} /> Back to Dashboard
+                </Link>
+                
+               <div className="flex items-center justify-between gap-2">
+                 <button
+                    onClick={handleDownloadReport}
+                    className="flex-1 flex items-center justify-center gap-1.5 bg-white border border-slate-200 text-[#7e7e7e] py-2 text-[9px] font-black uppercase tracking-wider rounded-lg"
+                  >
+                    <Download size={12} /> Report
+                  </button>
+                  <Link
+                    to="/admin/users/institutions/add"
+                    className="flex-1 flex items-center justify-center gap-1.5 bg-indigo-600 text-white py-2 text-[9px] font-black uppercase tracking-wider rounded-lg shadow-sm shadow-indigo-100"
+                  >
+                    <Plus size={14} /> Add Inst.
+                  </Link>
+               </div>
+            </div>
+
+            <div className="hidden md:flex flex-col sm:flex-row items-center gap-4">
               {/* Search Integrated into Header Row */}
               <div className="relative group">
                 <Search
@@ -237,8 +262,9 @@ const ManageInstitutions = () => {
 
       {status === "succeeded" && filteredInstitutions.length > 0 && (
         <>
-          <div className="bg-white rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.12)] border border-gray-100">
-            <div className="overflow-x-visible">
+          <div className="bg-white rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.12)] border border-gray-100 overflow-hidden">
+            {/* DESKTOP TABLE VIEW */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-[#fdfdfd] border-b border-gray-100 text-[#3e4954] uppercase text-[10px] font-black tracking-widest">
@@ -394,6 +420,81 @@ const ManageInstitutions = () => {
                   })}
                 </tbody>
               </table>
+            </div>
+
+            {/* MOBILE CARD VIEW */}
+            <div className="lg:hidden divide-y divide-gray-100">
+              {paginatedInstitutions.map((inst) => {
+                const avatarFallback = `https://ui-avatars.com/api/?background=6366f1&color=fff&name=${encodeURIComponent(
+                  `${inst.firstname || ""} ${inst.lastname || ""}`.trim() ||
+                    "Institution"
+                )}`;
+                const avatarSrc = inst.avatar ? getImageUrl(inst.avatar) : avatarFallback;
+
+                return (
+                  <div key={inst._id} className="p-3.5 space-y-3 bg-white hover:bg-slate-50 transition-all border-b border-slate-50 last:border-0">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center border border-indigo-100 overflow-hidden shrink-0">
+                           <img
+                             src={avatarSrc}
+                             alt={inst.firstname}
+                             className="w-full h-full object-cover"
+                           />
+                        </div>
+                        <div>
+                          <p className="font-extrabold text-gray-900 text-sm">
+                            {inst.firstname} {inst.lastname}
+                          </p>
+                          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{inst.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className={`px-2 py-0.5 text-[8px] font-black uppercase tracking-widest rounded-none border ${
+                          inst.isActive ? "bg-green-50 text-green-600 border-green-100" : "bg-rose-50 text-rose-600 border-rose-100"
+                        }`}>
+                          {inst.isActive ? "Active" : "Blocked"}
+                        </span>
+                        <p className="text-[8px] text-slate-300 font-bold uppercase tracking-widest">Joined: {new Date(inst.createdAt).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 py-3 border-y border-slate-50">
+                      <div className="space-y-1">
+                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Contact Number</p>
+                        <p className="text-[11px] font-bold text-slate-700">{inst.phoneNumber || "—"}</p>
+                      </div>
+                      <div className="space-y-1 text-right">
+                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Students</p>
+                        <p className="text-[11px] font-black text-indigo-600">{inst.studentCount || 0} Registered</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        onClick={() => navigate(`/admin/users/institutions/edit/${inst._id}`)}
+                        className="flex-1 bg-slate-100 text-slate-600 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-1.5"
+                      >
+                         Edit
+                      </button>
+                      <button
+                        onClick={() => handleViewStudents(inst)}
+                        className="flex-1 bg-indigo-50 text-indigo-600 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-1.5"
+                      >
+                         Students
+                      </button>
+                      <button
+                        onClick={() => handleToggleStatus(inst)}
+                        className={`px-3 py-2 rounded-lg transition-colors border ${
+                          inst.isActive ? "bg-orange-50 text-orange-600 border-orange-100" : "bg-green-50 text-green-600 border-green-100"
+                        }`}
+                      >
+                        {inst.isActive ? <FaBan size={12} /> : <FaCheckCircle size={12} />}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

@@ -209,7 +209,7 @@ const DashboardOverview = ({ setActiveTab }) => {
                  </div>
               </div>
 
-              <div className="relative z-10 space-y-6">
+              <div className="relative z-10 space-y-4 sm:space-y-6">
                  {globalLeaderboard && globalLeaderboard.length > 0 ? (
                     globalLeaderboard.slice(0, 4).map((ranker, index) => {
                        const isFirst = index === 0;
@@ -241,7 +241,7 @@ const DashboardOverview = ({ setActiveTab }) => {
                        return (
                           <div 
                              key={ranker._id}
-                             className={`flex items-center gap-4 p-4 rounded-none border ${rankStyles.border} ${rankStyles.bg} transition-all duration-400 hover:shadow-xl group relative overflow-hidden`}
+                             className={`flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-none border ${rankStyles.border} ${rankStyles.bg} transition-all duration-400 hover:shadow-xl group relative overflow-hidden`}
                           >
                              {isFirst && (
                                 <div className="absolute top-0 right-0 z-20 overflow-hidden w-20 sm:w-24 h-20 sm:h-24 pointer-events-none">
@@ -262,29 +262,29 @@ const DashboardOverview = ({ setActiveTab }) => {
                                       <div className="profile-frame"></div>
                                    </>
                                 )}
-                                <div className={`w-12 h-12 rounded-full border-2 overflow-hidden bg-white shadow-md relative ${isFirst ? 'border-amber-400' : 'border-white'}`}>
+                                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 overflow-hidden bg-white shadow-md relative ${isFirst ? 'border-amber-400' : 'border-white'}`}>
                                    {ranker.avatar ? (
                                       <img src={getImageUrl(ranker.avatar)} alt={ranker.name} className="w-full h-full object-cover" />
                                    ) : (
                                       <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-300 font-bold text-xs uppercase">
-                                         {ranker.name.charAt(0)}
+                                         {ranker.name?.charAt(0)}
                                       </div>
                                    )}
                                 </div>
                              </div>
 
-                             <div className="flex-1 min-w-0 pr-2">
-                                <h4 className={`text-sm font-black truncate transition-colors duration-300 ${isFirst ? 'text-amber-950' : 'text-[#3e4954] group-hover:text-blue-600'}`}>{ranker.name}</h4>
-                                <div className="flex items-center gap-1.5 mt-0.5">
-                                   <span className={`text-[10px] font-bold uppercase tracking-tighter ${isFirst ? 'text-amber-700/80' : 'text-slate-400'}`}>{ranker.attemptsCount} Assessments</span>
+                             <div className="flex-1 min-w-0 pr-1 sm:pr-2">
+                                <h4 className={`text-[12px] sm:text-sm font-black truncate transition-colors duration-300 ${isFirst ? 'text-amber-950' : 'text-[#3e4954] group-hover:text-blue-600'}`}>{ranker.name}</h4>
+                                <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5">
+                                   <span className={`text-[8.5px] sm:text-[10px] font-bold uppercase tracking-tighter ${isFirst ? 'text-amber-700/80' : 'text-slate-400'}`}>{ranker.attemptsCount} Assessments</span>
                                 </div>
                              </div>
 
-                              <div className="text-right whitespace-nowrap min-w-[70px] sm:min-w-[80px] pr-2 sm:pr-10 relative z-20">
-                                 <div className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest mb-0.5 ${isFirst ? 'text-amber-700/70' : 'text-slate-400'}`}>Points</div>
-                                 <div className={`text-lg sm:text-xl font-black tracking-tight leading-none ${isFirst ? 'text-amber-600' : 'text-[#3e4954]'}`}>
-                                    {ranker.totalScore}
-                                 </div>
+                              <div className="text-right whitespace-nowrap relative z-20 min-w-[60px] sm:min-w-[80px]">
+                                <div className={`text-[7px] sm:text-[9px] font-black uppercase tracking-widest mb-0.5 ${isFirst ? 'text-amber-700/70' : 'text-slate-400'}`}>Points</div>
+                                <div className={`text-sm sm:text-xl font-black tracking-tight leading-none ${isFirst ? 'text-amber-600' : 'text-[#3e4954]'}`}>
+                                   {ranker.totalScore}
+                                </div>
                               </div>
                           </div>
                        );

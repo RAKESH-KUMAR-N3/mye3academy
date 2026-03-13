@@ -48,38 +48,38 @@ const UpcomingExamsGallery = ({ data = { upcoming: [], popular: [] }, loading })
       <div
         key={item._id}
         onClick={handleClick}
-        className="group flex items-center gap-4 px-5 py-3.5 bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-pointer relative"
+        className="group flex flex-col items-center text-center gap-2 p-3 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-pointer relative md:flex-row md:text-left md:px-5 md:py-3.5 md:gap-4 md:rounded-xl"
       >
         {/* Status Badge for "Upcoming" */}
         {item.isUpcoming && (
-          <span className="absolute -top-2 -right-1 px-2 py-0.5 bg-rose-500 text-white text-[8px] font-black rounded-md tracking-widest uppercase shadow-sm z-10 animate-bounce">
+          <span className="absolute -top-1.5 -right-1 px-1.5 py-0.5 bg-rose-500 text-white text-[7px] md:text-[8px] font-black rounded-md tracking-widest uppercase shadow-sm z-10 animate-pulse">
              Upcoming
           </span>
         )}
         
         {/* Logo Container */}
-        <div className="w-12 h-12 flex-none rounded-full bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 border border-slate-100 group-hover:bg-white group-hover:scale-105 transition-all duration-300">
+        <div className="w-10 h-10 md:w-12 md:h-12 flex-none rounded-full bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 border border-slate-100 group-hover:bg-white group-hover:scale-105 transition-all duration-300">
           {icon ? (
             <img
               src={icon}
               alt={title}
-              className="w-full h-full object-contain p-2"
+              className="w-full h-full object-contain p-1.5 md:p-2"
               onError={handleImageError}
             />
           ) : (
-            <div className="text-lg font-black text-slate-300 uppercase">
+            <div className="text-sm md:text-lg font-black text-slate-300 uppercase">
               {title.charAt(0)}
             </div>
           )}
         </div>
 
         {/* Title */}
-        <span className="flex-1 text-[13px] font-black text-slate-700 group-hover:text-indigo-600 transition-colors tracking-tight line-clamp-1">
+        <span className="flex-1 text-[11px] md:text-[13px] font-black text-slate-700 group-hover:text-indigo-600 transition-colors tracking-tight line-clamp-2 md:line-clamp-1">
            {title}
         </span>
 
-        {/* Simple Arrow */}
-        <ChevronRight size={18} className="text-slate-300 group-hover:text-indigo-500 shrink-0 transition-colors" />
+        {/* Simple Arrow (Hidden on mobile) */}
+        <ChevronRight size={18} className="hidden md:block text-slate-300 group-hover:text-indigo-500 shrink-0 transition-colors" />
       </div>
     );
   };
@@ -98,7 +98,7 @@ const UpcomingExamsGallery = ({ data = { upcoming: [], popular: [] }, loading })
               <div className="h-1 flex-1 bg-slate-100 rounded-full mx-4 hidden md:block"></div>
               <Zap size={20} className="text-rose-500 fill-rose-500 animate-pulse shrink-0" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
               {data.upcoming.map(item => renderCard(item))}
             </div>
           </div>

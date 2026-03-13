@@ -57,7 +57,8 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
   const dispatch = useDispatch();
 
   const { adminProfile } = useSelector((state) => state.admin || {});
-
+  
+  const [isMobile, setIsMobile] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isPinned, setIsPinned] = useState(false);
   const [openMenus, setOpenMenus] = useState({}); // Track multiple open accordions
@@ -66,6 +67,13 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
   const sidebarRef = useRef(null);
   const hoverTimer = useRef(null);
   const leaveTimer = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (!adminProfile) dispatch(fetchAdminProfile());
@@ -79,7 +87,8 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
     }
   }, [location.pathname]);
 
-  const expandedSidebar = isPinned || isHovering;
+  // Force expanded mode on mobile to show all menu labels in the drawer
+  const expandedSidebar = isMobile ? true : (isPinned || isHovering);
 
   const handleEnter = () => {
     clearTimeout(leaveTimer.current);
@@ -120,14 +129,10 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
     return `https://ui-avatars.com/api/?name=${adminProfile?.firstname || "Admin"}+${adminProfile?.lastname || ""}&background=6366f1&color=fff&size=128&bold=true`;
   }, [adminProfile]);
 
+
   const SidebarContent = (
-    <motion.div
-      ref={sidebarRef}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-      animate={{ width: expandedSidebar ? 280 : 88 }}
-      transition={{ type: "spring", stiffness: 140, damping: 20, mass: 0.8 }}
-      className="relative h-full bg-white flex flex-col z-[100] shadow-[12px_0_40px_rgba(33,33,33,0.03)]"
+    <div
+      className={`h-full bg-white flex flex-col shadow-[12px_0_40px_rgba(33,33,33,0.03)] border-r border-slate-100 ${isMobile ? 'w-[280px]' : (expandedSidebar ? 'w-[280px]' : 'w-[88px]')} transition-all duration-300`}
     >
       {/* BRAND SECTION */}
       <div className="px-6 py-8 flex items-center gap-4">
@@ -295,35 +300,41 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
           )}
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 
   return (
     <>
-      <div className="hidden lg:block h-screen sticky top-0">{SidebarContent}</div>
+      {/* DESKTOP SIDEBAR - Standard CSS hiding */}
+      <aside className="hidden lg:flex flex-col flex-shrink-0 sticky top-0 h-screen z-50 overflow-visible">
+        {SidebarContent}
+      </aside>
+
+      {/* MOBILE DRAWER */}
       <AnimatePresence>
         {mobileOpen && (
-          <>
+          <div className="lg:hidden fixed inset-0 z-[9999]">
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[150] lg:hidden"
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
             />
+            {/* Drawer */}
             <motion.div
-              initial={{ x: -280 }}
+              initial={{ x: "-100%" }}
               animate={{ x: 0 }}
-              exit={{ x: -280 }}
-              className="fixed left-0 top-0 h-screen z-[160] lg:hidden w-[280px]"
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="absolute left-0 top-0 h-screen w-[280px] bg-white shadow-2xl z-[10000]"
             >
-              <div className="h-full bg-white">
-                <div className="h-full w-full">
-                  {SidebarContent}
-                </div>
+              <div className="h-full w-full overflow-y-auto overflow-x-hidden">
+                {SidebarContent}
               </div>
             </motion.div>
-          </>
+          </div>
         )}
       </AnimatePresence>
     </>
