@@ -7,6 +7,8 @@ import Order from "../../models/Order.js";
 import fs from "fs";
 import Attempt from "../../models/Attempt.js";
 import Doubt from "../../models/Doubt.js";
+import MockTest from "../../models/MockTest.js";
+import GrandTest from "../../models/GrandTest.js";
 
 export const getAllInstructors = async (req, res) => {
   try {
@@ -49,10 +51,15 @@ export const getAllStudents = async (req, res) => {
 
     const updated = await Promise.all(
       students.map(async (stu) => {
-        const orderCount = await Order.countDocuments({
+        // Count total items (tests) purchased — not number of orders
+        const orders = await Order.find({
           user: stu._id,
           status: "successful",
-        });
+        }).select("items").lean();
+        const purchasedTestCount = orders.reduce(
+          (sum, o) => sum + (o.items?.length || 0),
+          0
+        );
 
         const attemptCount = await Attempt.countDocuments({
           studentId: stu._id,
@@ -64,9 +71,9 @@ export const getAllStudents = async (req, res) => {
 
         return {
           ...stu,
-          purchasedTestCount: orderCount,
-          attemptCount: attemptCount,
-          doubtCount: doubtCount,
+          purchasedTestCount,
+          attemptCount,
+          doubtCount,
         };
       }),
     );
@@ -638,39 +645,73 @@ export const getStudentActivity = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // 1. Purchased Tests
+    // 1. Purchased Tests — manually check both MockTest and GrandTest
     const orders = await Order.find({ user: id, status: "successful" })
-      .populate("items", "title")
-      .lean();
-    const purchasedTests = orders.flatMap(o => o.items.map(i => ({
-      title: i.title,
-      date: o.createdAt,
-      orderId: o.razorpay?.order_id || "N/A"
-    })));
-
-    // 2. Attempts
-    const attempts = await Attempt.find({ studentId: id })
-      .populate("mocktestId", "title")
       .sort({ createdAt: -1 })
       .lean();
 
-    // 3. Doubts
-    const doubts = await Doubt.find({ student: id })
+    const purchasedTests = (await Promise.all(
+      orders.map(async (o) => {
+        if (!o.items || !Array.isArray(o.items)) return [];
+        const enrichedItems = await Promise.all(
+          o.items.map(async (itemId) => {
+            let item = await MockTest.findById(itemId).select("title").lean();
+            if (!item) {
+              item = await GrandTest.findById(itemId).select("title").lean();
+            }
+            return item || { title: "Archived/Deleted Test" };
+          })
+        );
+        return enrichedItems.map((i) => ({
+          title: i.title,
+          date: o.createdAt,
+          orderId: o.razorpay?.order_id || "N/A",
+        }));
+      })
+    )).flat();
+
+    // 2. Attempts — manually check both MockTest and GrandTest
+    const rawAttempts = await Attempt.find({ studentId: id })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const attempts = await Promise.all(
+      rawAttempts.map(async (att) => {
+        let test = await MockTest.findById(att.mocktestId).select("title totalMarks").lean();
+        if (!test) {
+          test = await GrandTest.findById(att.mocktestId).select("title totalMarks").lean();
+        }
+        return { ...att, mocktestId: test || { title: "Deleted Test", totalMarks: 0 } };
+      })
+    );
+
+    // 3. Doubts — manually check both MockTest and GrandTest
+    const rawDoubts = await Doubt.find({ student: id })
       .populate("assignedInstructor", "firstname lastname")
-      .populate("mocktestId", "title")
       .sort({ createdAt: -1 })
       .lean();
+
+    const doubts = await Promise.all(
+      rawDoubts.map(async (d) => {
+        let test = await MockTest.findById(d.mocktestId).select("title").lean();
+        if (!test) {
+          test = await GrandTest.findById(d.mocktestId).select("title").lean();
+        }
+        return { ...d, mocktestId: test || { title: "Test Information Unavailable" } };
+      })
+    );
 
     res.status(200).json({
       purchasedTests,
       attempts,
-      doubts
+      doubts,
     });
   } catch (error) {
     console.error("Get Student Activity Error:", error);
     res.status(500).json({ message: "Failed to fetch student activity" });
   }
 };
+
 export const getInstructorDoubts = async (req, res) => {
   try {
     const { id } = req.params;

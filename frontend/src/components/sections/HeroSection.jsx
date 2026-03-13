@@ -33,13 +33,12 @@ const HeroSection = () => {
 
       {/* ====== HERO CONTENT ====== */}
       <div className="flex-1 flex items-center min-h-[75vh]">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8 w-full pt-20">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8 w-full md:pt-20 pt-32 pb-12 md:pb-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-4 items-center text-left w-full">
 
-            {/* LEFT CONTENT */}
             <div className="space-y-4 lg:pr-4">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#1e293b] leading-[1.2] tracking-tighter uppercase">
-                MASTER EVERY <br /> CONCEPT WITH <br />
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#1e293b] leading-[1.15] tracking-tight uppercase">
+                MASTER EVERY <br className="hidden sm:block" /> CONCEPT WITH <br className="hidden sm:block" />
                 <span className="text-blue-600">SPECIALIZED TEST SERIES</span>
               </h1>
 
@@ -81,47 +80,47 @@ const HeroSection = () => {
       </div>
 
       {/* ====== STATS BAR — pinned at bottom ====== */}
-      <div className="w-full px-6 lg:px-8 pb-10">
-        <div className="max-w-5xl mx-auto bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-slate-100 p-4 md:p-5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="w-full px-4 lg:px-8 pb-10 sm:pb-12 mt-auto">
+        <div className="max-w-5xl mx-auto bg-white shadow-xl shadow-blue-900/5 border border-slate-100 p-3 sm:p-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
 
-            <div className="flex items-center gap-3 md:border-r border-slate-100">
-              <div className="p-2.5 bg-teal-50 text-teal-600 flex-shrink-0">
-                <ShieldCheck className="w-7 h-7" />
+            <div className="flex items-center gap-2 sm:gap-3 md:border-r border-slate-100">
+              <div className="p-2 sm:p-2.5 bg-teal-50 text-teal-600 flex-shrink-0">
+                <ShieldCheck className="w-5 h-5 sm:w-7 sm:h-7" />
               </div>
               <div>
-                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">REGISTERED</p>
-                <p className="text-sm font-black text-slate-800 uppercase">50+ LAKHS</p>
+                <p className="text-[8px] sm:text-[9px] text-slate-400 font-black uppercase tracking-widest">REGISTERED</p>
+                <p className="text-[11px] sm:text-sm font-black text-slate-800 uppercase">50+ LAKHS</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 md:border-r border-slate-100">
-              <div className="p-2.5 bg-amber-50 text-amber-500 flex-shrink-0">
-                <Trophy className="w-7 h-7" />
+            <div className="flex items-center gap-2 sm:gap-3 md:border-r border-slate-100">
+              <div className="p-2 sm:p-2.5 bg-amber-50 text-amber-500 flex-shrink-0">
+                <Trophy className="w-5 h-5 sm:w-7 sm:h-7" />
               </div>
               <div>
-                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">SELECTIONS</p>
-                <p className="text-sm font-black text-slate-800 uppercase">4+ LAKHS</p>
+                <p className="text-[8px] sm:text-[9px] text-slate-400 font-black uppercase tracking-widest">SELECTIONS</p>
+                <p className="text-[11px] sm:text-sm font-black text-slate-800 uppercase">4+ LAKHS</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 md:border-r border-slate-100">
-              <div className="p-2.5 bg-blue-50 text-blue-600 flex-shrink-0">
-                <FileText className="w-7 h-7" />
+            <div className="flex items-center gap-2 sm:gap-3 md:border-r border-slate-100">
+              <div className="p-2 sm:p-2.5 bg-blue-50 text-blue-600 flex-shrink-0">
+                <FileText className="w-5 h-5 sm:w-7 sm:h-7" />
               </div>
               <div>
-                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">TESTS TAKEN</p>
-                <p className="text-sm font-black text-slate-800 uppercase">80+ LAKHS</p>
+                <p className="text-[8px] sm:text-[9px] text-slate-400 font-black uppercase tracking-widest">TESTS TAKEN</p>
+                <p className="text-[11px] sm:text-sm font-black text-slate-800 uppercase">80+ LAKHS</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-orange-50 text-orange-500 flex-shrink-0">
-                <Video className="w-7 h-7" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="p-2 sm:p-2.5 bg-orange-50 text-orange-500 flex-shrink-0">
+                <Video className="w-5 h-5 sm:w-7 sm:h-7" />
               </div>
               <div>
-                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">CLASSES</p>
-                <p className="text-sm font-black text-slate-800 uppercase">25+ LAKHS</p>
+                <p className="text-[8px] sm:text-[9px] text-slate-400 font-black uppercase tracking-widest">CLASSES</p>
+                <p className="text-[11px] sm:text-sm font-black text-slate-800 uppercase">25+ LAKHS</p>
               </div>
             </div>
 

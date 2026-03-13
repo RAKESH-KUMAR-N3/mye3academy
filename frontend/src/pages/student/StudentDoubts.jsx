@@ -93,8 +93,8 @@ const StudentDoubts = () => {
             <MessageCircle className="text-white" size={24} />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-slate-800 tracking-tight">Doubt Solutions</h1>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[2px] mt-0.5">Academic Query Resolution Center</p>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Doubt Solutions</h1>
+            <p className="text-[9px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-widest sm:tracking-[2px] mt-0.5">Query Center</p>
           </div>
         </div>
         <button 
@@ -107,7 +107,7 @@ const StudentDoubts = () => {
       </div>
 
       {/* ── FILTERS ── */}
-      <div className="flex items-center gap-1 bg-slate-100/50 p-1 rounded-2xl border border-slate-100 w-fit mb-8">
+      <div className="flex items-center gap-1 bg-slate-100/50 p-1 rounded-2xl border border-slate-100 w-full sm:w-fit mb-8 overflow-x-auto no-scrollbar">
         {[
           { id: 'all', label: 'All Queries', icon: Filter },
           { id: 'pending', label: 'Unresolved', icon: Clock },
@@ -159,7 +159,7 @@ const StudentDoubts = () => {
                   </span>
                 </div>
                 
-                <h3 className="text-slate-800 font-bold text-[15px] leading-relaxed group-hover:text-blue-600 transition-colors">
+                <h3 className="text-slate-800 font-bold text-sm sm:text-[15px] leading-relaxed group-hover:text-blue-600 transition-colors">
                   {doubt.text}
                 </h3>
                 

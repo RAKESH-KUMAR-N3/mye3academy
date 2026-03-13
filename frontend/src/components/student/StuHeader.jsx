@@ -167,24 +167,24 @@ const StuHeader = ({ user, setActiveTab }) => {
         </div>
 
         {/* ── ACTIONS (SEARCH, ENROLL, NOTIFICATIONS, PROFILE) ── */}
-        <div className="flex items-center gap-6 ml-auto h-10">
+        <div className="flex items-center gap-2 sm:gap-6 ml-auto h-10">
           {/* SEARCH BAR */}
-          <div className="relative flex items-center group w-full max-w-[180px]">
+          <div className="relative flex items-center group w-full max-w-[40px] sm:max-w-[180px] transition-all duration-300">
             <Search className="absolute left-3 text-slate-400 group-focus-within:text-blue-400 transition-colors" size={14} />
             <input 
               type="text"
-              placeholder="Search tests..."
-              className="bg-white/5 hover:bg-white/10 focus:bg-white/15 border border-white/10 rounded-xl py-2 pl-9 pr-4 text-sm font-bold text-white placeholder-white/30 outline-none w-full transition-all focus:ring-2 focus:ring-blue-500/50"
+              placeholder="Search..."
+              className="bg-white/5 hover:bg-white/10 focus:bg-white/15 border border-white/10 rounded-xl py-2 pl-9 pr-4 text-sm font-bold text-white placeholder-white/30 outline-none w-full transition-all focus:ring-2 focus:ring-blue-500/50 focus:max-w-[200px]"
               onFocus={() => setShowSearch(true)}
             />
           </div>
 
           <button
             onClick={() => setActiveTab('my-tests')}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-wider shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-wider shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
           >
             <BookOpen size={14} />
-            My Enrolls
+            <span className="hidden sm:inline">My Enrolls</span>
           </button>
 
           {/* 🔔 NOTIFICATIONS WITH TEXT */}
@@ -194,7 +194,7 @@ const StuHeader = ({ user, setActiveTab }) => {
                 setShowNotifications((p) => !p);
                 setShowSearch(false);
               }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all backdrop-blur-md 
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl border transition-all backdrop-blur-md 
                 ${hasNotification ? 'bg-rose-500/20 border-rose-400/30' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}
               title="Notifications"
             >
@@ -202,7 +202,7 @@ const StuHeader = ({ user, setActiveTab }) => {
                 className={`transition-colors drop-shadow ${hasNotification ? 'text-rose-300 animate-pulse' : 'text-slate-300'}`}
                 size={16}
               />
-              <span className={`text-xs font-black uppercase tracking-wider ${hasNotification ? 'text-rose-300' : 'text-slate-300'}`}>
+              <span className="hidden sm:inline text-xs font-black uppercase tracking-wider text-inherit">
                 Notifications
               </span>
               {hasNotification && (
@@ -263,9 +263,9 @@ const StuHeader = ({ user, setActiveTab }) => {
           {/* 👤 PROFILE ICON BUTTON integrated */}
           <button
             onClick={handleProfileClick}
-            className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-500 p-0.5 shadow-lg hover:scale-105 active:scale-95 transition-all ml-4"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-500 p-0.5 shadow-lg hover:scale-105 active:scale-95 transition-all ml-2 sm:ml-4"
           >
-            <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center font-black text-blue-400 text-xs overflow-hidden">
+            <div className="w-full h-full bg-slate-900 rounded-[10px] sm:rounded-[14px] flex items-center justify-center font-black text-blue-400 text-xs overflow-hidden">
               {resolvedAvatar ? (
                  <img src={getImageUrl(resolvedAvatar)} alt="avatar" className="w-full h-full object-cover" />
               ) : (

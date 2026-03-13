@@ -485,7 +485,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
           {/* RIGHT GRID CONTENT */}
           <div className="flex-1 min-w-0 w-full">
             {publicStatus === "loading" ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                   <div key={i} className="h-[320px] bg-white border border-slate-100 animate-pulse rounded-2xl" />
                 ))}
@@ -501,7 +501,7 @@ export default function AllMockTests({ isEmbedded = false, overrideType = null }
             </div>
 
             {/* Unified grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {currentTests.length > 0 ? (
                 currentTests.map((test, index) => (
                   test.isGrandTest ? (

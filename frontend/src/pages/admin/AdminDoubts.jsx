@@ -244,7 +244,7 @@ const AdminDoubts = () => {
                     <MessageSquare size={18} />
                   </div>
                   <div>
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] leading-tight">Investigation</h3>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] leading-tight">Doubt Details</h3>
                     <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">Ref: #{selectedDoubt._id.slice(-8).toUpperCase()}</p>
                   </div>
                 </div>
@@ -263,12 +263,12 @@ const AdminDoubts = () => {
                   {/* Participant Bar */}
                   <div className="flex justify-between items-start">
                     <div className="space-y-1">
-                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Student Informant</span>
+                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Student</span>
                       <p className="text-sm font-black text-slate-900 uppercase">{selectedDoubt.student?.firstname} {selectedDoubt.student?.lastname}</p>
                       <p className="text-[10px] font-bold text-slate-500 lowercase">{selectedDoubt.student?.email}</p>
                     </div>
                     <div className="text-right space-y-2">
-                       <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Subject Field</span>
+                       <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Subject</span>
                        <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-100 inline-block">{selectedDoubt.subject}</span>
                     </div>
                   </div>
@@ -277,18 +277,18 @@ const AdminDoubts = () => {
                   <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                        <div className={`w-2 h-2 rounded-full animate-pulse ${selectedDoubt.status === 'answered' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                       <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Case Status: {selectedDoubt.status}</span>
+                        <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Status: {selectedDoubt.status}</span>
                     </div>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
-                       <Calendar size={12} /> Filed: {new Date(selectedDoubt.createdAt).toLocaleDateString()}
-                    </p>
+                     <p className="text-[9px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
+                        <Calendar size={12} /> Submitted: {new Date(selectedDoubt.createdAt).toLocaleDateString()}
+                     </p>
                   </div>
 
                   {/* Query Section */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                        <div className="w-1.5 h-4 bg-slate-900 rounded-full" />
-                       <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Student Query</span>
+                        <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Question</span>
                     </div>
                     <div className="bg-slate-50/50 rounded-2xl p-5 border border-slate-100 shadow-sm transition-hover hover:border-slate-200">
                       <p className="text-[13px] font-bold text-slate-700 leading-relaxed italic">
@@ -333,7 +333,7 @@ const AdminDoubts = () => {
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-4 bg-emerald-500 rounded-full" />
-                        <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Official Resolution</span>
+                         <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Instructor's Answer</span>
                       </div>
                       <div className="bg-emerald-50/30 rounded-2xl p-5 border border-emerald-100/50">
                         <p className="text-sm font-bold text-emerald-950 leading-relaxed whitespace-pre-wrap">

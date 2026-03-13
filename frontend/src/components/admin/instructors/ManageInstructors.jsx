@@ -255,7 +255,7 @@ const ManageInstructors = () => {
                   <tr className="bg-[#fdfdfd] border-b border-gray-100 text-[#3e4954] uppercase text-[10px] font-black tracking-widest">
                     <th className="px-6 py-3">Instructor</th>
                     <th className="px-4 py-3">Contact Info</th>
-                    <th className="px-4 py-3">Doubt Progress</th>
+                    <th className="px-4 py-3">Doubts</th>
                     <th className="px-4 py-3">Joined Date</th>
                     <th className="px-4 py-3 text-center">Status & Actions</th>
                   </tr>
@@ -330,10 +330,10 @@ const ManageInstructors = () => {
                             </div>
                             <div className="flex items-center gap-2">
                                <span className="text-[8px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-none border border-amber-100 font-black tracking-widest uppercase">
-                                 {inst.doubtStats?.pending || 0} pnd
+                                 {inst.doubtStats?.pending || 0} pending
                                </span>
                                <span className="text-[8px] bg-slate-50 text-slate-400 px-1.5 py-0.5 rounded-none border border-slate-100 font-bold tracking-widest uppercase">
-                                 {inst.doubtStats?.total || 0} ttl
+                                 {inst.doubtStats?.total || 0} total
                                </span>
                             </div>
                           </div>
@@ -347,7 +347,7 @@ const ManageInstructors = () => {
                               year: "numeric"
                             }) : "—"}
                           </div>
-                          <div className="text-[9px] text-gray-400 font-black uppercase tracking-tight opacity-70">Access Granted</div>
+                          <div className="text-[9px] text-gray-400 font-black uppercase tracking-tight opacity-70">Member Since</div>
                         </td>
 
                         <td className="px-4 py-3 text-center">

@@ -87,7 +87,7 @@ const DashboardOverview = ({ setActiveTab }) => {
     <div className="space-y-6 animate-in fade-in duration-700 pb-10">
       
       <section>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
           <StatCard
             icon={<BookOpen />}
             title="Tests Enrolled"
@@ -244,8 +244,8 @@ const DashboardOverview = ({ setActiveTab }) => {
                              className={`flex items-center gap-4 p-4 rounded-none border ${rankStyles.border} ${rankStyles.bg} transition-all duration-400 hover:shadow-xl group relative overflow-hidden`}
                           >
                              {isFirst && (
-                                <div className="absolute top-0 right-0 z-20 overflow-hidden w-24 h-24 pointer-events-none">
-                                    <div className="absolute top-4 -right-8 w-32 bg-gradient-to-r from-amber-600 via-amber-200 to-amber-600 text-amber-950 text-[9px] font-black py-1 transform rotate-45 text-center shadow-md uppercase tracking-widest drop-shadow-md">
+                                <div className="absolute top-0 right-0 z-20 overflow-hidden w-20 sm:w-24 h-20 sm:h-24 pointer-events-none">
+                                    <div className="absolute top-3 sm:top-4 -right-10 sm:-right-8 w-28 sm:w-32 bg-gradient-to-r from-amber-600 via-amber-200 to-amber-600 text-amber-950 text-[7px] sm:text-[9px] font-black py-0.5 sm:py-1 transform rotate-45 text-center shadow-md uppercase tracking-widest drop-shadow-md">
                                         TOP 1
                                     </div>
                                 </div>
@@ -280,9 +280,9 @@ const DashboardOverview = ({ setActiveTab }) => {
                                 </div>
                              </div>
 
-                              <div className="text-right whitespace-nowrap min-w-[80px] pr-10 relative z-20">
-                                 <div className={`text-[9px] font-black uppercase tracking-widest mb-0.5 ${isFirst ? 'text-amber-700/70' : 'text-slate-400'}`}>Points</div>
-                                 <div className={`text-xl font-black tracking-tight leading-none ${isFirst ? 'text-amber-600' : 'text-[#3e4954]'}`}>
+                              <div className="text-right whitespace-nowrap min-w-[70px] sm:min-w-[80px] pr-2 sm:pr-10 relative z-20">
+                                 <div className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest mb-0.5 ${isFirst ? 'text-amber-700/70' : 'text-slate-400'}`}>Points</div>
+                                 <div className={`text-lg sm:text-xl font-black tracking-tight leading-none ${isFirst ? 'text-amber-600' : 'text-[#3e4954]'}`}>
                                     {ranker.totalScore}
                                  </div>
                               </div>
@@ -306,22 +306,22 @@ const DashboardOverview = ({ setActiveTab }) => {
               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-400 rounded-full blur-[120px] opacity-20 -mr-32 -mt-32 animate-pulse"></div>
               
               <div className="relative z-10">
-                  <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 bg-white/10 rounded-none border border-white/10 backdrop-blur-md">
-                     <ShieldCheck className="text-blue-300" size={16} />
-                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-100">Unlock Your Potential</span>
+                  <div className="inline-flex items-center gap-2 mb-4 sm:mb-6 px-3 sm:px-4 py-1 sm:py-1.5 bg-white/10 rounded-none border border-white/10 backdrop-blur-md">
+                     <ShieldCheck className="text-blue-300" size={14} />
+                     <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-blue-100">Unlock Your Potential</span>
                   </div>
-                  <h3 className="text-3xl md:text-5xl font-black mb-6 tracking-tight leading-[1.1]">Challenge Your <br/><span className="text-blue-300">Knowledge</span></h3>
-                  <p className="text-blue-100/80 font-medium text-lg leading-relaxed mb-10 max-w-sm">
+                  <h3 className="text-2xl sm:text-3xl md:text-5xl font-black mb-4 sm:mb-6 tracking-tight leading-[1.15]">Challenge Your <br/><span className="text-blue-300">Knowledge</span></h3>
+                  <p className="text-blue-100/90 font-medium text-base sm:text-lg leading-relaxed mb-6 sm:mb-10 max-w-sm">
                      Start testing your skills today! Browse our expert-curated mock tests.
                   </p>
 
                   <button 
                      onClick={() => setActiveTab('explore')}
-                     className="group/btn inline-flex items-center gap-3 bg-white text-[#122b5e] px-8 py-5 rounded-none font-black uppercase tracking-widest text-xs hover:bg-blue-50 transition-all transform active:scale-95 shadow-xl shadow-blue-950/20 whitespace-nowrap"
+                     className="group/btn inline-flex items-center gap-2 sm:gap-3 bg-white text-[#122b5e] px-6 sm:px-8 py-4 sm:py-5 rounded-none font-black uppercase tracking-widest text-[10px] sm:text-xs hover:bg-blue-50 transition-all transform active:scale-95 shadow-xl shadow-blue-950/20 whitespace-nowrap"
                   >
                      Go to Mock Tests 
-                     <div className="w-6 h-6 rounded-none bg-blue-100 flex items-center justify-center group-hover/btn:translate-x-1 transition-transform">
-                        <ArrowRight size={14} className="text-[#122b5e]" />
+                     <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-none bg-blue-100 flex items-center justify-center group-hover/btn:translate-x-1 transition-transform">
+                        <ArrowRight size={12} className="text-[#122b5e]" />
                      </div>
                   </button>
               </div>

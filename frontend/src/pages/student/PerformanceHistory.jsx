@@ -156,23 +156,23 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
 
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-indigo-200">
-            <TrendingUp size={20} className="text-white" strokeWidth={2.5} />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-indigo-200">
+            <TrendingUp size={18} className="text-white" strokeWidth={2.5} />
           </div>
           <div>
-            <h2 className="text-xl font-black text-slate-800 tracking-tight">My Performance</h2>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[2px]">Your complete exam analytics</p>
+            <h2 className="text-lg sm:text-xl font-black text-slate-800 tracking-tight">My Performance</h2>
+            <p className="text-[9px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-widest sm:tracking-[2px]">Exam Analytics</p>
           </div>
         </div>
 
         {/* Global Filter Tabs moved to top right */}
-        <div className="flex items-center gap-2 bg-white/50 p-1.5 rounded-2xl border border-slate-100/50 backdrop-blur-sm shadow-sm self-start sm:self-auto">
+        <div className="flex items-center gap-1.5 bg-white/50 p-1 rounded-xl sm:rounded-2xl border border-slate-100/50 backdrop-blur-sm shadow-sm self-stretch sm:self-auto overflow-x-auto no-scrollbar">
           {FILTER_TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setActiveFilter(key)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all duration-200 whitespace-nowrap ${
                 activeFilter === key
                   ? "bg-slate-900 text-white shadow-lg shadow-slate-200"
                   : "text-slate-500 hover:bg-slate-100"
@@ -232,11 +232,11 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
                   </Pie>
                   {/* SVG center text overlay */}
                   <text x="50%" y="46%" textAnchor="middle" dominantBaseline="middle"
-                    style={{ fontSize: "22px", fontWeight: 900, fill: "#1e293b" }}>
+                    style={{ fontSize: "20px", fontWeight: 900, fill: "#1e293b" }}>
                     {totalAttempts}
                   </text>
                   <text x="50%" y="60%" textAnchor="middle" dominantBaseline="middle"
-                    style={{ fontSize: "9px", fontWeight: 800, fill: "#94a3b8", letterSpacing: "2px" }}>
+                    style={{ fontSize: "8px", fontWeight: 800, fill: "#94a3b8", letterSpacing: "2px" }}>
                     TOTAL
                   </text>
                 </PieChart>
@@ -381,66 +381,66 @@ const PerformanceHistory = ({ initialFilter = "all" }) => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead>
-                <tr className="border-b border-slate-50">
-                  {["Test", "Type", "Date", "Score", "%", "Action"].map((h) => (
-                    <th key={h} className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-[3px]">{h}</th>
-                  ))}
+                <tr className="border-b border-slate-50 text-left">
+                  <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Test</th>
+                  <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Type</th>
+                  <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Date</th>
+                  <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Score</th>
+                  <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[2px]">%</th>
+                  <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {filteredAttempts.map((att) => {
                   const totalMarks = att.mocktestId?.totalMarks || 0;
                   const score = att.score || 0;
-                  const pct = totalMarks > 0 ? ((score / totalMarks) * 100).toFixed(2) : "0.00";
+                  const pct = totalMarks > 0 ? ((score / totalMarks) * 100).toFixed(1) : "0.0";
                   const passed = Number(pct) >= 50;
                   const isGrand = att.mocktestId?.isGrandTest === true || att.mocktestId?.title?.toLowerCase().includes("grand");
                   const typeStyle = isGrand ? TYPE_COLORS.grand : TYPE_COLORS.mock;
                   const dateStr = new Date(att.createdAt).toLocaleDateString("en-IN", {
-                    day: "2-digit", month: "short", year: "numeric",
+                    day: "2-digit", month: "short",
                   });
                   return (
                     <tr key={att._id} className="hover:bg-slate-50/80 transition-colors duration-150 group">
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4 min-w-[200px]">
                         <div className="flex items-center gap-2">
-                          <div className={`w-1.5 h-8 rounded-full ${typeStyle.bg} flex-shrink-0`} />
-                          <span className="font-black text-sm text-slate-800 group-hover:text-indigo-600 transition-colors">
+                          <div className={`w-1 h-6 rounded-full ${typeStyle.bg} flex-shrink-0`} />
+                          <span className="font-black text-[13px] text-slate-800 group-hover:text-indigo-600 transition-colors line-clamp-1">
                             {att.mocktestId?.title || "Untitled Test"}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${typeStyle.light} ${typeStyle.text} border ${typeStyle.border}`}>
-                          {isGrand ? <Zap size={8} /> : <BookOpen size={8} />}
+                      <td className="px-4 py-4">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest ${typeStyle.light} ${typeStyle.text} border ${typeStyle.border}`}>
+                          {isGrand ? <Zap size={7} /> : <BookOpen size={7} />}
                           {typeStyle.label}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500">
-                          <Clock size={11} className="text-slate-400" />
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-slate-500 whitespace-nowrap">
                           {dateStr}
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`font-black text-sm ${score < 0 ? "text-rose-600" : "text-indigo-600"}`}>{score}</span>
-                        <span className="text-xs text-slate-400 font-bold"> / {totalMarks}</span>
+                      <td className="px-4 py-4">
+                        <span className={`font-black text-xs ${score < 0 ? "text-rose-600" : "text-indigo-600"}`}>{score}</span>
+                        <span className="text-[10px] text-slate-400 font-bold"> /{totalMarks}</span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${
-                          passed ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-rose-50 text-rose-700 border border-rose-200"
+                      <td className="px-4 py-4">
+                        <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black ${
+                          passed ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
                         }`}>
-                          {passed ? <CheckCircle2 size={11} /> : <XCircle size={11} />}
                           {pct}%
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                         <Link
                           to={`/student/review/${att._id}`}
-                          className="group inline-flex items-center gap-2 text-[10px] font-black text-blue-600 hover:text-blue-800 uppercase tracking-[0.2em] px-4 py-2 rounded-full bg-blue-50/50 hover:bg-blue-100 border border-blue-100 transition-all duration-300 hover:shadow-sm"
+                          className="group inline-flex items-center gap-1 text-[9px] font-black text-blue-600 hover:text-blue-800 uppercase tracking-widest px-3 py-1.5 rounded-lg bg-blue-50/50 hover:bg-blue-100 transition-all duration-300"
                         >
                           Review
-                          <ChevronRight size={12} strokeWidth={3} className="transition-transform group-hover:translate-x-0.5" />
                         </Link>
                       </td>
                     </tr>

@@ -86,7 +86,7 @@ const MyTestCard = ({ test }) => {
     return (
         <div 
             onClick={handleAction}
-            className={`group cursor-pointer ${theme.bg} rounded-xl border ${theme.border} ${theme.hoverBorder} p-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4`}
+            className={`group cursor-pointer ${theme.bg} rounded-xl border ${theme.border} ${theme.hoverBorder} p-3 sm:p-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-3 sm:gap-4`}
         >
             {/* Header Section: Profile Style Image + Title */}
             <div className="flex items-start gap-4">
@@ -95,7 +95,7 @@ const MyTestCard = ({ test }) => {
                         src={imgSrc}
                         alt={test.title}
                         onError={handleImageError}
-                        className={`w-14 h-14 rounded-full object-cover border-4 border-white shadow-sm transition-transform duration-500 group-hover:scale-105`}
+                        className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-4 border-white shadow-sm transition-transform duration-500 group-hover:scale-105`}
                     />
                     {/* Status Indicator Dot - Theme Aware */}
                     <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white flex items-center justify-center shadow-sm
@@ -115,10 +115,10 @@ const MyTestCard = ({ test }) => {
                             {statusLabel}
                         </span>
                     </div>
-                    <h3 className={`text-[14px] font-black leading-tight truncate transition-colors group-hover:${theme.text} text-slate-800 uppercase`}>
+                    <h3 className={`text-[12px] sm:text-[14px] font-black leading-tight line-clamp-2 sm:truncate transition-colors group-hover:${theme.text} text-slate-800 uppercase`}>
                         {test.title}
                     </h3>
-                    <p className="text-[10px] text-slate-500 mt-1 font-bold truncate opacity-70">
+                    <p className="text-[9px] sm:text-[10px] text-slate-500 mt-0.5 sm:mt-1 font-bold truncate opacity-70">
                         {test.category?.name || test.category || "GENERAL EXAM"}
                     </p>
                 </div>

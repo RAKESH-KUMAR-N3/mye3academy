@@ -16,25 +16,25 @@ export const StatCard = ({ icon, title, value, subValue, color, onClick }) => {
   return (
     <div 
       onClick={onClick}
-      className={`relative group ${theme.bg} p-5 rounded-[24px] shadow-lg border border-transparent hover:scale-105 transition-all duration-500 overflow-hidden ${onClick ? 'cursor-pointer' : ''}`}
+      className={`relative group ${theme.bg} p-4 sm:p-5 rounded-[20px] sm:rounded-[24px] shadow-lg border border-transparent hover:scale-105 transition-all duration-500 overflow-hidden ${onClick ? 'cursor-pointer' : ''}`}
     >
       {/* Subtle Background Shape */}
-      <div className="absolute -top-4 -right-4 w-20 h-20 bg-white/20 rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-700"></div>
+      <div className="absolute -top-4 -right-4 w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-700"></div>
       
-      <div className="flex flex-col gap-4 relative z-10">
+      <div className="flex flex-col gap-3 sm:gap-4 relative z-10">
         <div className="flex items-center justify-between">
-          <div className="p-3 rounded-xl bg-white/20 text-white shadow-sm border border-white/30 group-hover:bg-white group-hover:text-slate-900 transition-all duration-500">
-            {React.cloneElement(icon, { size: 20, strokeWidth: 2.5 })}
+          <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/20 text-white shadow-sm border border-white/30 group-hover:bg-white group-hover:text-slate-900 transition-all duration-500">
+            {React.cloneElement(icon, { size: 18, strokeWidth: 2.5 })}
           </div>
-          <div className="w-8 h-1 bg-white/30 rounded-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          <div className="w-6 sm:w-8 h-0.5 sm:h-1 bg-white/30 rounded-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
         </div>
         
         <div>
-          <p className="text-[10px] font-black text-white/70 uppercase tracking-[2px] mb-1">{title}</p>
-          <div className="flex items-baseline gap-2">
-            <h3 className="text-2xl font-black text-white tracking-tight">{value}</h3>
+          <p className="text-[8px] sm:text-[10px] font-black text-white/70 uppercase tracking-[1.5px] sm:tracking-[2px] mb-0.5 sm:mb-1">{title}</p>
+          <div className="flex items-baseline gap-1.5 sm:gap-2">
+            <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">{value}</h3>
             {subValue && (
-              <span className="text-[9px] font-extrabold text-white/60 uppercase tracking-[1px]">{subValue}</span>
+              <span className="text-[8px] sm:text-[9px] font-extrabold text-white/60 uppercase tracking-[1px]">{subValue}</span>
             )}
           </div>
         </div>

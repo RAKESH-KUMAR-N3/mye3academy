@@ -122,27 +122,30 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-500 transform ${isVisible ? "translate-y-0" : "-translate-y-full"} ${scrolled ? "bg-white border-b border-slate-100 py-2 shadow-sm" : "bg-white/90 backdrop-blur-md py-4"}`}
+        className={`fixed top-0 w-full z-50 transition-all duration-500 transform ${isVisible ? "translate-y-0" : "-translate-y-full"} ${scrolled ? "bg-white border-b border-slate-100 py-1.5 md:py-2 shadow-sm" : "bg-white/90 backdrop-blur-md py-2 md:py-4"}`}
       >
         <div className="max-w-6xl mx-auto px-4 md:px-8">
           <div className="flex justify-between items-center h-12">
             {/* MOBILE TOP UI */}
             <div className="flex md:hidden items-center justify-between w-full">
-              <button
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="p-2 text-slate-700"
+              <Link
+                to="/"
+                className="flex items-center gap-1.5 group font-black text-[13px] italic tracking-tight flex-shrink-0"
               >
-                <Menu size={26} />
-              </button>
+                <div className="bg-indigo-600 p-1 shadow-md shadow-indigo-100">
+                  <GraduationCap className="text-white w-4 h-4" />
+                </div>
+                MYE 3
+              </Link>
               <div
-                className="relative flex-1 max-w-[180px] mx-2"
+                className="relative flex-1 max-w-[140px] mx-1"
                 ref={dropdownRef}
               >
                 <button
                   onClick={() =>
                     setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
                   }
-                  className="w-full flex items-center justify-between gap-2 px-4 py-2 bg-white border border-slate-200 rounded-2xl shadow-sm font-bold text-sm text-slate-700"
+                  className="w-full flex items-center justify-between gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl shadow-sm font-bold text-[12px] text-slate-700 active:scale-95 transition-transform"
                 >
                   <span className="truncate">{currentCategoryName}</span>
                   <ChevronDown
@@ -339,19 +342,19 @@ const Navbar = () => {
             <Link
               key={tab.id}
               to={tab.path}
-              className="flex flex-col items-center gap-1 min-w-[60px]"
+              className="flex flex-col items-center gap-1.5 min-w-[55px] pt-1"
             >
               <div
-                className={`p-2.5 rounded-full transition-all ${
+                className={`p-2 rounded-2xl transition-all duration-300 ${
                   location.pathname === tab.path || (tab.id === 'all' && location.pathname === tab.path)
-                    ? "bg-indigo-600 text-white shadow-lg"
+                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 scale-110"
                     : "text-slate-400 hover:text-indigo-400"
                 }`}
               >
-                <tab.icon size={20} />
+                <tab.icon size={18} strokeWidth={2.5} />
               </div>
               <span
-                className={`text-[9px] font-black tracking-widest ${
+                className={`text-[10px] font-black tracking-tight ${
                   location.pathname === tab.path || (tab.id === 'all' && location.pathname === tab.path)
                     ? "text-indigo-600"
                     : "text-slate-400"

@@ -100,7 +100,7 @@ const MockTestCard = ({ test, isEmbedded = false, index = 0 }) => {
       transition={{ duration: 0.4, delay: index * 0.05 }}
       whileHover={{ y: -6 }}
       onClick={() => navigateToTest(test._id)}
-      className={`flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:${theme.shadow}/60 transition-all duration-500 overflow-hidden cursor-pointer group h-full`}
+      className={`flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-2xl hover:${theme.shadow}/60 transition-all duration-500 overflow-hidden cursor-pointer group h-full p-2 sm:p-0`}
     >
       {/* ── HEADER (Dynamic Theme) ── */}
       <div className={`pt-3 px-3 pb-1.5 ${theme.headerBg} relative border-b border-slate-50`}>
@@ -109,14 +109,14 @@ const MockTestCard = ({ test, isEmbedded = false, index = 0 }) => {
           <div className="relative group/logo">
             <div className={`absolute -inset-1 rounded-full blur-2xl opacity-30 group-hover/logo:opacity-50 transition-opacity duration-700 ${isGrand ? 'bg-orange-400' : 'bg-emerald-400'}`}></div>
             
-            <div className="w-10 h-10 rounded-full bg-white shadow-xl border-2 border-white flex items-center justify-center overflow-hidden transform group-hover/logo:scale-110 group-hover/logo:rotate-3 transition-all duration-500 relative z-20">
-              <div className={`absolute inset-0 opacity-10 ${isGrand ? 'bg-gradient-to-tr from-orange-400 to-transparent' : 'bg-gradient-to-tr from-emerald-400 to-transparent'}`}></div>
-              <img
-                src={cardImage}
-                alt="Category"
-                onError={handleImageError}
-                className="w-full h-full object-contain p-2 relative z-10"
-              />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-xl border-2 border-white flex items-center justify-center overflow-hidden transform group-hover/logo:scale-110 group-hover/logo:rotate-3 transition-all duration-500 relative z-20">
+               <div className={`absolute inset-0 opacity-10 ${isGrand ? 'bg-gradient-to-tr from-orange-400 to-transparent' : 'bg-gradient-to-tr from-emerald-400 to-transparent'}`}></div>
+               <img
+                 src={cardImage}
+                 alt="Category"
+                 onError={handleImageError}
+                 className="w-full h-full object-contain p-1.5 sm:p-2 relative z-10"
+               />
             </div>
           </div>
         </div>
@@ -131,64 +131,64 @@ const MockTestCard = ({ test, isEmbedded = false, index = 0 }) => {
 
       <div className="p-3 flex-grow">
         {/* Title */}
-        <h3 className={`text-[13px] font-black text-slate-800 leading-tight mb-1.5 ${theme.hoverText} transition-colors tracking-tight uppercase`}>
+        <h3 className={`text-[12px] sm:text-[13px] font-black text-slate-800 leading-tight mb-1 sm:mb-1.5 ${theme.hoverText} transition-colors tracking-tight uppercase line-clamp-2`}>
           {test.title}
         </h3>
         
         {/* Subcategory */}
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 italic">
+        <p className="text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 sm:mb-2 italic">
           {subcategoryText}
         </p>
 
-        {/* Subjects */}
-        <div className={`flex items-center gap-2 mb-3 ${theme.accentText} opacity-80`}>
-          <BookOpen size={11} strokeWidth={3} />
-          <span className="text-[9px] font-black uppercase tracking-[0.1em]">
+        {/* Languages */}
+        <div className={`flex items-center gap-1.5 mb-2 sm:mb-3 ${theme.accentText} opacity-80`}>
+          <BookOpen size={10} strokeWidth={3} />
+          <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.1em]">
             {languagesText}
           </span>
         </div>
 
-        {/* Test Specifications - Vertical List (Testbook Style) */}
-        <div className="space-y-1.5 mb-1.5">
+        {/* Test Specifications */}
+        <div className="space-y-1 sm:space-y-1.5 mb-1 sm:mb-1.5">
            <div className="flex items-center justify-between group/item">
-              <div className="flex items-center gap-2">
-                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
-                    <Clock size={10} className={theme.accentText} />
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                 <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                    <Clock size={9} className={theme.accentText} />
                  </div>
-                 <span className="text-[9px] font-black tracking-widest text-slate-500 uppercase">Duration</span>
+                 <span className="text-[8px] sm:text-[9px] font-black tracking-widest text-slate-500 uppercase">Duration</span>
               </div>
-              <span className="text-[10px] font-black text-slate-800 uppercase">{test.durationMinutes || 0} MINUTES</span>
+              <span className="text-[9px] sm:text-[10px] font-black text-slate-800 uppercase">{test.durationMinutes || 0} MIN</span>
            </div>
 
            <div className="flex items-center justify-between group/item">
-              <div className="flex items-center gap-2">
-                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
-                    <FileText size={10} className={theme.accentText} />
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                 <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                    <FileText size={9} className={theme.accentText} />
                  </div>
-                 <span className="text-[9px] font-black tracking-widest text-slate-500 uppercase">Total Questions</span>
+                 <span className="text-[8px] sm:text-[9px] font-black tracking-widest text-slate-500 uppercase">Qs</span>
               </div>
-              <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalQuestions || 0} QUESTIONS</span>
+              <span className="text-[9px] sm:text-[10px] font-black text-slate-800 uppercase">{test.totalQuestions || 0}</span>
            </div>
 
            <div className="flex items-center justify-between group/item">
-              <div className="flex items-center gap-2">
-                 <div className={`w-6 h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
-                    <Trophy size={10} className={theme.accentText} />
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                 <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md ${theme.pillBg} flex items-center justify-center transition-transform group-hover/item:scale-110`}>
+                    <Trophy size={9} className={theme.accentText} />
                  </div>
-                 <span className="text-[9px] font-black tracking-widest text-slate-500 uppercase">Total Marks</span>
+                 <span className="text-[8px] sm:text-[9px] font-black tracking-widest text-slate-500 uppercase">Marks</span>
               </div>
-              <span className="text-[10px] font-black text-slate-800 uppercase">{test.totalMarks || 0} MARKS</span>
+              <span className="text-[9px] sm:text-[10px] font-black text-slate-800 uppercase">{test.totalMarks || 0}</span>
            </div>
 
            <div className="pt-1.5 border-t border-slate-50 flex items-center justify-between group/item">
-              <div className="flex items-center gap-2">
-                 <div className={`w-6 h-6 rounded-md ${isGrand ? 'bg-orange-50' : 'bg-emerald-50'} flex items-center justify-center`}>
-                    <span className="text-[10px]">💎</span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                 <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md ${isGrand ? 'bg-orange-50' : 'bg-emerald-50'} flex items-center justify-center`}>
+                    <span className="text-[9px]">💎</span>
                  </div>
-                 <span className="text-[9px] font-black tracking-widest text-slate-500 uppercase">Access Type</span>
+                 <span className="text-[8px] sm:text-[9px] font-black tracking-widest text-slate-500 uppercase">Pricing</span>
               </div>
-              <span className={`text-[10px] font-black ${test.isFree ? 'text-emerald-600' : 'text-slate-800'}`}>
-                 {test.isFree ? 'FREE ACCESS' : `Rs. ${effectivePrice}`}
+              <span className={`text-[9px] sm:text-[10px] font-black ${test.isFree ? 'text-emerald-600' : 'text-slate-800'}`}>
+                 {test.isFree ? 'FREE' : `Rs.${effectivePrice}`}
               </span>
            </div>
         </div>
