@@ -19,6 +19,8 @@ import {
 import { logoutUser } from "../redux/userSlice";
 import { fetchCategories } from "../redux/categorySlice";
 import { setPublicCategoryFilter } from "../redux/studentSlice";
+import { motion, AnimatePresence } from "framer-motion";
+import MobileFooterNav from "./MobileFooterNav";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -177,10 +179,10 @@ const Navbar = () => {
                 )}
               </div>
               <button
-                onClick={() => navigate("/all-tests")}
-                className="p-2 text-slate-700"
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="p-2 text-slate-700 active:scale-95 transition-transform"
               >
-                <Search size={24} />
+                <Menu size={24} />
               </button>
             </div>
 
@@ -311,63 +313,113 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* MOBILE BOTTOM NAVIGATION */}
-      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 z-50 py-3 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-        <div className="flex justify-around items-center">
-          {[
-            { id: "home", label: "HOME", icon: Home, path: "/" },
-            {
-              id: "all",
-              label: "ALL",
-              icon: Search,
-              path: "/all-tests",
-            },
-            {
-              id: "mock",
-              label: "MOCK",
-              icon: ClipboardList,
-              path: "/mock-tests",
-            },
-            {
-              id: "grand",
-              label: "GRAND",
-              icon: Zap,
-              path: "/grand-tests",
-            },
-            {
-              id: "profile",
-              label: "PROFILE",
-              icon: User,
-              path: userData ? dashboardPath : "/login",
-            },
-          ].map((tab) => (
-            <Link
-              key={tab.id}
-              to={tab.path}
-              className="flex flex-col items-center gap-1.5 min-w-[55px] pt-1"
+      {/* MOBILE MENU DRAWER */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] md:hidden"
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed right-0 top-0 h-screen w-[280px] bg-white shadow-2xl z-[110] md:hidden flex flex-col"
             >
-              <div
-                className={`p-2 rounded-2xl transition-all duration-300 ${
-                  location.pathname === tab.path || (tab.id === 'all' && location.pathname === tab.path)
-                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 scale-110"
-                    : "text-slate-400 hover:text-indigo-400"
-                }`}
-              >
-                <tab.icon size={18} strokeWidth={2.5} />
+              <div className="p-6 flex justify-between items-center border-b border-slate-50">
+                <span className="text-xs font-black text-indigo-600 uppercase tracking-widest">
+                  Navigation
+                </span>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 text-slate-400 hover:text-slate-600"
+                >
+                  <X size={20} />
+                </button>
               </div>
-              <span
-                className={`text-[10px] font-black tracking-tight ${
-                  location.pathname === tab.path || (tab.id === 'all' && location.pathname === tab.path)
-                    ? "text-indigo-600"
-                    : "text-slate-400"
-                }`}
-              >
-                {tab.label}
-              </span>
-            </Link>
-          ))}
-        </div>
-      </div>
+
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                <Link
+                  to="/"
+                  className="flex items-center gap-4 text-sm font-black text-slate-700 uppercase tracking-widest"
+                >
+                  <Home size={20} className="text-indigo-500" /> Home
+                </Link>
+                <Link
+                  to="/all-tests"
+                  className="flex items-center gap-4 text-sm font-black text-slate-700 uppercase tracking-widest"
+                >
+                  <ClipboardList size={20} className="text-indigo-500" /> All Tests
+                </Link>
+                <Link
+                  to="/mock-tests"
+                  className="flex items-center gap-4 text-sm font-black text-slate-700 uppercase tracking-widest"
+                >
+                  <Zap size={20} className="text-indigo-500" /> Mock Tests
+                </Link>
+                <Link
+                  to="/grand-tests"
+                  className="flex items-center gap-4 text-sm font-black text-slate-700 uppercase tracking-widest"
+                >
+                  <Zap size={20} className="text-indigo-500" /> Grand Tests
+                </Link>
+              </div>
+
+              <div className="p-6 border-t border-slate-50 bg-slate-50/50">
+                {userData ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center font-black text-indigo-600 uppercase">
+                        {userData.firstname?.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-slate-800 uppercase">
+                          {userData.firstname}
+                        </p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          {userData.role}
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      to={dashboardPath}
+                      className="flex items-center gap-4 text-sm font-black text-indigo-600 uppercase tracking-widest"
+                    >
+                      <LayoutDashboard size={20} /> {dashboardLabel}
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-4 text-sm font-black text-red-500 uppercase tracking-widest pt-4 w-full"
+                    >
+                      <LogOut size={20} /> Logout
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    <Link
+                      to="/login"
+                      className="py-3 px-4 text-center text-xs font-black text-slate-700 uppercase border border-slate-200 rounded-xl"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="py-3 px-4 text-center text-xs font-black text-white uppercase bg-indigo-600 rounded-xl shadow-lg shadow-indigo-100"
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 };

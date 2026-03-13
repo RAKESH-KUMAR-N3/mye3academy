@@ -90,24 +90,24 @@ const StuSidebar = ({ activeTab, setActiveTab }) => {
       <Link
         to="/"
         key="logo-desktop"
-        className="px-6 py-6 flex items-center gap-4 relative z-[110] group"
+        className="px-4 py-6 flex items-center gap-2 relative z-[110] group"
       >
         <div className="shrink-0 cursor-pointer active:scale-95 transition-all duration-300">
           <img 
             src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
             alt="Mye3 Logo" 
-            className={`${expandedSidebar ? 'h-10' : 'h-9'} w-auto object-contain`}
+            className="h-10 w-auto object-contain mx-auto"
           />
         </div>
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {expandedSidebar && (
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="overflow-hidden whitespace-nowrap"
+              className="overflow-hidden whitespace-nowrap pr-4"
             >
-              <p className="text-[10px] font-bold text-blue-500 uppercase tracking-[0.2em] leading-none mt-0.5">Student Dashboard</p>
+              <p className="text-[10px] font-bold text-blue-500 uppercase tracking-wider leading-none mt-0.5">Student</p>
             </motion.div>
           )}
         </AnimatePresence>

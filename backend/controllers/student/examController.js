@@ -13,8 +13,15 @@ import { shuffleArray, groupPassagesAndChildren } from "../../utils/examHelpers.
 export const startTestAttempt = async (req, res) => {
   try {
     const { mockTestId } = req.body;
-    const studentId = req.user._id; 
+    const studentId = req.user._id;
 
+    // Role check: Only students can attempt exams
+    if (req.user.role !== "student") {
+      return res.status(403).json({
+        success: false,
+        message: "Only students are allowed to attempt examinations.",
+      });
+    }
     // Find test across both collections
     let mocktest = await MockTest.findById(mockTestId).lean();
     if (!mocktest) {

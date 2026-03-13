@@ -18,7 +18,7 @@ export default function InstructorDashboard() {
       <InstructorSidebar />
 
       {/* RIGHT CONTENT */}
-      <main ref={mainRef} className="flex-1 bg-gray-50 pt-20 md:pt-6 px-6 overflow-y-auto">
+      <main ref={mainRef} className="flex-1 bg-gray-50 pt-20 md:pt-6 px-6 pb-24 md:pb-6 overflow-y-auto">
         <Outlet />
       </main>
     </div>

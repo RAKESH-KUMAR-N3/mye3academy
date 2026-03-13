@@ -28,7 +28,7 @@ const MockTestCard = ({ test, isEmbedded = false, index = 0 }) => {
       toast.error("Please login to continue");
       return navigate("/login");
     }
-    if (canStart) {
+    if (canStart && userData?.role === "student") {
       navigate(`/student/instructions/${String(id)}`);
     } else {
       navigate(`/all-tests/${String(id)}`);

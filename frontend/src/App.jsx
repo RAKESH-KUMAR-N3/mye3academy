@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
+import MobileFooterNav from "./components/MobileFooterNav";
 import Footer from "./components/Footer";
 import ForgetPassword from "./pages/ForgetPassword";
 
@@ -83,6 +84,11 @@ const MainLayout = ({ children }) => {
       <Toaster position="top-center" reverseOrder={false} />
       {!hideLayout && <Navbar />}
       <main className="min-h-[80vh]">{children}</main>
+      {!location.pathname.startsWith("/student/write-test") && 
+       !location.pathname.startsWith("/student/instructions") && 
+       !location.pathname.startsWith("/student/review") && (
+        <MobileFooterNav />
+      )}
       {!hideLayout && <Footer />}
       <ViewModeToggle />
     </>

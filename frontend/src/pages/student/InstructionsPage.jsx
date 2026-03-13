@@ -29,7 +29,7 @@ const InstructionsPage = () => {
   const dispatch = useDispatch();
   const { mocktestId } = useParams();
 
-  const { myMockTests, myMockTestsStatus } = useSelector((state) => state.user);
+  const { userData, myMockTests, myMockTestsStatus } = useSelector((state) => state.user);
 
   const [test, setTest] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -99,6 +99,13 @@ const InstructionsPage = () => {
 
   const handleStartTest = async () => {
     if (loading || !test) return;
+    
+    // Role check
+    if (userData?.role !== "student") {
+      toast.error("Only students are authorized to start examinations.");
+      return;
+    }
+
     if (test.isPurchaseRequired) {
       toast.error("Attempt limit reached. Please purchase again.");
       return;

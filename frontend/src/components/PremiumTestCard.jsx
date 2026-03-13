@@ -37,7 +37,7 @@ const PremiumTestCard = ({ test, index = 0 }) => {
       navigate("/login");
       return;
     }
-    if (canStart) {
+    if (canStart && userData?.role === "student") {
       navigate(`/student/instructions/${idStr}`);
     } else {
       navigate(`/all-tests/${idStr}`);

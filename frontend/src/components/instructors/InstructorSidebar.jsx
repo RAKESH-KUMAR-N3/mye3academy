@@ -82,7 +82,7 @@ const InstructorSidebar = () => {
       className="relative h-full bg-white border-r border-slate-200 flex flex-col z-[100]"
     >
       {/* BRAND SECTION */}
-      <div className="px-6 py-8 flex items-center gap-4">
+      <div className="px-4 py-8 flex items-center gap-2">
         <Link 
             to="/"
             className="shrink-0 cursor-pointer hover:rotate-3 transition-transform"
@@ -90,19 +90,19 @@ const InstructorSidebar = () => {
           <img 
             src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
             alt="Mye3 Logo" 
-            className={`${expandedSidebar ? 'h-11' : 'h-10'} w-auto object-contain`}
+            className={`${expandedSidebar ? 'h-10' : 'h-10'} w-auto object-contain mx-auto`}
           />
         </Link>
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
             {expandedSidebar && (
                 <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
-                    className="overflow-hidden whitespace-nowrap cursor-pointer"
+                    className="overflow-hidden whitespace-nowrap cursor-pointer pr-4"
                     onClick={() => navigate("/")}
                 >
-                    <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em] leading-none mt-0.5">Instructor Portal</p>
+                    <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider leading-none mt-0.5">Instructor</p>
                 </motion.div>
             )}
         </AnimatePresence>

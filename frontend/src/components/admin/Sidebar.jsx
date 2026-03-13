@@ -135,7 +135,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
       className={`h-full bg-white flex flex-col shadow-[12px_0_40px_rgba(33,33,33,0.03)] border-r border-slate-100 ${isMobile ? 'w-[280px]' : (expandedSidebar ? 'w-[280px]' : 'w-[88px]')} transition-all duration-300`}
     >
       {/* BRAND SECTION */}
-      <div className="px-6 py-8 flex items-center gap-4">
+      <div className="px-4 py-8 flex items-center gap-2">
         <Link
           to="/"
           className="shrink-0 cursor-pointer hover:rotate-2 transition-transform"
@@ -143,19 +143,19 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
           <img 
             src={`${import.meta.env.VITE_SERVER_URL}/uploads/images/mye3.png`} 
             alt="Mye3 Logo" 
-            className={`${expandedSidebar ? 'h-11' : 'h-10'} w-auto object-contain`}
+            className="h-10 w-auto object-contain mx-auto"
           />
         </Link>
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {expandedSidebar && (
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="overflow-hidden whitespace-nowrap cursor-pointer"
+              className="overflow-hidden whitespace-nowrap cursor-pointer pr-4"
               onClick={() => navigate("/")}
             >
-              <p className="text-[10px] font-bold text-[#5654F7] uppercase tracking-[0.2em] leading-none mt-0.5">Admin Panel</p>
+              <p className="text-[10px] font-bold text-[#5654F7] uppercase tracking-wider leading-none mt-0.5">Admin</p>
             </motion.div>
           )}
         </AnimatePresence>

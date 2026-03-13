@@ -58,6 +58,11 @@ export default function MockTestDetail() {
             return navigate("/login");
         }
 
+        if (userData?.role !== "student") {
+            toast.error("Access Restricted: Only students can attempt examinations.");
+            return;
+        }
+
         if (canStart) {
             return navigate(`/student/instructions/${id}`);
         }
